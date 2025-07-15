@@ -146,6 +146,45 @@
             box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
             outline: none;
         }
+
+        /* Estilos para el control de cantidad */
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            width: 100%;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .quantity-btn {
+            background-color: #f8f9fa;
+            border: none;
+            color: var(--primary-color);
+            padding: 0.5em 0.8em;
+            cursor: pointer;
+            font-size: 1.2em;
+            line-height: 1;
+            transition: background-color 0.2s ease;
+            flex-shrink: 0; /* No se encoge */
+        }
+        .quantity-btn:hover {
+            background-color: #e2e6ea;
+        }
+        .quantity-btn:active {
+            background-color: #dae0e5;
+        }
+        .quantity-display {
+            padding: 0.5em 0.2em;
+            min-width: 30px; /* Asegura un ancho mínimo para el número */
+            text-align: center;
+            font-size: 1em;
+            color: var(--text-color);
+            flex-grow: 1; /* Permite que el número ocupe el espacio restante */
+            font-weight: 500;
+        }
+
         .action-button {
             cursor: pointer;
             background-color: var(--danger-color);
@@ -443,6 +482,21 @@
                 padding: 10px;
             }
 
+            /* Ajustes para los controles de cantidad en móvil */
+            .quantity-control {
+                width: 100%;
+                max-width: 150px; /* Limita el ancho del control de cantidad */
+                margin: 0 auto; /* Centra el control */
+            }
+            .quantity-btn {
+                padding: 0.5em 0.8em;
+                font-size: 1.1em;
+            }
+            .quantity-display {
+                font-size: 1em;
+            }
+
+
             .info-section {
                 flex-direction: column; /* Apila los campos de info */
                 gap: 15px;
@@ -548,7 +602,7 @@
 
     <div class="container" id="mainMenu">
         <div class="header-logo">
-            <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTI4IDEyOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxyZWN0IHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiBmaWxsPSJ3aGl0ZSIvPgogICAgPHBhdGggZD0iTTM1IDYwTDIwIDQ1VjIySDQ3VjMwTDM1IDQyVjYwWk04MyA2MEw2OCA0NVYyMkg5NVYzMEw4MyA0MlY2MFpNNzMgNjBMODMgNzVWOTdINzNWNzVMMzMgNTlWMjJIMTU2VjU5WiIgc3Ryb2tlPSIjMDA1NmIzIiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSIxMDgiIGhlaWdodD0iNzUiIHg9IjEwIiB5PSI1MCIgc3Ryb2tlPSIjNjU2NTY1IiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSI4NiIgaGVpZ2h0PSI0NiIgeD09IjIxIiB5PSI2OSIgZmlsbD0iI0QwRTdGMSIvPgogICAgPHBhdGggZD0iTTUwIDc1Vjc1SDc0Vjc1TDEwMCA3NVYxMDBIMzBMMTUwIDc1Wk0yNSA4NUw1MiA4NVY5N0gyNVY4NVoiIHN0cm9rZT0iIzAwNWRhMyIgc3Ryb2tlLXdpZHRoPSI0IiBmaWxsPSJub25lIi8+CiAgICA8cmVjdCB3aWR0aD0iNTAiIGhlaWdodD0iMTIiIHg9IjM5LjU1IiB5PSI3MyIgZmlsbD0iIzAwNWRhMyIvPgogICAgPGNpcmNsZSBjeD0iMzUiIGN5PSI0OCIgcj0iOCIgZmlsbD0iIzAwNWRhMyIvPgogICAgPGNpcmNsZSBjeD0iMzUiIGN5PSI0OCIgcj0iOCIgZmlsbD0iIzY1NjU2NSIvPgogICAgPHBhdGggZD0iTTU1IDQwTDM5IDI4SDY5IEw1NSAxNFY2NloiIHN0cm9rZT0iIzAwNTZiMyIgc3Ryb2tlLXdpZHRoPSIzIiBmaWxsPSJub25lIi8+Cjwvc3ZnPg==" alt="Logo de Suministros Corporativos">
+            <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTI4IDEyOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxyZWN0IHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiBmaWxsPSJ3aGl0ZSIvPgogICAgPHBhdGggZD0iTTM1IDYwTDIwIDQ1VjIySDQ3VjMwTDM1IDQyVjYwWk04MyA2MEw2OCA0NVYyMkg5NVYzMEw4MyA0MlY2MFpNNzMgNjBMODMgNzVWOTdINzNWNzVMMzMgNTlWMjJIMTU2VjU5WiIgc3Ryb2tlPSIjMDA1NmIzIiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSIxMDgiIGhlaWdodD0iNzUiIHg9IjEwIiB5PSI1MCIgc3Ryb2tlPSIjNjU2NTY1IiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSI4NiIgaGVpZ2h0PSI0NiIgeD0iMjEiIHk9IjY5IiBmaWxsPSIjRDBFN0YxIi8+CiAgICA8cGF0aCBkPSJNNTAgNzVWNzVINzRWNzVMMTAwIDc1VjEwMEgzMEw1MCA3NVpNMjUgODVMNTIgODVWOTdIMjVWODVaIiBzdHJva2U9IiMwMDVkYTMiIHN0cm9rZS13aWR0aGg9IjQiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSI1MCIgaGVpZ2h0PSIxMiIgeD0iMzkuNTUgeT0iNzMiIGZpbGw9IiMwMDVkYTMiLz4KICAgIDxjaXJjbGUgY3g9IjM1IiBjeT0iNDgiIHI9IjgiIGZpbGw9IiMwMDVkYTMiLz4KICAgIDxjaXJjbGUgY3g9IjM1IiBjeT0iNDgiIHI9IjgiIGZpbGw9IiM2NTY1NjUiLz4KICAgIDxwYXRoIGQ9Ik01NSA0MEwzOSAyOEg2OSBMNTUgMTRWNjZaIiBzdHJva2U9IiMwMDU2YjMiIHN0cm9rZS13aWR0aD0iMyIgZmlsbD0ibm9uZSIvPgo8L3N2Zz4=" alt="Logo de Suministros Corporativos">
             <h1>Tesoros Americanos Costa Rica</h1>
             <h2 class="subtitle">Sistema de Solicitudes de Suministros</h2>
         </div>
@@ -600,7 +654,7 @@
 
     <div class="container hidden" id="historyContainer">
         <div class="header-logo" style="margin-bottom: 20px;">
-            <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTI4IDEyOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxyZWN0IHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiBmaWxsPSJ3aGl0ZSIvPgogICAgPHBhdGggZD0iTTM1IDYwTDIwIDQ1VjIySDQ3VjMwTDM1IDQyVjYwWk04MyA2MEw2OCA0NVYyMkg5NVYzMEw4MyA0MlY2MFpNNzMgNjBMODMgNzVWOTdINzNWNzVMMzMgNTlWMjJIMTU2VjU5WiIgc3Ryb2tlPSIjMDA1NmIzIiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSIxMDgiIGhlaWdodD0iNzUiIHg9IjEwIiB5PSI1MCIgc3Ryb2tlPSIjNjU2NTY1IiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSI4NiIgaGVpZ2h0PSI0NiIgeD0iMjEiIHk9IjY5IiBmaWxsPSIjRDBFN0YxIi8+CiAgICA8cGF0aCBkPSJNNTAgNzVWNzVINzRWNzVMMTAwIDc1VjEwMEgzMEw1MCA3NVpNMjUgODVMNTIgODVWOTdIMjVWODVaIiBzdHJva2U9IiMwMDVkYTMiIHN0cm9rZS13aWR0aGg9IjQiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSI1MCIgaGVpZ2h0PSIxMiIgeD0iMzkuNTUgeT0iNzMiIGZpbGw9IiMwMDVkYTMiLz4KICAgIDxjaXJjbGUgY3g9IjM1IiBjeT0iNDgiIHI9IjgiIGZpbGw9IiMwMDVkYTMiLz4KICAgIDxjaXJjbGUgY3g9IjM1IiBjeT0iNDgiIHI9IjgiIGZpbGw9IiM2NTY1NjUiLz4KICAgIDxwYXRoIGQ9Ik01NSA0MEwzOSAyOEg2OSBMNTUgMTRWNjZaIiBzdHJva2U9IiMwMDU2YjMiIHN0cm9rZS13aWR0aD0iMyIgZmlsbD0ibm9uZSIvPgo8L3N2Zz4=" alt="Logo de Suministros Corporativos">
+            <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTI4IDEyOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxyZWN0IHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiBmaWxsPSJ3aGl0ZSIvPgogICAgPHBhdGggZD0iTTM1IDYwTDIwIDQ1VjIySDQ3VjMwTDM1IDQyVjYwWk04MyA2MEw2OCA0NVYyMkg5NVYzMEw4MyA0MlY2MFpNNzMgNjBMODMgNzVWOTdINzNWNzVMMzMgNTlWMjJIMTU2VjU5WiIgc3Ryb2tlPSIjMDA1NmIzIiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSIxMDgiIGhlaWdodD0iNzUiIHg9IjEwIiB5PSI1MCIgc3Ryb2tlPSIjNjU2NTY1IiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSI4NiIgaGVpZ2h0PSI0NiIgeD0iMjEiIHk9IjY5IiBmaWxsPSIjRDBFN0YxIi8+CiAgICA8cGF0aCBkPSJNNTAgNzVWNzVINzRWNzVMMTAwIDc1VjEwMEgzMEw1MCA3NVpNMjUgODVMNTIgODVWOTdIMjVWODVaIiBzdHJva2U9IiMwMDVkYTMiIHN0cm9rZS13aWR0aGg9IjQiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSI1MCIgaGVpZ2h0PSIxMiIgeD0iMzkuNTUgeT0iNzMiIGZpbGw9IiMwMDVkYTMiLz4KICAgIDxjaXJjbGUgY3g9IjM1IiBjeT0iNDgiIHI9IjgiIGfmxsPSIjMDA1ZGEzIi8+CiAgICA8Y2lyY2xlIGN4PSIzNSIgY3k9IjQ4IiByPSI4IiBmaWxsPSIjNjU2NTY1Ii8+CiAgICA8cGF0aCBkPSJNNTUgNDBMMzkgMjhINjkgTDU1IDE0VjY2WiIgc3Ryb2tlPSIjMDA1NmIzIiBzdHJva2Utd2lkdGg9IjMiIGZpbGw9Im5vbmUiLz4KPC9zdmc+" alt="Logo de Suministros Corporativos">
             <h1>Tesoros Americanos Costa Rica</h1>
             <h2 class="subtitle">Historial de Solicitudes</h2>
         </div>
@@ -703,28 +757,35 @@
             // Crea las opciones para el select de artículos
             let articulosOptions = '';
             listaArticulos.forEach(item => {
-                articulosOptions += `<option value="${item}">${item}</option>`;
+                // Si la opción es el placeholder, deshabilitarla
+                const isDisabled = (item === "Seleccione un artículo") ? 'disabled selected' : '';
+                articulosOptions += `<option value="${item}" ${isDisabled}>${item}</option>`;
             });
 
             // Atributos data-label para responsividad en móviles
             newRow.insertCell(0).outerHTML = `<td data-label="Artículo:"><select required>${articulosOptions}</select></td>`;
-            newRow.insertCell(1).outerHTML = `<td data-label="Cantidad:"><input type="number" value="1" min="1" required></td>`;
+            newRow.insertCell(1).outerHTML = `
+                <td data-label="Cantidad:">
+                    <div class="quantity-control">
+                        <button class="quantity-btn" onclick="cambiarCantidad(this, -1)">-</button>
+                        <span class="quantity-display">1</span>
+                        <button class="quantity-btn" onclick="cambiarCantidad(this, 1)">+</button>
+                    </div>
+                </td>`;
             newRow.insertCell(2).outerHTML = `<td data-label="Unidad de Medida:"><select required><option value="Unidad">Unidad</option><option value="Paquete">Paquete</option><option value="Galón">Galón</option><option value="Kilo">Kilo</option><option value="Caja">Caja</option><option value="Resma">Resma</option></select></td>`;
             newRow.insertCell(3).outerHTML = `<td data-label="Acción:"><button class="action-button" onclick="eliminarFila(this)">Eliminar</button></td>`;
-
-            // Establece la primera opción como seleccionada y deshabilitada si es el placeholder
-            const newSelect = newRow.cells[0].querySelector('select');
-            if (newSelect.options[0].value === "Seleccione un artículo") {
-                newSelect.options[0].disabled = true;
-                newSelect.options[0].selected = true;
-            }
         }
 
+        function cambiarCantidad(button, delta) {
+            const quantityDisplay = button.parentNode.querySelector('.quantity-display');
+            let currentQuantity = parseInt(quantityDisplay.textContent);
+            let newQuantity = currentQuantity + delta;
 
-        // La función validarArticuloDuplicado ya no es necesaria con un select,
-        // porque la validación de selección de "Seleccione un artículo" y la verificación
-        // de duplicados se hará en previsualizarPedido antes de enviar.
-        // function validarArticuloDuplicado(inputElement) { ... }
+            if (newQuantity < 1) {
+                newQuantity = 1; // La cantidad mínima es 1
+            }
+            quantityDisplay.textContent = newQuantity;
+        }
 
         function eliminarFila(btn) {
             const row = btn.parentNode.parentNode;
@@ -762,11 +823,11 @@
             for (let i = 0; i < tableRows.length; i++) {
                 const row = tableRows[i];
                 const articuloSelect = row.cells[0].getElementsByTagName('select')[0];
-                const cantidadInput = row.cells[1].getElementsByTagName('input')[0];
+                const quantityDisplay = row.cells[1].getElementsByClassName('quantity-display')[0]; // Obtener el span de cantidad
                 const unidadSelect = row.cells[2].getElementsByTagName('select')[0];
                 
                 const articulo = articuloSelect.value.trim();
-                const cantidad = cantidadInput.value;
+                const cantidad = parseInt(quantityDisplay.textContent); // Leer del span
                 const unidad = unidadSelect.value;
 
                 if (articulo === "Seleccione un artículo" || articulo === "") {
@@ -774,9 +835,9 @@
                     articuloSelect.focus();
                     return;
                 }
+                // La validación de cantidad ya está en cambiarCantidad, pero un último chequeo.
                 if (cantidad <= 0) {
                     alert(`Por favor, ingrese una cantidad válida (mayor a 0) para el artículo "${articulo}" en la fila ${i + 1}.`);
-                    cantidadInput.focus();
                     return;
                 }
 
@@ -858,13 +919,14 @@
             localStorage.setItem("historialPedidos", JSON.stringify(historial));
 
             // 4. Cierra el modal y vuelve al menú principal
-            closeModal();
+            closeModal(); // Esto llamará a goBack()
             alert('Su solicitud ha sido enviada por correo y el archivo Excel ha sido descargado. Además, el pedido se ha guardado en el historial.');
-            goBack(); // Regresa al menú principal después de un envío exitoso
+            // goBack(); // Ya lo hace closeModal
         }
 
         function closeModal() {
             summaryModal.style.display = 'none';
+            goBack(); // Vuelve al menú principal al cerrar el modal (sea por confirmación o cancelación)
         }
 
         // Cierra el modal si el usuario hace clic fuera de él
