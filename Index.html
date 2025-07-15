@@ -485,6 +485,38 @@
             .modal-actions .btn {
                 width: 100%;
             }
+
+            /* Estilos para la tabla de detalles dentro del historial en móvil */
+            .details-table {
+                border: none;
+                margin-top: 5px;
+                background-color: transparent;
+                box-shadow: none;
+            }
+            .details-table thead {
+                display: none; /* Oculta los encabezados de la tabla de detalles */
+            }
+            .details-table tr {
+                margin-bottom: 0px; /* Reduce el margen entre filas de detalles */
+                border: none;
+                background-color: transparent;
+                box-shadow: none;
+            }
+            .details-table td {
+                padding: 4px 10px; /* Padding ajustado para detalles */
+                text-align: left; /* Alinea el texto a la izquierda */
+                padding-left: 40%; /* Espacio para la etiqueta */
+                font-size: 0.8em;
+            }
+            .details-table td::before {
+                font-weight: normal; /* Etiquetas de detalles un poco más suaves */
+                color: var(--light-text-color);
+                width: calc(40% - 15px); /* Ajusta ancho de etiqueta */
+            }
+            /* Etiquetas específicas para la tabla de detalles */
+            .details-table td:nth-of-type(1)::before { content: "Artículo:"; }
+            .details-table td:nth-of-type(2)::before { content: "Cantidad:"; }
+            .details-table td:nth-of-type(3)::before { content: "Unidad:"; }
         }
 
         /* Para tabletas y escritorios pequeños (769px a 1024px) */
@@ -516,7 +548,7 @@
 
     <div class="container" id="mainMenu">
         <div class="header-logo">
-            <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTI4IDEyOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxyZWN0IHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiBmaWxsPSJ3aGl0ZSIvPgogICAgPHBhdGggZD0iTTM1IDYwTDIwIDQ1VjIySDQ3VjMwTDM1IDQyVjYwWk04MyA2MEw2OCA0NVYyMkg5NVYzMEw4MyA0MlY2MFpNNzMgNjBMODMgNzVWOTdINzNWNzVMMzMgNTlWMjJIMTU2VjU5WiIgc3Ryb2tlPSIjMDA1NmIzIiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSIxMDgiIGhlaWdodD0iNzUiIHg9IjEwIiB5PSI1MCIgc3Ryb2tlPSIjNjU2NTY1IiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSI4NiIgaGVpZ2h0PSI0NiIgeD0iMjEiIHk9IjY5IiBmaWxsPSIjRDBFN0YxIi8+CiAgICA8cGF0aCBkPSJNNTAgNzVWNzVINzRWNzVMMTAwIDc1VjEwMEgzMEw1MCA3NVpNMjUgODVMNTIgODVWOTdIMjVWODVaIiBzdHJva2U9IiMwMDVkYTMiIHN0cm9rZS13aWR0aGg9IjQiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSI1MCIgaGVpZ2h0PSIxMiIgeD0iMzkuNTUgeT0iNzMiIGZpbGw9IiMwMDVkYTMiLz4KICAgIDxjaXJjbGUgY3g9IjM1IiBjeT0iNDgiIHI9IjgiIGZpbGw9IiMwMDVkYTMiLz4KICAgIDxjaXJjbGUgY3g9IjM1IiBjeT0iNDgiIHI9IjgiIGZpbGw9IiM2NTY1NjUiLz4KICAgIDxwYXRoIGQ9Ik01NSA0MEwzOSAyOEg2OSBMNTUgMTRWNjZaIiBzdHJva2U9IiMwMDU2YjMiIHN0cm9rZS13aWR0aD0iMyIgZmlsbD0ibm9uZSIvPgo8L3N2Zz4=" alt="Logo de Suministros Corporativos">
+            <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTI4IDEyOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxyZWN0IHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiBmaWxsPSJ3aGl0ZSIvPgogICAgPHBhdGggZD0iTTM1IDYwTDIwIDQ1VjIySDQ3VjMwTDM1IDQyVjYwWk04MyA2MEw2OCA0NVYyMkg5NVYzMEw4MyA0MlY2MFpNNzMgNjBMODMgNzVWOTdINzNWNzVMMzMgNTlWMjJIMTU2VjU5WiIgc3Ryb2tlPSIjMDA1NmIzIiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSIxMDgiIGhlaWdodD0iNzUiIHg9IjEwIiB5PSI1MCIgc3Ryb2tlPSIjNjU2NTY1IiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSI4NiIgaGVpZ2h0PSI0NiIgeD09IjIxIiB5PSI2OSIgZmlsbD0iI0QwRTdGMSIvPgogICAgPHBhdGggZD0iTTUwIDc1Vjc1SDc0Vjc1TDEwMCA3NVYxMDBIMzBMMTUwIDc1Wk0yNSA4NUw1MiA4NVY5N0gyNVY4NVoiIHN0cm9rZT0iIzAwNWRhMyIgc3Ryb2tlLXdpZHRoPSI0IiBmaWxsPSJub25lIi8+CiAgICA8cmVjdCB3aWR0aD0iNTAiIGhlaWdodD0iMTIiIHg9IjM5LjU1IiB5PSI3MyIgZmlsbD0iIzAwNWRhMyIvPgogICAgPGNpcmNsZSBjeD0iMzUiIGN5PSI0OCIgcj0iOCIgZmlsbD0iIzAwNWRhMyIvPgogICAgPGNpcmNsZSBjeD0iMzUiIGN5PSI0OCIgcj0iOCIgZmlsbD0iIzY1NjU2NSIvPgogICAgPHBhdGggZD0iTTU1IDQwTDM5IDI4SDY5IEw1NSAxNFY2NloiIHN0cm9rZT0iIzAwNTZiMyIgc3Ryb2tlLXdpZHRoPSIzIiBmaWxsPSJub25lIi8+Cjwvc3ZnPg==" alt="Logo de Suministros Corporativos">
             <h1>Tesoros Americanos Costa Rica</h1>
             <h2 class="subtitle">Sistema de Solicitudes de Suministros</h2>
         </div>
@@ -595,21 +627,6 @@
         </div>
     </div>
 
-    <datalist id="lista-articulos">
-        <option value="Papel Bond tamaño carta">
-        <option value="Lápices de grafito HB">
-        <option value="Bolígrafos de tinta negra (punta fina)">
-        <option value="Grapadora de escritorio de alta capacidad">
-        <option value="Grapas estándar (caja x 5000)">
-        <option value="Cartucho de Tinta HP (Negro) - Modelo X">
-        <option value="Marcadores permanentes (negro, azul, rojo)">
-        <option value="Carpetas tamaño carta con pestaña">
-        <option value="Notas adhesivas (Post-it)">
-        <option value="Tijeras multiusos">
-        <option value="Calculadora de escritorio">
-        <option value="Sobres tamaño oficio">
-    </datalist>
-
     <div id="summaryModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -635,6 +652,23 @@
         const summaryModal = document.getElementById('summaryModal');
         const orderSummaryContent = document.getElementById('orderSummaryContent');
         let currentEmailData = {}; // Objeto para guardar los datos del correo y del Excel/historial
+
+        // Lista de artículos para el nuevo select
+        const listaArticulos = [
+            "Seleccione un artículo", // Opción por defecto
+            "Papel Bond tamaño carta",
+            "Lápices de grafito HB",
+            "Bolígrafos de tinta negra (punta fina)",
+            "Grapadora de escritorio de alta capacidad",
+            "Grapas estándar (caja x 5000)",
+            "Cartucho de Tinta HP (Negro) - Modelo X",
+            "Marcadores permanentes (negro, azul, rojo)",
+            "Carpetas tamaño carta con pestaña",
+            "Notas adhesivas (Post-it)",
+            "Tijeras multiusos",
+            "Calculadora de escritorio",
+            "Sobres tamaño oficio"
+        ];
 
         // --- Funciones de Navegación ---
         function showForm() {
@@ -666,38 +700,31 @@
             const tableBody = document.getElementById('pedido-table').getElementsByTagName('tbody')[0];
             const newRow = tableBody.insertRow();
 
+            // Crea las opciones para el select de artículos
+            let articulosOptions = '';
+            listaArticulos.forEach(item => {
+                articulosOptions += `<option value="${item}">${item}</option>`;
+            });
+
             // Atributos data-label para responsividad en móviles
-            newRow.insertCell(0).outerHTML = `<td data-label="Artículo:"><input type="text" list="lista-articulos" placeholder="Escriba o seleccione un artículo" onchange="validarArticuloDuplicado(this)" required></td>`;
+            newRow.insertCell(0).outerHTML = `<td data-label="Artículo:"><select required>${articulosOptions}</select></td>`;
             newRow.insertCell(1).outerHTML = `<td data-label="Cantidad:"><input type="number" value="1" min="1" required></td>`;
             newRow.insertCell(2).outerHTML = `<td data-label="Unidad de Medida:"><select required><option value="Unidad">Unidad</option><option value="Paquete">Paquete</option><option value="Galón">Galón</option><option value="Kilo">Kilo</option><option value="Caja">Caja</option><option value="Resma">Resma</option></select></td>`;
             newRow.insertCell(3).outerHTML = `<td data-label="Acción:"><button class="action-button" onclick="eliminarFila(this)">Eliminar</button></td>`;
+
+            // Establece la primera opción como seleccionada y deshabilitada si es el placeholder
+            const newSelect = newRow.cells[0].querySelector('select');
+            if (newSelect.options[0].value === "Seleccione un artículo") {
+                newSelect.options[0].disabled = true;
+                newSelect.options[0].selected = true;
+            }
         }
 
 
-        function validarArticuloDuplicado(inputElement) {
-            const currentArticle = inputElement.value.trim().toLowerCase();
-            const tableRows = document.getElementById('pedido-table').getElementsByTagName('tbody')[0].rows;
-
-            let foundCount = 0;
-            for (let i = 0; i < tableRows.length; i++) {
-                const row = tableRows[i];
-                const articuloInput = row.cells[0].getElementsByTagName('input')[0];
-                if (articuloInput === inputElement) { // Es el elemento que estamos validando
-                    continue; 
-                }
-                if (articuloInput.value.trim().toLowerCase() === currentArticle && currentArticle !== "") {
-                    foundCount++;
-                }
-            }
-
-            if (foundCount > 0) {
-                alert('¡Artículo duplicado! Este artículo ya ha sido añadido al pedido. Por favor, seleccione uno diferente o ajuste la cantidad en la fila existente.');
-                inputElement.value = ''; // Limpia el campo para forzar la corrección
-                inputElement.focus(); // Devuelve el foco al campo
-                return false;
-            }
-            return true;
-        }
+        // La función validarArticuloDuplicado ya no es necesaria con un select,
+        // porque la validación de selección de "Seleccione un artículo" y la verificación
+        // de duplicados se hará en previsualizarPedido antes de enviar.
+        // function validarArticuloDuplicado(inputElement) { ... }
 
         function eliminarFila(btn) {
             const row = btn.parentNode.parentNode;
@@ -731,21 +758,20 @@
             emailBodyFormatted += `------------------------------------------------------------\n`;
 
             let hasItems = false;
-            let hasDuplicatesOnSubmit = false;
-
+            
             for (let i = 0; i < tableRows.length; i++) {
                 const row = tableRows[i];
-                const articuloInput = row.cells[0].getElementsByTagName('input')[0];
+                const articuloSelect = row.cells[0].getElementsByTagName('select')[0];
                 const cantidadInput = row.cells[1].getElementsByTagName('input')[0];
                 const unidadSelect = row.cells[2].getElementsByTagName('select')[0];
                 
-                const articulo = articuloInput.value.trim();
+                const articulo = articuloSelect.value.trim();
                 const cantidad = cantidadInput.value;
                 const unidad = unidadSelect.value;
 
-                if (articulo === "") {
-                    alert(`Por favor, ingrese un nombre para el artículo en la fila ${i + 1}.`);
-                    articuloInput.focus();
+                if (articulo === "Seleccione un artículo" || articulo === "") {
+                    alert(`Por favor, seleccione un artículo válido en la fila ${i + 1}.`);
+                    articuloSelect.focus();
                     return;
                 }
                 if (cantidad <= 0) {
@@ -754,10 +780,11 @@
                     return;
                 }
 
+                // Validar duplicados de artículos antes de generar el resumen
                 if (addedArticles.has(articulo.toLowerCase())) {
-                    hasDuplicatesOnSubmit = true;
-                    // No salimos de inmediato, solo marcamos que hay un duplicado
-                    // La alerta principal por duplicados ya se maneja en validarArticuloDuplicado
+                    alert(`¡Artículo duplicado! El artículo "${articulo}" ya ha sido añadido al pedido en otra fila. Por favor, ajuste la cantidad en la fila existente o elimine la fila duplicada.`);
+                    articuloSelect.focus();
+                    return;
                 } else {
                     addedArticles.add(articulo.toLowerCase());
                 }
@@ -772,13 +799,6 @@
                 pedidoDetallesForHistory.push({articulo, cantidad: parseInt(cantidad), unidad});
             }
             
-            if (hasDuplicatesOnSubmit) {
-                // Esta alerta solo se activaría si por alguna razón la validación onchange falló
-                // o si el usuario copió y pegó sin activar onchange.
-                alert('Se detectaron artículos duplicados en su pedido. Por favor, elimine o modifique las filas duplicadas.');
-                return;
-            }
-
             if (!hasItems) {
                 alert('Debe agregar al menos un artículo válido al pedido antes de continuar.');
                 return;
@@ -892,9 +912,9 @@
                             <tbody>
                                 ${p.detalles.map(d => `
                                     <tr>
-                                        <td>${d.articulo}</td>
-                                        <td>${d.cantidad}</td>
-                                        <td>${d.unidad}</td>
+                                        <td data-label="Artículo:">${d.articulo}</td>
+                                        <td data-label="Cantidad:">${d.cantidad}</td>
+                                        <td data-label="Unidad:">${d.unidad}</td>
                                     </tr>
                                 `).join('')}
                             </tbody>
