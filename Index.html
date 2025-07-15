@@ -2,8 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Solicitudes - Tesoros Americanos Costa Rica</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Sistema de Solicitudes - Tesoros Americanos Costa Rica</title>
     <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Mono&display=swap" rel="stylesheet">
@@ -25,29 +24,30 @@
         body {
             font-family: 'Roboto', sans-serif;
             margin: 0;
-            padding: 30px;
+            padding: 2.5vw; /* Padding relativo */
             background-color: var(--background-color);
             color: var(--text-color);
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            font-size: 16px; /* Tamaño base para rem */
         }
         .container {
-            max-width: 1200px; /* Ancho ajustado para mejor visualización de historial */
+            max-width: 1200px;
             margin: auto;
             background: var(--card-background);
-            padding: 40px;
+            padding: 3vw; /* Padding relativo */
             border-radius: 12px;
             box-shadow: 0 8px 25px rgba(0,0,0,0.1);
             border: 1px solid var(--border-color);
-            margin-bottom: 30px; /* Espacio entre contenedores si se usaran varios */
+            margin-bottom: 30px;
         }
         .header-logo {
             text-align: center;
             margin-bottom: 30px;
         }
         .header-logo img {
-            max-width: 180px; /* Tamaño del logo un poco más grande */
+            max-width: 180px;
             height: auto;
             display: block;
             margin: 0 auto 20px;
@@ -56,40 +56,39 @@
         .header-logo h1 {
             margin: 0;
             padding-top: 15px;
-            border-top: 2px solid var(--border-color); /* Separador visual más prominente */
-            font-size: 2.5em;
+            border-top: 2px solid var(--border-color);
+            font-size: clamp(1.8em, 4vw, 2.5em); /* Tamaño de fuente adaptable */
             font-weight: 700;
             color: var(--primary-color);
             letter-spacing: 0.5px;
         }
-        .header-logo h2.subtitle { /* Nuevo estilo para el subtítulo */
+        .header-logo h2.subtitle {
             margin: 5px 0 0;
-            font-size: 1.5em;
+            font-size: clamp(1em, 2.5vw, 1.5em); /* Tamaño de fuente adaptable */
             font-weight: 500;
             color: var(--secondary-color);
             line-height: 1.2;
         }
-        h2 { /* Estilo general para h2, ajustado para no interferir con el subtítulo */
+        h2 {
             text-align: center;
             color: var(--primary-color);
             margin-bottom: 25px;
-            font-size: 2em;
+            font-size: clamp(1.5em, 3.5vw, 2em); /* Tamaño de fuente adaptable */
             font-weight: 500;
         }
         table {
             width: 100%;
-            border-collapse: separate; /* Para border-radius en celdas */
-            border-spacing: 0;
+            border-collapse: collapse; /* Cambio a collapse para mejor responsividad */
             margin-top: 25px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.07);
             border-radius: 10px;
-            overflow: hidden; /* Para que los bordes redondeados se apliquen al thead */
+            overflow: hidden;
         }
         th, td {
             border: 1px solid var(--border-color);
-            padding: 15px;
+            padding: 0.8em 1em; /* Padding relativo */
             text-align: left;
-            font-size: 0.98em;
+            font-size: 0.95em; /* Tamaño de fuente relativo */
         }
         th {
             background-color: var(--primary-color);
@@ -105,7 +104,7 @@
             background-color: #e9f2fb;
             box-shadow: var(--hover-shadow);
             position: relative;
-            z-index: 1; /* Para que la sombra se vea mejor */
+            z-index: 1;
         }
 
         /* Estilos específicos para las sub-tablas de detalles en el historial */
@@ -113,18 +112,18 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
-            background-color: #fdfefe; /* Fondo más claro para la sub-tabla */
+            background-color: #fdfefe;
             border: 1px solid var(--border-color);
-            border-radius: 8px; /* Bordes redondeados para la sub-tabla */
+            border-radius: 8px;
             overflow: hidden;
         }
         .details-table th, .details-table td {
-            padding: 8px 12px;
+            padding: 0.5em 0.8em; /* Padding relativo */
             font-size: 0.85em;
-            border: 1px dashed #e0e0e0; /* Borde más sutil */
+            border: 1px dashed #e0e0e0;
         }
         .details-table th {
-            background-color: #eaf3fa; /* Fondo suave para encabezados de detalle */
+            background-color: #eaf3fa;
             color: var(--primary-color);
             font-weight: 500;
             text-transform: none;
@@ -135,11 +134,11 @@
 
         input, select {
             width: 100%;
-            padding: 12px;
+            padding: 0.7em 0.8em; /* Padding relativo */
             border: 1px solid #ced4da;
             border-radius: 6px;
             box-sizing: border-box;
-            font-size: 1em;
+            font-size: 1em; /* Tamaño de fuente relativo */
             transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
         }
         input:focus, select:focus {
@@ -152,7 +151,7 @@
             background-color: var(--danger-color);
             color: white;
             border: none;
-            padding: 9px 15px;
+            padding: 0.6em 1em; /* Padding relativo */
             border-radius: 5px;
             font-weight: bold;
             font-size: 0.88em;
@@ -165,24 +164,25 @@
         .controls {
             margin-top: 40px;
             display: flex;
-            justify-content: flex-end; /* Alinea los botones a la derecha */
-            gap: 15px; /* Espacio entre botones */
+            justify-content: flex-end;
+            gap: 1em; /* Espacio relativo */
             align-items: center;
             padding-top: 25px;
             border-top: 1px solid var(--border-color);
-            flex-wrap: wrap; /* Permite que los botones se envuelvan en pantallas pequeñas */
+            flex-wrap: wrap; /* Envuelve los elementos */
         }
         .controls .left-buttons {
-            margin-right: auto; /* Empuja los botones de la izquierda hacia la izquierda */
+            margin-right: auto;
             display: flex;
-            gap: 15px;
+            gap: 1em; /* Espacio relativo */
+            flex-wrap: wrap; /* Envuelve los elementos */
         }
         .btn {
-            padding: 14px 28px;
+            padding: 0.8em 1.5em; /* Padding relativo */
             border: none;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 1.05em;
+            font-size: 1em; /* Tamaño de fuente relativo */
             font-weight: 600;
             letter-spacing: 0.5px;
             transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
@@ -208,21 +208,21 @@
             background-color: #003a7a;
         }
         .btn-clear-history {
-            background-color: #f39c12; /* Naranja para limpiar */
+            background-color: #f39c12;
             color: white;
         }
         .btn-clear-history:hover {
             background-color: #e67e22;
         }
-        .btn-clear-all-history { /* Nuevo estilo para limpiar todo */
-            background-color: #c0392b; /* Rojo más oscuro para acción destructiva */
+        .btn-clear-all-history {
+            background-color: #c0392b;
             color: white;
         }
         .btn-clear-all-history:hover {
             background-color: #a52a22;
         }
         .btn-pdf {
-            background-color: #34495e; /* Azul oscuro para PDF */
+            background-color: #34495e;
             color: white;
         }
         .btn-pdf:hover {
@@ -230,15 +230,17 @@
         }
         .info-section {
             display: flex;
-            gap: 30px;
-            margin-bottom: 30px;
+            gap: 2em; /* Espacio relativo */
+            margin-bottom: 2em; /* Margen relativo */
+            flex-wrap: wrap; /* Envuelve los elementos en pantallas pequeñas */
         }
         .info-section div {
             flex: 1;
+            min-width: 280px; /* Asegura que los campos no sean demasiado pequeños */
         }
         .info-section label {
             display: block;
-            margin-bottom: 10px;
+            margin-bottom: 0.5em; /* Margen relativo */
             font-weight: 500;
             color: var(--light-text-color);
             font-size: 1em;
@@ -254,27 +256,27 @@
             width: 100%;
             height: 100%;
             overflow: auto;
-            background-color: rgba(0,0,0,0.7); /* Fondo más oscuro */
+            background-color: rgba(0,0,0,0.7);
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 1em; /* Padding relativo */
         }
         .modal-content {
             background-color: var(--card-background);
-            padding: 35px;
+            padding: 2em; /* Padding relativo */
             border-radius: 12px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            width: 90%;
-            max-width: 700px; /* Modal un poco más grande */
+            width: 95%; /* Más adaptable */
+            max-width: 700px;
             position: relative;
             animation: fadeIn 0.3s ease-out;
         }
         .close-button {
             color: var(--light-text-color);
             position: absolute;
-            top: 18px;
-            right: 28px;
-            font-size: 36px; /* Botón de cerrar más grande */
+            top: 0.8em;
+            right: 1em;
+            font-size: 2.5em; /* Tamaño relativo */
             font-weight: bold;
             cursor: pointer;
             transition: color 0.2s ease;
@@ -284,18 +286,17 @@
             color: var(--danger-color);
         }
         .modal-header {
-            padding-bottom: 20px;
+            padding-bottom: 1em;
             border-bottom: 1px solid var(--border-color);
-            margin-bottom: 25px;
+            margin-bottom: 1.5em;
         }
         .modal-header h2 {
-            color: var(--primary-color);
             margin: 0;
-            font-size: 2em;
+            font-size: clamp(1.5em, 3vw, 2em); /* Tamaño de fuente adaptable */
             font-weight: 700;
         }
         .modal-body p {
-            margin-bottom: 20px;
+            margin-bottom: 1em;
             font-size: 1em;
             color: var(--light-text-color);
         }
@@ -304,10 +305,10 @@
             word-wrap: break-word;
             font-family: 'Roboto Mono', monospace;
             background-color: #f2f5f7;
-            padding: 20px;
+            padding: 1em; /* Padding relativo */
             border-radius: 10px;
             border: 1px solid #dee2e6;
-            max-height: 500px;
+            max-height: 60vh; /* Altura relativa al viewport */
             overflow-y: auto;
             font-size: 0.9em;
             color: #495057;
@@ -315,11 +316,12 @@
         .modal-actions {
             display: flex;
             justify-content: flex-end;
-            gap: 15px;
-            margin-top: 30px;
+            gap: 1em; /* Espacio relativo */
+            margin-top: 1.5em;
+            flex-wrap: wrap; /* Envuelve los elementos */
         }
         .modal-actions .btn {
-            padding: 12px 25px;
+            padding: 0.8em 1.5em;
             font-size: 1em;
             width: auto;
         }
@@ -340,13 +342,16 @@
         .menu-options {
             display: flex;
             justify-content: center;
-            gap: 30px; /* Más espacio entre los botones del menú */
-            margin-top: 40px;
+            gap: 2em; /* Espacio relativo */
+            margin-top: 2em;
+            flex-wrap: wrap; /* Envuelve los elementos */
         }
         .menu-options .btn {
-            min-width: 200px; /* Asegura que los botones del menú tengan un ancho mínimo */
-            padding: 18px 35px; /* Botones más grandes */
-            font-size: 1.2em;
+            min-width: 180px; /* Ancho mínimo para mantener la forma */
+            padding: 1.2em 2em; /* Padding relativo */
+            font-size: 1.1em;
+            flex-grow: 1; /* Permite que los botones crezcan para llenar el espacio */
+            max-width: 300px; /* Limita el crecimiento en pantallas grandes */
         }
         .hidden { display: none; }
 
@@ -355,13 +360,163 @@
             from { opacity: 0; transform: translateY(-30px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+        /* --- MEDIA QUERIES PARA RESPONSIVIDAD --- */
+
+        /* Para pantallas pequeñas (smartphones, hasta 768px) */
+        @media screen and (max-width: 768px) {
+            body {
+                padding: 15px; /* Padding fijo para móviles */
+            }
+            .container {
+                padding: 20px;
+            }
+            .header-logo img {
+                max-width: 150px;
+            }
+            .header-logo h1 {
+                font-size: 1.8em;
+            }
+            .header-logo h2.subtitle {
+                font-size: 1.2em;
+            }
+            h2 {
+                font-size: 1.6em;
+            }
+
+            /* Habilidades de tabla para que los detalles se apilen */
+            table {
+                border: 0;
+            }
+            table thead {
+                display: none; /* Oculta los encabezados de la tabla principal */
+            }
+            table, tbody, tr, td {
+                display: block; /* Cada celda se comporta como un bloque */
+                width: 100%;
+            }
+            table tr {
+                margin-bottom: 15px;
+                border: 1px solid var(--border-color);
+                border-radius: 8px;
+                background-color: var(--card-background);
+                box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            }
+            table td {
+                text-align: right;
+                padding-left: 50%; /* Espacio para la etiqueta */
+                position: relative;
+                border: none; /* Elimina bordes entre celdas apiladas */
+                padding-top: 8px;
+                padding-bottom: 8px;
+            }
+            table td::before {
+                content: attr(data-label); /* Usa el atributo data-label como etiqueta */
+                position: absolute;
+                left: 10px;
+                width: calc(50% - 20px); /* Ajusta el ancho de la etiqueta */
+                padding-right: 10px;
+                white-space: nowrap;
+                text-align: left;
+                font-weight: bold;
+                color: var(--primary-color);
+                font-size: 0.9em;
+            }
+
+            /* Estilos específicos para la tabla de historial apilada */
+            #historialTable td:nth-of-type(1)::before { content: "Fecha:"; }
+            #historialTable td:nth-of-type(2)::before { content: "Solicitante:"; }
+            #historialTable td:nth-of-type(3)::before { content: "Departamento:"; }
+            #historialTable td:nth-of-type(4)::before { content: "Artículos:"; } /* Este es el detalle del pedido */
+
+            /* Ajustes para la tabla de pedido (agregar/eliminar) */
+            #pedido-table td:nth-of-type(1)::before { content: "Artículo:"; }
+            #pedido-table td:nth-of-type(2)::before { content: "Cantidad:"; }
+            #pedido-table td:nth-of-type(3)::before { content: "Unidad:"; }
+            #pedido-table td:nth-of-type(4) { /* Celda de acción */
+                text-align: center;
+                padding-left: 10px; /* Elimina padding extra */
+            }
+            #pedido-table td:nth-of-type(4)::before { content: ""; } /* Elimina la etiqueta para el botón de acción */
+            .action-button {
+                width: 100%; /* Botón de eliminar más grande */
+                padding: 10px;
+            }
+
+            .info-section {
+                flex-direction: column; /* Apila los campos de info */
+                gap: 15px;
+            }
+            .info-section div {
+                min-width: unset; /* Elimina el min-width */
+            }
+
+            .controls {
+                flex-direction: column; /* Apila los botones de control */
+                gap: 10px;
+            }
+            .controls .btn {
+                width: 100%; /* Botones de control al 100% de ancho */
+                padding: 12px;
+                font-size: 1em;
+            }
+            .controls .left-buttons {
+                flex-direction: column;
+                margin-right: 0;
+                width: 100%;
+            }
+            .menu-options {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .menu-options .btn {
+                width: 100%;
+                max-width: unset; /* Elimina max-width para ocupar todo el ancho */
+                padding: 15px;
+                font-size: 1.1em;
+            }
+            .modal-content {
+                width: 95%; /* Asegura que el modal no se desborde */
+                padding: 1.2em;
+            }
+            .modal-actions {
+                flex-direction: column;
+            }
+            .modal-actions .btn {
+                width: 100%;
+            }
+        }
+
+        /* Para tabletas y escritorios pequeños (769px a 1024px) */
+        @media screen and (min-width: 769px) and (max-width: 1024px) {
+            .container {
+                padding: 2.5vw;
+            }
+            .header-logo h1 {
+                font-size: 2.2em;
+            }
+            .header-logo h2.subtitle {
+                font-size: 1.3em;
+            }
+            h2 {
+                font-size: 1.8em;
+            }
+            .menu-options .btn {
+                min-width: 160px;
+                padding: 1.1em 2em;
+                font-size: 1.1em;
+            }
+            .info-section {
+                gap: 20px;
+            }
+        }
     </style>
 </head>
 <body>
 
     <div class="container" id="mainMenu">
         <div class="header-logo">
-            <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTI4IDEyOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxyZWN0IHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiBmaWxsPSJ3aGl0ZSIvPgogICAgPHBhdGggZD0iTTM1IDYwTDIwIDQ1VjIySDQ3VjMwTDM1IDQyVjYwWk04MyA2MEw2OCA0NVYyMkg5NVYzMEw4MyA0MlY2MFpNNzMgNjBMODMgNzVWOTdINzNWNzVMMzMgNTlWMjJIMTU2VjU5WiIgc3Ryb2tlPSIjMDA1NmIzIiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSIxMDgiIGhlaWdodD0iNzUiIHg9IjEwIiB5PSI1MCIgc3Ryb2tlPSIjNjU2NTY1IiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSI4NiIgaGVpZ2h0PSI0NiIgeD0iMjEiIHk9IjY5IiBmaWxsPSIjRDBFN0YxIi8+CiAgICA8cGF0aCBkPSJNNTAgNzVWNzVINzRWNzVMMTAwIDc1VjEwMEgzMEw1MCA3NVpNMjUgODVMNTIgODVWOTdIMjVWODVaIiBzdHJva2U9IiMwMDVkYTMiIHN0cm9rZS13aWR0aGg9IjQiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSI1MCIgaGVpZ2h0PSIxMiIgeD0iMzkuNTUgeT0iNzMiIGZpbGw9IiMwMDVkYTMiLz4KICAgIDxjaXJjbGUgY3g9IjM1IiBjeT0iNDgiIHI9IjgiIGZpbGw9IiMwMDVkYTMiLz4KICAgIDxjaXJjbGUgY3g9IjM1IiBjeT0iNDgiIHI9IjgiIGZpbGw9IiM2NTY1NjUiLz4KICAgIDxwYXRoIGQ9Ik01NSA0MEwzOSAyOEg2OSBMNTUgMTRWNjZaIiBzdHJva2U9IiMwMDU2YjMiIHN0cm9rZS13aWR0aGg9IjMiIGZpbGw9Im5vbmUiLz4KPC9sY2c+" alt="Logo de Suministros Corporativos">
+            <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTI4IDEyOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxyZWN0IHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiBmaWxsPSJ3aGl0ZSIvPgogICAgPHBhdGggZD0iTTM1IDYwTDIwIDQ1VjIySDQ3VjMwTDM1IDQyVjYwWk04MyA2MEw2OCA0NVYyMkg5NVYzMEw4MyA0MlY2MFpNNzMgNjBMODMgNzVWOTdINzNWNzVMMzMgNTlWMjJIMTU2VjU5WiIgc3Ryb2tlPSIjMDA1NmIzIiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSIxMDgiIGhlaWdodD0iNzUiIHg9IjEwIiB5PSI1MCIgc3Ryb2tlPSIjNjU2NTY1IiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSI4NiIgaGVpZ2h0PSI0NiIgeD0iMjEiIHk9IjY5IiBmaWxsPSIjRDBFN0YxIi8+CiAgICA8cGF0aCBkPSJNNTAgNzVWNzVINzRWNzVMMTAwIDc1VjEwMEgzMEw1MCA3NVpNMjUgODVMNTIgODVWOTdIMjVWODVaIiBzdHJva2U9IiMwMDVkYTMiIHN0cm9rZS13aWR0aGg9IjQiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSI1MCIgaGVpZ2h0PSIxMiIgeD0iMzkuNTUgeT0iNzMiIGZpbGw9IiMwMDVkYTMiLz4KICAgIDxjaXJjbGUgY3g9IjM1IiBjeT0iNDgiIHI9IjgiIGZpbGw9IiMwMDVkYTMiLz4KICAgIDxjaXJjbGUgY3g9IjM1IiBjeT0iNDgiIHI9IjgiIGZpbGw9IiM2NTY1NjUiLz4KICAgIDxwYXRoIGQ9Ik01NSA0MEwzOSAyOEg2OSBMNTUgMTRWNjZaIiBzdHJva2U9IiMwMDU2YjMiIHN0cm9rZS13aWR0aD0iMyIgZmlsbD0ibm9uZSIvPgo8L3N2Zz4=" alt="Logo de Suministros Corporativos">
             <h1>Tesoros Americanos Costa Rica</h1>
             <h2 class="subtitle">Sistema de Solicitudes de Suministros</h2>
         </div>
@@ -373,7 +528,7 @@
 
     <div class="container hidden" id="formContainer">
         <div class="header-logo" style="margin-bottom: 20px;">
-            <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTI4IDEyOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxyZWN0IHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiBmaWxsPSJ3aGl0ZSIvPgogICAgPHBhdGggZD0iTTM1IDYwTDIwIDQ1VjIySDQ3VjMwTDM1IDQyVjYwWk04MyA2MEw2OCA0NVYyMkg5NVYzMEw4MyA0MlY2MFpNNzMgNjBMODMgNzVWOTdINzNWNzVMMzMgNTlWMjJIMTU2VjU5WiIgc3Ryb2tlPSIjMDA1NmIzIiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSIxMDgiIGhlaWdodD0iNzUiIHg9IjEwIiB5PSI1MCIgc3Ryb2tlPSIjNjU2NTY1IiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSI4NiIgaGVpZ2h0PSI0NiIgeD0iMjEiIHk9IjY5IiBmaWxsPSIjRDBFN0YxIi8+CiAgICA8cGF0aCBkPSJNNTAgNzVWNzVINzRWNzVMMTAwIDc1VjEwMEgzMEw1MCA3NVpNMjUgODVMNTIgODVWOTdIMjVWODVaIiBzdHJva2U9IiMwMDVkYTMiIHN0cm9rZS13aWR0aGg9IjQiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSI1MCIgaGVpZ2h0PSIxMiIgeD0iMzkuNTUgeT0iNzMiIGZpbGw9IiMwMDVkYTMiLz4KICAgIDxjaXJjbGUgY3g9IjM1IiBjeT0iNDgiIHI9IjgiIGZpbGw9IiMwMDVkYTMiLz4KICAgIDxjaXJjbGUgY3g9IjM1IiBjeT0iNDgiIHI9IjgiIGZpbGw9IiM2NTY1NjUiLz4KICAgIDxwYXRoIGQ9Ik01NSA0MEwzOSAyOEg2OSBMNTUgMTRWNjZaIiBzdHJva2U9IiMwMDU2YjMiIHN0cm9rZS13aWR0aGg9IjMiIGZpbGw9Im5vbmUiLz4KPC9zdmc+" alt="Logo de Suministros Corporativos">
+            <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTI4IDEyOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxyZWN0IHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiBmaWxsPSJ3aGl0ZSIvPgogICAgPHBhdGggZD0iTTM1IDYwTDIwIDQ1VjIySDQ3VjMwTDM1IDQyVjYwWk04MyA2MEw2OCA0NVYyMkg5NVYzMEw4MyA0MlY2MFpNNzMgNjBMODMgNzVWOTdINzNWNzVMMzMgNTlWMjJIMTU2VjU5WiIgc3Ryb2tlPSIjMDA1NmIzIiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSIxMDgiIGhlaWdodD0iNzUiIHg9IjEwIiB5PSI1MCIgc3Ryb2tlPSIjNjU2NTY1IiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSI4NiIgaGVpZ2h0PSI0NiIgeD0iMjEiIHk9IjY5IiBmaWxsPSIjRDBFN0YxIi8+CiAgICA8cGF0aCBkPSJNNTAgNzVWNzVINzRWNzVMMTAwIDc1VjEwMEgzMEw1MCA3NVpNMjUgODVMNTIgODVWOTdIMjVWODVaIiBzdHJva2U9IiMwMDVkYTMiIHN0cm9rZS13aWR0aGg9IjQiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSI1MCIgaGVpZ2h0PSIxMiIgeD0iMzkuNTUgeT0iNzMiIGZpbGw9IiMwMDVkYTMiLz4KICAgIDxjaXJjbGUgY3g9IjM1IiBjeT0iNDgiIHI9IjgiIGZpbGw9IiMwMDVkYTMiLz4KICAgIDxjaXJjbGUgY3g9IjM1IiBjeT0iNDgiIHI9IjgiIGZpbGw9IiM2NTY1NjUiLz4KICAgIDxwYXRoIGQ9Ik01NSA0MEwzOSAyOEg2OSBMNTUgMTRWNjZaIiBzdHJva2U9IiMwMDU2YjMiIHN0cm9rZS13aWR0aD0iMyIgZmlsbD0ibm9uZSIvPgo8L3N2Zz4=" alt="Logo de Suministros Corporativos">
             <h1>Tesoros Americanos Costa Rica</h1>
             <h2 class="subtitle">Formulario de Solicitud de Suministros</h2>
         </div>
@@ -413,7 +568,7 @@
 
     <div class="container hidden" id="historyContainer">
         <div class="header-logo" style="margin-bottom: 20px;">
-            <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTI4IDEyOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxyZWN0IHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiBmaWxsPSJ3aGl0ZSIvPgogICAgPHBhdGggZD0iTTM1IDYwTDIwIDQ1VjIySDQ3VjMwTDM1IDQyVjYwWk04MyA2MEw2OCA0NVYyMkg5NVYzMEw4MyA0MlY2MFpNNzMgNjBMODMgNzVWOTdINzNWNzVMMzMgNTlWMjJIMTU2VjU5WiIgc3Ryb2tlPSIjMDA1NmIzIiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSIxMDgiIGhlaWdodD0iNzUiIHg9IjEwIiB5PSI1MCIgc3Ryb2tlPSIjNjU2NTY1IiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSI4NiIgaGVpZ2h0PSI0NiIgeD0iMjEiIHk9IjY5IiBmaWxsPSIjRDBFN0YxIi8+CiAgICA8cGF0aCBkPSJNNTAgNzVWNzVINzRWNzVMMTAwIDc1VjEwMEgzMEw1MCA3NVpNMjUgODVMNTIgODVWOTdIMjVWODVaIiBzdHJva2U9IiMwMDVkYTMiIHN0cm9rZS13aWR0aGg9IjQiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSI1MCIgaGVpZ2h0PSIxMiIgeD0iMzkuNTUgeT0iNzMiIGZpbGw9IiMwMDVkYTMiLz4KICAgIDxjaXJjbGUgY3g9IjM1IiBjeT0iNDgiIHI9IjgiIGZpbGw9IiMwMDVkYTMiLz4KICAgIDxjaXJjbGUgY3g9IjM1IiBjeT0iNDgiIHI9IjgiIGZpbGw9IiM2NTY1NjUiLz4KICAgIDxwYXRoIGQ9Ik01NSA0MEwzOSAyOEg2OSBMNTUgMTRWNjZaIiBzdHJva2U9IiMwMDU2YjMiIHN0cm9rZS13aWR0aGg9IjMiIGZpbGw9Im5vbmUiLz4KPC9zdmc+" alt="Logo de Suministros Corporativos">
+            <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTI4IDEyOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxyZWN0IHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiBmaWxsPSJ3aGl0ZSIvPgogICAgPHBhdGggZD0iTTM1IDYwTDIwIDQ1VjIySDQ3VjMwTDM1IDQyVjYwWk04MyA2MEw2OCA0NVYyMkg5NVYzMEw4MyA0MlY2MFpNNzMgNjBMODMgNzVWOTdINzNWNzVMMzMgNTlWMjJIMTU2VjU5WiIgc3Ryb2tlPSIjMDA1NmIzIiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSIxMDgiIGhlaWdodD0iNzUiIHg9IjEwIiB5PSI1MCIgc3Ryb2tlPSIjNjU2NTY1IiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSI4NiIgaGVpZ2h0PSI0NiIgeD0iMjEiIHk9IjY5IiBmaWxsPSIjRDBFN0YxIi8+CiAgICA8cGF0aCBkPSJNNTAgNzVWNzVINzRWNzVMMTAwIDc1VjEwMEgzMEw1MCA3NVpNMjUgODVMNTIgODVWOTdIMjVWODVaIiBzdHJva2U9IiMwMDVkYTMiIHN0cm9rZS13aWR0aGg9IjQiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSI1MCIgaGVpZ2h0PSIxMiIgeD0iMzkuNTUgeT0iNzMiIGZpbGw9IiMwMDVkYTMiLz4KICAgIDxjaXJjbGUgY3g9IjM1IiBjeT0iNDgiIHI9IjgiIGZpbGw9IiMwMDVkYTMiLz4KICAgIDxjaXJjbGUgY3g9IjM1IiBjeT0iNDgiIHI9IjgiIGZpbGw9IiM2NTY1NjUiLz4KICAgIDxwYXRoIGQ9Ik01NSA0MEwzOSAyOEg2OSBMNTUgMTRWNjZaIiBzdHJva2U9IiMwMDU2YjMiIHN0cm9rZS13aWR0aD0iMyIgZmlsbD0ibm9uZSIvPgo8L3N2Zz4=" alt="Logo de Suministros Corporativos">
             <h1>Tesoros Americanos Costa Rica</h1>
             <h2 class="subtitle">Historial de Solicitudes</h2>
         </div>
@@ -421,10 +576,10 @@
         <table id="historialTable">
             <thead>
                 <tr>
-                    <th style="width: 15%;">Fecha</th>
-                    <th style="width: 20%;">Solicitante</th>
-                    <th style="width: 20%;">Departamento</th>
-                    <th style="width: 45%;">Detalles del Pedido</th>
+                    <th>Fecha</th>
+                    <th>Solicitante</th>
+                    <th>Departamento</th>
+                    <th>Detalles del Pedido</th>
                 </tr>
             </thead>
             <tbody></tbody>
@@ -511,27 +666,13 @@
             const tableBody = document.getElementById('pedido-table').getElementsByTagName('tbody')[0];
             const newRow = tableBody.insertRow();
 
-            // Evento `onblur` para validar al salir del campo Artículo
-            const celdaArticulo = newRow.insertCell(0);
-            celdaArticulo.innerHTML = `<input type="text" list="lista-articulos" placeholder="Escriba o seleccione un artículo" onchange="validarArticuloDuplicado(this)" required>`;
-
-            const celdaCantidad = newRow.insertCell(1);
-            celdaCantidad.innerHTML = `<input type="number" value="1" min="1" required>`;
-
-            const celdaUnidad = newRow.insertCell(2);
-            celdaUnidad.innerHTML = `
-                <select required>
-                    <option value="Unidad">Unidad</option>
-                    <option value="Paquete">Paquete</option>
-                    <option value="Galón">Galón</option>
-                    <option value="Kilo">Kilo</option>
-                    <option value="Caja">Caja</option>
-                    <option value="Resma">Resma</option>
-                </select>`;
-
-            const celdaAccion = newRow.insertCell(3);
-            celdaAccion.innerHTML = `<button class="action-button" onclick="eliminarFila(this)">Eliminar</button>`;
+            // Atributos data-label para responsividad en móviles
+            newRow.insertCell(0).outerHTML = `<td data-label="Artículo:"><input type="text" list="lista-articulos" placeholder="Escriba o seleccione un artículo" onchange="validarArticuloDuplicado(this)" required></td>`;
+            newRow.insertCell(1).outerHTML = `<td data-label="Cantidad:"><input type="number" value="1" min="1" required></td>`;
+            newRow.insertCell(2).outerHTML = `<td data-label="Unidad de Medida:"><select required><option value="Unidad">Unidad</option><option value="Paquete">Paquete</option><option value="Galón">Galón</option><option value="Kilo">Kilo</option><option value="Caja">Caja</option><option value="Resma">Resma</option></select></td>`;
+            newRow.insertCell(3).outerHTML = `<td data-label="Acción:"><button class="action-button" onclick="eliminarFila(this)">Eliminar</button></td>`;
         }
+
 
         function validarArticuloDuplicado(inputElement) {
             const currentArticle = inputElement.value.trim().toLowerCase();
@@ -719,7 +860,8 @@
             tbody.innerHTML = ''; // Limpia la tabla antes de renderizar
 
             if (historial.length === 0) {
-                const noDataRow = tbody.insertCell(0);
+                const noDataRow = tbody.insertRow();
+                const noDataCell = noDataRow.insertCell(0); // Ahora se inserta una celda
                 noDataCell.colSpan = 4;
                 noDataCell.textContent = "No hay pedidos en el historial.";
                 noDataCell.style.textAlign = "center";
@@ -733,11 +875,12 @@
                 // Formato de fecha para visualización, ya que fechaISO es para lógica interna
                 const displayDate = p.fecha || new Date(p.fechaISO).toLocaleString('es-CR', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
 
+                // Se añaden data-labels para la responsividad de la tabla
                 row.innerHTML = `
-                    <td>${displayDate}</td>
-                    <td>${p.solicitante}</td>
-                    <td>${p.departamento}</td>
-                    <td>
+                    <td data-label="Fecha:">${displayDate}</td>
+                    <td data-label="Solicitante:">${p.solicitante}</td>
+                    <td data-label="Departamento:">${p.departamento}</td>
+                    <td data-label="Detalles del Pedido:">
                         <table class="details-table">
                             <thead>
                                 <tr>
@@ -787,14 +930,22 @@
         }
 
         function limpiarTodoHistorial() {
-            // Obtener la fecha actual
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0'); // Meses son de 0-11
-            const day = String(today.getDate()).padStart(2, '0');
+            // Obtener la fecha actual (la fecha de hoy en Costa Rica)
+            const now = new Date();
+            // Convertir a la zona horaria de Costa Rica (UTC-6) si fuera necesario,
+            // pero para una clave AAAAMMDD, el horario local suele ser suficiente.
+            // Para asegurar, podríamos usar Intl.DateTimeFormat
+            const options = { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'America/Costa_Rica' };
+            const parts = new Intl.DateTimeFormat('en-US', options).formatToParts(now);
+
+            let year, month, day;
+            for (const part of parts) {
+                if (part.type === 'year') year = part.value;
+                if (part.type === 'month') month = part.value;
+                if (part.type === 'day') day = part.value;
+            }
             
-            // Generar la clave esperada
-            const expectedKey = `${year}${month}${day}`;
+            const expectedKey = `${year}${month}${day}`; // AAAAMMDD
 
             // Mensaje del prompt SIN LA PISTA de la clave
             const userInput = prompt(`ADVERTENCIA: Está a punto de limpiar TODO el historial de pedidos. Esta acción es IRREVERSIBLE.
