@@ -2,7 +2,8 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Sistema de Solicitudes - Tesoros Americanos Costa Rica</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Solicitudes - Tesoros Americanos Costa Rica</title>
     <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Mono&display=swap" rel="stylesheet">
@@ -505,7 +506,7 @@
                 font-size: 0.95em; /* Fuente del número ligeramente más pequeña */
                 min-width: 25px; /* Asegura que el número no se vea cortado */
             }
-            
+           
             /* Asegura que los selects en las tablas tengan un ancho adecuado */
             table td select {
                 width: 100%;
@@ -625,7 +626,7 @@
 
     <div class="container" id="mainMenu">
         <div class="header-logo">
-            <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTI4IDEyOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxyZWN0IHdpZHRoPSIxMjgiIGheiWdodD0iMTI4IiBmaWxsPSJ3aGl0ZSIvPgogICAgPHBhdGggZD0iTTM1IDYwTDIwIDQ1VjIySDQ3VjMwTDM1IDQyVjYwWk04MyA2MEw2OCA0NVYyMkg5NVYzMEw4MyA0MlY2MFpNNzMgNjBMODMgNzVWOTdINzNWNzVMMzMgNTlWMjJIMTU2VjU5WiIgc3Ryb2tlPSIjMDA1NmIzIiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSIxMDgiIGhlaWdodD0iNzUiIHg9IjEwIiB5PSI1MCIgc3Ryb2tlPSIjNjU2NTY1IiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSI4NiIgaGVpZ2h0PSI0NiIgeD0iMjEiIHk9IjY5IiBmaWxsPSIjRDBFN0YxIi8+CiAgICA8cGF0aCBkPSJNNTAgNzVWNzVINzRWNzVMMTAwIDc1VjEwMEgzMEw1MCA3NVpNMjUgODVMNTIgODVWOTdIMjVWODVaIiBzdHJva2U9IiMwMDVkYTMiIHN0cm9rZS13aWR0aGg9IjQiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSI1MCIgaGVpZ2h0PSIxMiIgeD0iMzkuNTUgeT0iNzMiIGZpbGw9IiMwMDVkYTMiLz4KICAgIDxjaXJjbGUgY3g9IjM1IiBjeT0iNDgiIHI9IjgiIGZpbGw9IiMwMDVkYTMiLz4KICAgIDxjaXJjbGUgY3g9IjM1IiBjeT0iNDgiIHI9IjgiIGZpbGw9IiM2NTY1NjUiLz4KICAgIDxwYXRoIGQ9Ik01NSA0MEwzOSAyOEg2OSBMNTUgMTRWNjZaIiBzdHJva2U9IiMwMDU2YjMiIHN0cm9rZS13aWR0aGg9IjMiIGZpbGw9Im5vbmUiLz4KPC9zdmc=" alt="Logo de Suministros Corporativos">
+            <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTI4IDEyOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxyZWN0IHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiBmaWxsPSJ3aGl0ZSIvPgogICAgPHBhdGggZD0iTTM1IDYwTDIwIDQ1VjIySDQ3VjMwTDM1IDQyVjYwWk04MyA2MEw2OCA0NVYyMkg5NVYzMEw4MyA0MlY2MFpNNzMgNjBMODMgNzVWOTdINzNWNzVMMzMgNTlWMjJIMTU2VjU5WiIgc3Ryb2tlPSIjMDA1NmIzIiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSIxMDgiIGhlaWdodD0iNzUiIHg9IjEwIiB5PSI1MCIgc3Ryb2tlPSIjNjU2NTY1IiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSI4NiIgaGVpZ2h0PSI0NiIgeD0iMjEiIHk9IjY5IiBmaWxsPSIjRDBFN0YxIi8+CiAgICA8cGF0aCBkPSJNNTAgNzVWNzVINzRWNzVMMTAwIDc1VjEwMEgzMEw1MCA3NVpNMjUgODVMNTIgODVWOTdIMjVWODVaIiBzdHJva2U9IiMwMDVkYTMiIHN0cm9rZS13aWR0aGg9IjQiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSI1MCIgaGVpZ2h0PSIxMiIgeD0iMzkuNTUgeT0iNzMiIGZpbGw9IiMwMDVkYTMiLz4KICAgIDxjaXJjbGUgY3g9IjM1IiBjeT0iNDgiIHI9IjgiIGZpbGw9IiMwMDVkYTMiLz4KICAgIDxjaXJjbGUgY3g9IjM1IiBjeT0iNDgiIHI9IjgiIGZpbGw9IiM2NTY1NjUiLz4KICAgIDxwYXRoIGQ9Ik01NSA0MEwzOSAyOEg2OSBMNTUgMTRWNjZaIiBzdHJva2U9IiMwMDU2YjMiIHN0cm9rZS13aWR0aGg9IjMiIGZpbGw9Im5vbmUiLz4KPC9zdmc=" alt="Logo de Suministros Corporativos">
             <h1>Tesoros Americanos Costa Rica</h1>
             <h2 class="subtitle">Sistema de Solicitudes de Suministros</h2>
         </div>
@@ -711,7 +712,7 @@
                 <span class="close-button" onclick="closeModal()">&times;</span>
             </div>
             <div class="modal-body">
-                <p>Por favor, revise detalladamente la siguiente información antes de confirmar el envío. Al hacer clic en **"Confirmar y Enviar Solicitud"**, se abrirá su cliente de correo electrónico predeterminado con el pedido listo para su despacho a **soporteit@atcostarica.com** y se descargará un archivo Excel con el detalle.</p>
+                <p>Por favor, revise detalladamente la siguiente información antes de confirmar el envío. Al hacer clic en <strong>"Confirmar y Enviar Solicitud"</strong>, se abrirá su cliente de correo electrónico predeterminado con el pedido listo para su despacho a <strong>soporteit@atcostarica.com</strong> y se descargará un archivo Excel con el detalle.</p>
                 <pre id="orderSummaryContent"></pre>
                 <div class="modal-actions">
                     <button onclick="closeModal()" class="btn btn-cancel">Cancelar</button>
@@ -730,21 +731,24 @@
         const orderSummaryContent = document.getElementById('orderSummaryContent');
         let currentEmailData = {}; // Objeto para guardar los datos del correo y del Excel/historial
 
-        // Lista de artículos para el nuevo select
+        // ==================================================================
+        // === INICIO DE CAMBIOS: ESTRUCTURA DE DATOS Y NUEVAS FUNCIONES ===
+        // ==================================================================
+        
+        // PASO 1: ESTRUCTURA DE DATOS ACTUALIZADA
         const listaArticulos = [
-            "Seleccione un artículo", // Opción por defecto
-            "Papel Bond tamaño carta",
-            "Lápices de grafito HB",
-            "Bolígrafos de tinta negra (punta fina)",
-            "Grapadora de escritorio de alta capacidad",
-            "Grapas estándar (caja x 5000)",
-            "Cartucho de Tinta HP (Negro) - Modelo X",
-            "Marcadores permanentes (negro, azul, rojo)",
-            "Carpetas tamaño carta con pestaña",
-            "Notas adhesivas (Post-it)",
-            "Tijeras multiusos",
-            "Calculadora de escritorio",
-            "Sobres tamaño oficio"
+            { nombre: "Papel Bond tamaño carta", unidad: "Resma" },
+            { nombre: "Lápices de grafito HB", unidad: "Caja" },
+            { nombre: "Bolígrafos de tinta negra (punta fina)", unidad: "Caja" },
+            { nombre: "Grapadora de escritorio de alta capacidad", unidad: "Unidad" },
+            { nombre: "Grapas estándar (caja x 5000)", unidad: "Caja" },
+            { nombre: "Cartucho de Tinta HP (Negro) - Modelo X", unidad: "Unidad" },
+            { nombre: "Marcadores permanentes (negro, azul, rojo)", unidad: "Paquete" },
+            { nombre: "Carpetas tamaño carta con pestaña", unidad: "Paquete" },
+            { nombre: "Notas adhesivas (Post-it)", unidad: "Paquete" },
+            { nombre: "Tijeras multiusos", unidad: "Unidad" },
+            { nombre: "Calculadora de escritorio", unidad: "Unidad" },
+            { nombre: "Sobres tamaño oficio", unidad: "Paquete" }
         ];
 
         // --- Funciones de Navegación ---
@@ -773,20 +777,16 @@
         }
 
         // --- Funciones del Formulario de Pedido ---
+        
+        // PASO 2: FUNCIÓN agregarFila() MODIFICADA
         function agregarFila() {
             const tableBody = document.getElementById('pedido-table').getElementsByTagName('tbody')[0];
             const newRow = tableBody.insertRow();
 
-            // Crea las opciones para el select de artículos
-            let articulosOptions = '';
-            listaArticulos.forEach(item => {
-                // Si la opción es el placeholder, deshabilitarla
-                const isDisabled = (item === "Seleccione un artículo") ? 'disabled selected' : '';
-                articulosOptions += `<option value="${item}" ${isDisabled}>${item}</option>`;
-            });
-
-            // Atributos data-label para responsividad en móviles
-            newRow.insertCell(0).outerHTML = `<td data-label="Artículo:"><select required>${articulosOptions}</select></td>`;
+            // Celda para el Artículo (ahora inicia deshabilitada)
+            newRow.insertCell(0).outerHTML = `<td data-label="Artículo:"><select class="articulo-select" required disabled><option value="" disabled selected>Seleccione una unidad primero</option></select></td>`;
+            
+            // Celda para la Cantidad (sin cambios)
             newRow.insertCell(1).outerHTML = `
                 <td data-label="Cantidad:">
                     <div class="quantity-control">
@@ -795,9 +795,60 @@
                         <button class="quantity-btn" onclick="cambiarCantidad(this, 1)">+</button>
                     </div>
                 </td>`;
-            newRow.insertCell(2).outerHTML = `<td data-label="Unidad de Medida:"><select required><option value="Unidad">Unidad</option><option value="Paquete">Paquete</option><option value="Galón">Galón</option><option value="Kilo">Kilo</option><option value="Caja">Caja</option><option value="Resma">Resma</option></select></td>`;
+
+            // Celda para la Unidad de Medida (con el onchange)
+            newRow.insertCell(2).outerHTML = `<td data-label="Unidad de Medida:">
+                <select required onchange="actualizarArticulos(this)">
+                    <option value="" disabled selected>Seleccione unidad</option>
+                    <option value="Unidad">Unidad</option>
+                    <option value="Paquete">Paquete</option>
+                    <option value="Galón">Galón</option>
+                    <option value="Kilo">Kilo</option>
+                    <option value="Caja">Caja</option>
+                    <option value="Resma">Resma</option>
+                </select>
+            </td>`;
+
+            // Celda de Acción (sin cambios)
             newRow.insertCell(3).outerHTML = `<td data-label="Acción:"><button class="action-button" onclick="eliminarFila(this)">Eliminar</button></td>`;
         }
+        
+        // PASO 3: NUEVA FUNCIÓN actualizarArticulos()
+        function actualizarArticulos(selectUnidad) {
+            const unidadSeleccionada = selectUnidad.value;
+            const fila = selectUnidad.closest('tr'); // Encuentra la fila actual
+            const selectArticulo = fila.querySelector('.articulo-select'); // Encuentra el select de artículo en esa fila
+
+            selectArticulo.innerHTML = ''; // Limpia las opciones anteriores
+
+            if (!unidadSeleccionada) {
+                selectArticulo.disabled = true;
+                selectArticulo.innerHTML = '<option value="" disabled selected>Seleccione una unidad primero</option>';
+                return;
+            }
+
+            // Filtra la lista de artículos global basándose en la unidad seleccionada
+            const articulosFiltrados = listaArticulos.filter(item => item.unidad === unidadSeleccionada);
+
+            selectArticulo.disabled = false;
+            selectArticulo.innerHTML = '<option value="" disabled selected>Seleccione un artículo</option>'; // Opción por defecto
+
+            // Rellena el select con los artículos filtrados
+            articulosFiltrados.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.nombre;
+                option.textContent = item.nombre;
+                selectArticulo.appendChild(option);
+            });
+
+            if (articulosFiltrados.length === 0) {
+                selectArticulo.innerHTML = '<option value="" disabled selected>No hay artículos para esta unidad</option>';
+            }
+        }
+
+        // ================================================================
+        // === FIN DE CAMBIOS: EL RESTO DEL CÓDIGO PERMANECE IGUAL ===
+        // ================================================================
 
         function cambiarCantidad(button, delta) {
             const quantityDisplay = button.parentNode.querySelector('.quantity-display');
@@ -832,39 +883,38 @@
             let emailBodyFormatted = `Estimado equipo de Soporte IT,\n\nSe ha generado una nueva solicitud de suministros con los siguientes detalles:\n\n`;
             emailBodyFormatted += `  Solicitante: ${solicitante}\n`;
             emailBodyFormatted += `  Departamento: ${departamento}\n\n`;
-            
+           
             const excelData = [['Artículo', 'Cantidad', 'Unidad de Medida']];
             const pedidoDetallesForHistory = []; // Para guardar en el historial local
             const addedArticles = new Set(); // Para una validación final de duplicados antes de enviar
 
             emailBodyFormatted += `------------------------------------------------------------\n`;
-            emailBodyFormatted += `| ARTÍCULO                  | CANTIDAD | UNIDAD DE MEDIDA |\n`;
+            emailBodyFormatted += `| ARTÍCULO                      | CANTIDAD | UNIDAD DE MEDIDA |\n`;
             emailBodyFormatted += `------------------------------------------------------------\n`;
 
             let hasItems = false;
-            
+           
             for (let i = 0; i < tableRows.length; i++) {
                 const row = tableRows[i];
                 const articuloSelect = row.cells[0].getElementsByTagName('select')[0];
                 const quantityDisplay = row.cells[1].getElementsByClassName('quantity-display')[0]; // Obtener el span de cantidad
                 const unidadSelect = row.cells[2].getElementsByTagName('select')[0];
-                
+               
                 const articulo = articuloSelect.value.trim();
                 const cantidad = parseInt(quantityDisplay.textContent); // Leer del span
                 const unidad = unidadSelect.value;
 
-                if (articulo === "Seleccione un artículo" || articulo === "") {
+                if (articulo === "Seleccione un artículo" || articulo === "" || articuloSelect.disabled) {
                     alert(`Por favor, seleccione un artículo válido en la fila ${i + 1}.`);
                     articuloSelect.focus();
                     return;
                 }
-                // La validación de cantidad ya está en cambiarCantidad, pero un último chequeo.
+                
                 if (cantidad <= 0) {
                     alert(`Por favor, ingrese una cantidad válida (mayor a 0) para el artículo "${articulo}" en la fila ${i + 1}.`);
                     return;
                 }
 
-                // Validar duplicados de artículos antes de generar el resumen
                 if (addedArticles.has(articulo.toLowerCase())) {
                     alert(`¡Artículo duplicado! El artículo "${articulo}" ya ha sido añadido al pedido en otra fila. Por favor, ajuste la cantidad en la fila existente o elimine la fila duplicada.`);
                     articuloSelect.focus();
@@ -882,7 +932,7 @@
                 excelData.push([articulo, parseInt(cantidad), unidad]);
                 pedidoDetallesForHistory.push({articulo, cantidad: parseInt(cantidad), unidad});
             }
-            
+           
             if (!hasItems) {
                 alert('Debe agregar al menos un artículo válido al pedido antes de continuar.');
                 return;
@@ -892,7 +942,7 @@
             emailBodyFormatted += `Favor procesar esta solicitud. Gracias.\n\nAtentamente,\n${solicitante}`;
 
             const subject = `Solicitud de Suministros - ${solicitante} (${departamento})`;
-            
+           
             // Guardamos todos los datos necesarios para el envío, la descarga y el historial
             currentEmailData = {
                 body: emailBodyFormatted,
@@ -901,7 +951,6 @@
                 solicitante: solicitante,
                 departamento: departamento,
                 detalles: pedidoDetallesForHistory, // Guardamos los detalles estructurados
-                // Guarda la fecha en formato ISO para facilitar la comparación temporal
                 fecha: new Date().toISOString()
             };
 
@@ -912,15 +961,13 @@
         function confirmarYEnviar() {
             const emailDestino = 'soporteit@atcostarica.com';
 
-            // 1. Envía el correo
             const mailtoLink = `mailto:${emailDestino}?subject=${encodeURIComponent(currentEmailData.subject)}&body=${encodeURIComponent(currentEmailData.body)}`;
             window.location.href = mailtoLink;
 
-            // 2. Descarga el archivo Excel
             const ws = XLSX.utils.aoa_to_sheet(currentEmailData.excel);
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, "Suministros");
-            
+           
             const today = new Date();
             const day = String(today.getDate()).padStart(2, '0');
             const month = String(today.getMonth() + 1).padStart(2, '0');
@@ -930,29 +977,24 @@
             const fileName = `Pedido_Suministros_${currentEmailData.solicitante.replace(/ /g, '_')}_${formattedDate}.xlsx`;
             XLSX.writeFile(wb, fileName);
 
-            // 3. Guarda el pedido en el historial local
-            // Almacenar también la fecha legible para la visualización
             historial.push({
                 fecha: new Date(currentEmailData.fecha).toLocaleString('es-CR', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }),
-                fechaISO: currentEmailData.fecha, // Fecha ISO para comparación de antigüedad
+                fechaISO: currentEmailData.fecha,
                 solicitante: currentEmailData.solicitante,
                 departamento: currentEmailData.departamento,
                 detalles: currentEmailData.detalles
             });
             localStorage.setItem("historialPedidos", JSON.stringify(historial));
 
-            // 4. Cierra el modal y vuelve al menú principal
-            closeModal(); // Esto llamará a goBack()
+            closeModal();
             alert('Su solicitud ha sido enviada por correo y el archivo Excel ha sido descargado. Además, el pedido se ha guardado en el historial.');
-            // goBack(); // Ya lo hace closeModal
         }
 
         function closeModal() {
             summaryModal.style.display = 'none';
-            goBack(); // Vuelve al menú principal al cerrar el modal (sea por confirmación o cancelación)
+            goBack();
         }
 
-        // Cierra el modal si el usuario hace clic fuera de él
         window.onclick = function(event) {
             if (event.target == summaryModal) {
                 closeModal();
@@ -962,11 +1004,11 @@
         // --- Funciones de Historial ---
         function renderHistorial(){
             const tbody = document.querySelector('#historialTable tbody');
-            tbody.innerHTML = ''; // Limpia la tabla antes de renderizar
+            tbody.innerHTML = '';
 
             if (historial.length === 0) {
                 const noDataRow = tbody.insertRow();
-                const noDataCell = noDataRow.insertCell(0); // Ahora se inserta una celda
+                const noDataCell = noDataRow.insertCell(0);
                 noDataCell.colSpan = 4;
                 noDataCell.textContent = "No hay pedidos en el historial.";
                 noDataCell.style.textAlign = "center";
@@ -977,10 +1019,8 @@
 
             historial.forEach(p => {
                 const row = document.createElement('tr');
-                // Formato de fecha para visualización, ya que fechaISO es para lógica interna
                 const displayDate = p.fecha || new Date(p.fechaISO).toLocaleString('es-CR', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
 
-                // Se añaden data-labels para la responsividad de la tabla
                 row.innerHTML = `
                     <td data-label="Fecha:">${displayDate}</td>
                     <td data-label="Solicitante:">${p.solicitante}</td>
@@ -1012,13 +1052,12 @@
 
         function limpiarHistorialAntiguo() {
             const unMesAtras = new Date();
-            unMesAtras.setMonth(unMesAtras.getMonth() - 1); // Calcula la fecha de hace un mes
+            unMesAtras.setMonth(unMesAtras.getMonth() - 1);
 
             const historialFiltrado = historial.filter(p => {
-                // Si la fechaISO no existe (pedidos viejos que no tienen este campo), se asume que no cumplen el criterio
                 if (!p.fechaISO) return true; 
                 const fechaPedido = new Date(p.fechaISO);
-                return fechaPedido >= unMesAtras; // Mantiene los pedidos que son más recientes que un mes atrás
+                return fechaPedido >= unMesAtras;
             });
 
             if (historialFiltrado.length === historial.length) {
@@ -1035,11 +1074,7 @@
         }
 
         function limpiarTodoHistorial() {
-            // Obtener la fecha actual (la fecha de hoy en Costa Rica)
             const now = new Date();
-            // Convertir a la zona horaria de Costa Rica (UTC-6) si fuera necesario,
-            // pero para una clave AAAAMMDD, el horario local suele ser suficiente.
-            // Para asegurar, podríamos usar Intl.DateTimeFormat
             const options = { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'America/Costa_Rica' };
             const parts = new Intl.DateTimeFormat('en-US', options).formatToParts(now);
 
@@ -1049,36 +1084,32 @@
                 if (part.type === 'month') month = part.value;
                 if (part.type === 'day') day = part.value;
             }
-            
-            const expectedKey = `${year}${month}${day}`; // AAAAMMDD
+           
+            const expectedKey = `${year}${month}${day}`;
 
-            // Mensaje del prompt SIN LA PISTA de la clave
-            const userInput = prompt(`ADVERTENCIA: Está a punto de limpiar TODO el historial de pedidos. Esta acción es IRREVERSIBLE.
+            const userInput = prompt(`ADVERTENCIA: Está a punto de limpiar TODO el historial de pedidos. Esta acción es IRREVERSIBLE.\n\nPara confirmar, por favor, introduzca la clave de seguridad:`);
 
-Para confirmar, por favor, introduzca la clave de seguridad:`);
-
-            if (userInput === null) { // Si el usuario presiona "Cancelar"
+            if (userInput === null) {
                 alert('Operación de limpieza de historial cancelada.');
                 return;
             }
 
             if (userInput === expectedKey) {
-                historial = []; // Vacía el array del historial
-                localStorage.removeItem("historialPedidos"); // Elimina la entrada del localStorage
-                renderHistorial(); // Actualiza la tabla en la interfaz
+                historial = [];
+                localStorage.removeItem("historialPedidos");
+                renderHistorial();
                 alert('Todo el historial de pedidos ha sido limpiado exitosamente.');
             } else {
                 alert('Clave de seguridad incorrecta. El historial NO ha sido limpiado.');
             }
         }
 
-
         function exportarExcel(){
             if (historial.length === 0) {
                 alert('No hay datos en el historial para exportar a Excel.');
                 return;
             }
-            const datos = [['Fecha','Solicitante','Departamento','Artículo','Cantidad','Unidad de Medida']]; // Encabezados detallados
+            const datos = [['Fecha','Solicitante','Departamento','Artículo','Cantidad','Unidad de Medida']];
 
             historial.forEach(p => {
                 const displayDate = p.fecha || new Date(p.fechaISO).toLocaleString('es-CR', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
@@ -1086,14 +1117,14 @@ Para confirmar, por favor, introduzca la clave de seguridad:`);
                     datos.push([displayDate, p.solicitante, p.departamento, d.articulo, d.cantidad, d.unidad]);
                 });
             });
-            
+           
             const ws = XLSX.utils.aoa_to_sheet(datos);
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, "Historial");
-            // Formatear la fecha para el nombre del archivo (DD-MM-AAAA)
+            
             const today = new Date();
             const day = String(today.getDate()).padStart(2, '0');
-            const month = String(today.getMonth() + 1).padStart(2, '0'); // Meses son de 0-11
+            const month = String(today.getMonth() + 1).padStart(2, '0');
             const year = today.getFullYear();
             const formattedDate = `${day}-${month}-${year}`;
 
@@ -1110,14 +1141,13 @@ Para confirmar, por favor, introduzca la clave de seguridad:`);
             const doc = new jsPDF();
             doc.setFontSize(16);
             doc.text("Historial de Solicitudes de Suministros - Tesoros Americanos Costa Rica", 14, 20);
-            
+           
             let y = 35;
             const margin = 14;
-            const lineHeight = 7; // Espacio entre líneas
-            const maxPageHeight = doc.internal.pageSize.height - 20; // Altura máxima antes de añadir nueva página
+            const lineHeight = 7;
+            const maxPageHeight = doc.internal.pageSize.height - 20;
 
             historial.forEach((p, index) => {
-                // Si el texto del pedido es muy largo, se divide en varias líneas
                 const displayDate = p.fecha || new Date(p.fechaISO).toLocaleString('es-CR', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
 
                 const headerText = `--- Pedido #${index + 1} (${displayDate}) - ${p.solicitante} (${p.departamento}) ---`;
@@ -1135,28 +1165,27 @@ Para confirmar, por favor, introduzca la clave de seguridad:`);
                 doc.text(headerLines, margin, y);
                 y += (lineHeight * headerLines.length);
 
-                doc.setFontSize(9); // Fuente más pequeña para los detalles
-                // Encabezados de la "sub-tabla" en el PDF
+                doc.setFontSize(9);
                 doc.text("Artículo", margin + 5, y);
                 doc.text("Cant.", margin + 80, y);
                 doc.text("Unidad", margin + 100, y);
-                y += lineHeight * 0.8; // Espacio después de los encabezados
+                y += lineHeight * 0.8;
 
                 p.detalles.forEach(d => {
                     const itemText = `${d.articulo}`;
-                    const itemLines = doc.splitTextToSize(itemText, 60); // Ajusta el ancho para el artículo
-                    
+                    const itemLines = doc.splitTextToSize(itemText, 60);
+                   
                     doc.text(itemLines, margin + 5, y);
                     doc.text(String(d.cantidad), margin + 80, y);
                     doc.text(d.unidad, margin + 100, y);
-                    y += (lineHeight * Math.max(1, itemLines.length)); // Avanza Y lo suficiente para todas las líneas del artículo
+                    y += (lineHeight * Math.max(1, itemLines.length));
                 });
-                y += lineHeight * 1.2; // Espacio extra entre pedidos
+                y += lineHeight * 1.2;
             });
-            // Formatear la fecha para el nombre del archivo (DD-MM-AAAA)
+            
             const today = new Date();
             const day = String(today.getDate()).padStart(2, '0');
-            const month = String(today.getMonth() + 1).padStart(2, '0'); // Meses son de 0-11
+            const month = String(today.getMonth() + 1).padStart(2, '0');
             const year = today.getFullYear();
             const formattedDate = `${day}-${month}-${year}`;
 
