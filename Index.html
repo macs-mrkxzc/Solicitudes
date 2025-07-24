@@ -107,29 +107,90 @@
 <body>
 
     <div class="container" id="mainMenu">
-        <div class="header-logo"> <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTI4IDEyOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxyZWN0IHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiBmaWxsPSJ3aGl0ZSIvPgogICAgPHBhdGggZD0iTTM1IDYwTDIwIDQ1VjIySDQ3VjMwTDM1IDQyVjYwWk04MyA2MEw2OCA0NVYyMkg5NVYzMEw4MyA0MlY2MFpNNzMgNjBMODMgNzVWOTdINzNWNzVMMzMgNTlWMjJIMTU2VjUб5WiIgc3Ryb2tlPSIjMDA1NmIzIiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSIxMDgiIGhlaWdodD0iNzUiIHg9IjEwIiB5PSI1MCIgc3Ryb2tlPSIjNjU2NTY1IiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSI4NiIgaGVpZ2h0PSI0NiIgeD0iMjEiIHk9IjY5IiBmaWxsPSIjRDBFN0YxIi8+CiAgICA8cGF0aCBkPSJNNTAgNzVWNzVINzRWNzVMMTAwIDc1VjEwMEgzMEw1MCA3NVpNMjUgODVMNTIgODVWOTdIMjVWODVaIiBzdHJva2U9IiMwMDVkYTMiIHN0cm9rZS13aWR0aGg9IjQiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSI1MCIgaGVpZHRoPSIxMiIgeD0iMzkuNTUgeT0iNzMiIGZpbGw9IiMwMDVkYTMiLz4KICAgIDxjaXJjbGUgY3g9IjM1IiBjeT0iNDgiIHI9IjgiIGZpbGw9IiMwMDVkYTMiLz4KICAgIDxjaXJjbGUgY3g9IjM1IiBjeT0iNDgiIHI9IjgiIGZpbGw9IiM2NTY1NjUiLz4KICAgIDxwYXRoIGQ9Ik01NSA0MEwzOSAyOEg2OSBMNTUgMTRWNjZaIiBzdHJva2U9IiMwMDU2YjMiIHN0cm9rZS13aWR0aGg9IjMiIGZpbGw9Im5vbmUiLz4KPC9zdmc=" alt="Logo"> <h1>Tesoros Americanos Costa Rica</h1> <h2 class="subtitle">Sistema de Solicitudes de Suministros</h2> </div> <div class="menu-options"> <button class="btn" onclick="showForm()">📦 Nuevo Pedido</button> <button class="btn" onclick="showHistory()">📜 Ver Historial</button> </div>
+        <div class="header-logo">
+            <img src="data:image/svg+xml;base64," alt="Logo">
+            <h1>Tesoros Americanos Costa Rica</h1>
+            <h2 class="subtitle">Sistema de Solicitudes de Suministros</h2>
+        </div>
+        <div class="menu-options">
+            <button class="btn" onclick="showForm()">📦 Nuevo Pedido</button>
+            <button class="btn" onclick="showHistory()">📜 Ver Historial</button>
+        </div>
     </div>
 
     <div class="container hidden" id="formContainer">
-        <div class="header-logo" style="margin-bottom: 20px;"> <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTI4IDEyOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxyZWN0IHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiBmaWxsPSJ3aGl0ZSIvPgogICAgPHBhdGggZD0iTTM1IDYwTDIwIDQ1VjIySDQ3VjMwTDM1IDQyVjYwWk04MyA2MEw2OCA0NVYyMkg5NVYzMEw4MyA0MlY2MFpNNzMgNjBMODMgNzVWOTdINzNWNzVMMzMgNTlWMjJIMTU2VjU5WiIgc3Ryb2tlPSIjMDA1NmIzIiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSIxMDgiIGhlaWdodD0iNzUiIHg9IjEwIiB5PSI1MCIgc3Ryb2tlPSIjNjU2NTY1IiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSI4NiIgaGVpZ2h0PSI0NiIgeD0iMjEiIHk9IjY5IiBmaWxsPSIjRDBFN0YxIi8+CiAgICA8cGF0aCBkPSJNNTAgNzVWNzVINzRWNzVMMTAwIDc1VjEwMEgzMEw1MCA3NVpNMjUgODVMNTIgODVWOTdIMjVWODVaIiBzdHJva2U9IiMwMDVkYTMiIHN0cm9rZS13aWR0aGg9IjQiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSI1MCIgaGVpZ2h0PSIxMiIgeD0iMzkuNTUgeT0iNzMiIGZpbGw9IiMwMDVkYTMiLz4KICAgIDxjaXJjbGUgY3g9IjM1IiBjeT0iNDgiIHI9IjgiIGZpbGw9IiMwMDVkYTMiLz4KICAgIDxjaXJjbGUgY3g9IjM1IiBjeT0iNDgiIHI9IjgiIGZpbGw9IiM2NTY1NjUiLz4KICAgIDxwYXRoIGQ9Ik01NSA0MEwzOSAyOEg2OSBMNTUgMTRWNjZaIiBzdHJva2U9IiMwMDU2YjMiIHN0cm9rZS13aWR0aGg9IjMiIGZpbGw9Im5vbmUiLz4KPC9zdmc=" alt="Logo"> <h1>Tesoros Americanos Costa Rica</h1> <h2 class="subtitle">Formulario de Solicitud de Suministros</h2> </div> <h2>Nuevo Pedido</h2> <div class="info-section"> <div> <label for="solicitante">Solicitado por:</label> <input type="text" id="solicitante" placeholder="Nombre completo" required> </div> 
-        <div> 
-            <label for="departamento">Departamento:</label> 
-            <select id="departamento" required>
-                <option value="" disabled selected>Seleccione un departamento</option>
-                <option value="Oficina">Oficina</option>
-                <option value="Centro Distribucion">Centro Distribución</option>
-                <option value="Barrio Mexico">Barrio México</option>
-                <option value="San Francisco">San Francisco</option>
-                <option value="Alto Valor">Alto Valor</option>
-                <option value="Directtools SF">Directtools SF</option>
-                <option value="Directtools BM">Directtools BM</option>
-            </select>
-        </div> 
-        </div> <table id="pedido-table"> <thead> <tr> <th>Artículo</th> <th>Cantidad</th> <th>Unidad de Medida</th> <th>Acción</th> </tr> </thead> <tbody></tbody> </table> <div class="controls"> <div class="left-buttons"> <button onclick="agregarFila()" class="btn btn-add">➕ Agregar Artículo</button> </div> <button onclick="previsualizarPedido()" class="btn btn-send">📲 Previsualizar y Enviar</button> <button onclick="goBack()" class="btn" style="background-color: var(--cancel-color);">⬅️ Volver</button> </div>
+        <div class="header-logo" style="margin-bottom: 20px;">
+            <img src="data:image/svg+xml;base64," alt="Logo">
+            <h1>Tesoros Americanos Costa Rica</h1>
+            <h2 class="subtitle">Formulario de Solicitud de Suministros</h2>
+        </div>
+        <h2>Nuevo Pedido</h2>
+        <div class="info-section">
+            <div>
+                <label for="solicitante">Solicitado por:</label>
+                <input type="text" id="solicitante" placeholder="Nombre completo" required>
+            </div> 
+            <div> 
+                <label for="departamento">Departamento:</label> 
+                <select id="departamento" required>
+                    <option value="" disabled selected>Seleccione un departamento</option>
+                    <option value="Oficina">Oficina</option>
+                    <option value="Centro Distribucion">Centro Distribución</option>
+                    <option value="Barrio Mexico">Barrio México</option>
+                    <option value="San Francisco">San Francisco</option>
+                    <option value="Alto Valor">Alto Valor</option>
+                    <option value="Directtools SF">Directtools SF</option>
+                    <option value="Directtools BM">Directtools BM</option>
+                </select>
+            </div> 
+        </div>
+        <table id="pedido-table">
+            <thead>
+                <tr>
+                    <th>Artículo</th>
+                    <th>Cantidad</th>
+                    <th>Unidad de Medida</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <div class="controls">
+            <div class="left-buttons">
+                <button onclick="agregarFila()" class="btn btn-add">➕ Agregar Artículo</button>
+            </div>
+            <button onclick="previsualizarPedido()" class="btn btn-send">📲 Previsualizar y Enviar</button>
+            <button onclick="goBack()" class="btn" style="background-color: var(--cancel-color);">⬅️ Volver</button>
+        </div>
     </div>
 
     <div class="container hidden" id="historyContainer">
-        <div class="header-logo" style="margin-bottom: 20px;"> <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTI4IDEyOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxyZWN0IHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiBmaWxsPSJ3aGl0ZSIvPgogICAgPHBhdGggZD0iTTM1IDYwTDIwIDQ1VjIySDQ3VjMwTDM1IDQyVjYwWk04MyA2MEw2OCA0NVYyMkg5NVYzMEw4MyA0MlY2MFpNNzMgNjBMODMgNzVWOTdINzNWNzVMMzMgNTlWMjJIMTU2VjU5WiIgc3Ryb2tlPSIjMDA1NmIzIiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSIxMDgiIGhlaWdodD0iNzUiIHg9IjEwIiB5PSI1MCIgc3Ryb2tlPSIjNjU2NTY1IiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSI4NiIgaGVpZ2h0PSI0NiIgeD0iMjEiIHk9IjY5IiBmaWxsPSIjRDBFN0YxIi8+CiAgICA8cGF0aCBkPSJNNTAgNzVWNzVINzRWNzVMMTAwIDc1VjEwMEgzMEw1MCA3NVpNMjUgODVMNTIgODVWOTdIMjVWODVaIiBzdHJva2U9IiMwMDVkYTMiIHN0cm9rZS13aWR0aGg9IjQiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSI1MCIgaGVpZ2h0PSIxMiIgeD0iMzkuNTUgeT0iNzMiIGZpbGw9IiMwMDVkYTMiLz4KICAgIDxjaXJjbGUgY3g9IjM1IiBjeT0iNDgiIHI9IjgiIGZpbGw9IiMwMDVkYTMiLz4KICAgIDxjaXJjbGUgY3g9IjM1IiBjeT0iNDgiIHI9IjgiIGZpbGw9IiM2NTY1NjUiLz4KICAgIDxwYXRoIGQ9Ik01NSA0MEwzOSAyOEg2OSBMNTUgMTRWNjZaIiBzdHJva2U9IiMwMDU2YjMiIHN0cm9rZS13aWR0aGg9IjMiIGZpbGw9Im5vbmUiLz4KPC9zdmc=" alt="Logo"> <h1>Tesoros Americanos Costa Rica</h1> <h2 class="subtitle">Historial de Solicitudes</h2> </div> <h2>Historial de Solicitudes</h2> <table id="historialTable"> <thead> <tr> <th>Fecha</th> <th>Solicitante</th> <th>Departamento</th> <th>Detalles del Pedido</th> </tr> </thead> <tbody></tbody> </table> <div class="controls"> <div class="left-buttons"> <button class="btn btn-clear-history" onclick="limpiarHistorialAntiguo()">🗑️ Limpiar Antiguos</button> <button class="btn btn-clear-all-history" onclick="limpiarTodoHistorial()">⚠️ Limpiar Todo</button> </div> <button class="btn btn-success" onclick="exportarExcel()">📊 Exportar Excel</button> <button class="btn btn-pdf" onclick="exportarPDF()">📄 Exportar PDF</button> <button class="btn" style="background-color: var(--cancel-color);" onclick="goBack()">⬅️ Volver</button> </div>
+        <div class="header-logo" style="margin-bottom: 20px;">
+            <img src="data:image/svg+xml;base64," alt="Logo">
+            <h1>Tesoros Americanos Costa Rica</h1>
+            <h2 class="subtitle">Historial de Solicitudes</h2>
+        </div>
+        <h2>Historial de Solicitudes</h2>
+        <table id="historialTable">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Solicitante</th>
+                    <th>Departamento</th>
+                    <th>Detalles del Pedido</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <div class="controls">
+            <div class="left-buttons">
+                <button class="btn btn-clear-history" onclick="limpiarHistorialAntiguo()">🗑️ Limpiar Antiguos</button>
+                <button class="btn btn-clear-all-history" onclick="limpiarTodoHistorial()">⚠️ Limpiar Todo</button>
+            </div>
+            <button class="btn btn-success" onclick="exportarExcel()">📊 Exportar Excel</button>
+            <button class="btn btn-pdf" onclick="exportarPDF()">📄 Exportar PDF</button>
+            <button class="btn" style="background-color: var(--cancel-color);" onclick="goBack()">⬅️ Volver</button>
+        </div>
     </div>
 
     <div id="summaryModal" class="modal">
@@ -324,13 +385,165 @@
 
         window.onclick = function(event) { if (event.target == summaryModal) closeModal(); }
         
-        // El resto de las funciones de historial y exportación permanecen igual...
-        function renderHistorial(){const t=document.querySelector("#historialTable tbody");if(t.innerHTML="",0===historial.length){const e=t.insertRow(),o=e.insertCell(0);o.colSpan=4,o.textContent="No hay pedidos en el historial.",o.style.textAlign="center",o.style.padding="20px",o.style.color="var(--light-text-color)";return}historial.forEach(e=>{const o=document.createElement("tr"),l=e.fecha||new Date(e.fechaISO).toLocaleString("es-CR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"});o.innerHTML=`\n <td data-label="Fecha:">${l}</td>\n <td data-label="Solicitante:">${e.solicitante}</td>\n <td data-label="Departamento:">${e.departamento}</td>\n <td data-label="Detalles del Pedido:">\n <table class="details-table">\n <thead>\n <tr><th>Artículo</th><th>Cant.</th><th>Unidad</th></tr>\n </thead>\n <tbody>\n ${e.detalles.map(t=>`\n <tr>\n <td data-label="Artículo:">${t.articulo}</td>\n <td data-label="Cantidad:">${t.cantidad}</td>\n <td data-label="Unidad:">${t.unidad}</td>\n </tr>\n `).join("")}\n </tbody>\n </table>\n </td>`,t.appendChild(o)})}
-        function limpiarHistorialAntiguo(){const t=new Date;t.setMonth(t.getMonth()-1);const e=historial.filter(e=>new Date(e.fechaISO)>=t);if(e.length===historial.length)return void alert("No hay pedidos con más de un mes de antigüedad.");confirm("¿Desea eliminar los pedidos con más de un mes de antigüedad?")&&(historial=e,localStorage.setItem("historialPedidos",JSON.stringify(historial)),renderHistorial(),alert("Se han eliminado los pedidos antiguos."))}
-        function limpiarTodoHistorial(){const t=new Date,e={year:"numeric",month:"2-digit",day:"2-digit",timeZone:"America/Costa_Rica"},o=new Intl.DateTimeFormat("en-US",e).formatToParts(t);let l,n,a;for(const r of o)"year"===r.type&&(l=r.value),"month"===r.type&&(n=r.value),"day"===r.type&&(a=r.value);const c=`${l}${n}${a}`,i=prompt("ADVERTENCIA: Está a punto de limpiar TODO el historial de pedidos. Esta acción es IRREVERSIBLE.\n\nPara confirmar, introduzca la clave de seguridad:");if(null!==i)if(i===c)historial=[],localStorage.removeItem("historialPedidos"),renderHistorial(),alert("Todo el historial de pedidos ha sido limpiado.");else alert("Clave de seguridad incorrecta.")}
-        function exportarExcel(){if(0===historial.length)return void alert("No hay datos para exportar.");const t=[["Fecha","Solicitante","Departamento","Artículo","Cantidad","Unidad de Medida"]];historial.forEach(e=>{const o=e.fecha||new Date(e.fechaISO).toLocaleString("es-CR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"});e.detalles.forEach(l=>{t.push([o,e.solicitante,e.departamento,l.articulo,l.cantidad,l.unidad])})});const e=XLSX.utils.aoa_to_sheet(t),o=XLSX.utils.book_new();XLSX.utils.book_append_sheet(o,e,"Historial");const l=new Date,n=`${String(l.getDate()).padStart(2,"0")}-${String(l.getMonth()+1).padStart(2,"0")}-${l.getFullYear()}`;XLSX.writeFile(o,`Historial_Suministros_${n}.xlsx`)}
-        async function exportarPDF(){if(0===historial.length)return void alert("No hay datos para exportar.");const{jsPDF:t}=window.jspdf,e=new t;e.setFontSize(16),e.text("Historial de Solicitudes de Suministros",14,20);let o=35;const l=14,n=7,a=e.internal.pageSize.height-20;historial.forEach((r,c)=>{const i=r.fecha||new Date(r.fechaISO).toLocaleString("es-CR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"}),d=`--- Pedido #${c+1} (${i}) - ${r.solicitante} (${r.departamento}) ---`,s=e.splitTextToSize(d,e.internal.pageSize.width-2*l);o+(s.length*n+r.detalles.length*n*1.5)>a&&(e.addPage(),o=20,e.setFontSize(16),e.text("Historial de Solicitudes (Continuación)",l,o),o+=15),e.setFontSize(12),e.text(s,l,o),o+=n*s.length,e.setFontSize(9),e.text("Artículo",l+5,o),e.text("Cant.",l+80,o),e.text("Unidad",l+100,o),o+=.8*n,r.detalles.forEach(t=>{const r=e.splitTextToSize(`${t.articulo}`,60);e.text(r,l+5,o),e.text(String(t.cantidad),l+80,o),e.text(t.unidad,l+100,o),o+=n*Math.max(1,r.length)}),o+=1.2*n});const r=new Date,c=`${String(r.getDate()).padStart(2,"0")}-${String(r.getMonth()+1).padStart(2,"0")}-${r.getFullYear()}`;e.save(`Historial_Suministros_${c}.pdf`)}
+        // --- INICIO: CÓDIGO JS FORMATEADO ---
+        // --- Funciones de Historial y Exportación ---
 
+        function renderHistorial() {
+            const tableBody = document.querySelector("#historialTable tbody");
+            tableBody.innerHTML = "";
+            if (historial.length === 0) {
+                const row = tableBody.insertRow();
+                const cell = row.insertCell(0);
+                cell.colSpan = 4;
+                cell.textContent = "No hay pedidos en el historial.";
+                cell.style.textAlign = "center";
+                cell.style.padding = "20px";
+                cell.style.color = "var(--light-text-color)";
+                return;
+            }
+            historial.forEach(pedido => {
+                const newRow = document.createElement('tr');
+                const fechaFormateada = pedido.fecha || new Date(pedido.fechaISO).toLocaleString('es-CR', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+                newRow.innerHTML = `
+                    <td data-label="Fecha:">${fechaFormateada}</td>
+                    <td data-label="Solicitante:">${pedido.solicitante}</td>
+                    <td data-label="Departamento:">${pedido.departamento}</td>
+                    <td data-label="Detalles del Pedido:">
+                        <table class="details-table">
+                            <thead>
+                                <tr><th>Artículo</th><th>Cant.</th><th>Unidad</th></tr>
+                            </thead>
+                            <tbody>
+                                ${pedido.detalles.map(item => `
+                                    <tr>
+                                        <td data-label="Artículo:">${item.articulo}</td>
+                                        <td data-label="Cantidad:">${item.cantidad}</td>
+                                        <td data-label="Unidad:">${item.unidad}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </td>`;
+                tableBody.appendChild(newRow);
+            });
+        }
+
+        function limpiarHistorialAntiguo() {
+            const umbral = new Date();
+            umbral.setMonth(umbral.getMonth() - 1);
+            const historialReciente = historial.filter(pedido => new Date(pedido.fechaISO) >= umbral);
+            if (historialReciente.length === historial.length) {
+                alert("No hay pedidos con más de un mes de antigüedad.");
+                return;
+            }
+            if (confirm("¿Desea eliminar los pedidos con más de un mes de antigüedad?")) {
+                historial = historialReciente;
+                localStorage.setItem("historialPedidos", JSON.stringify(historial));
+                renderHistorial();
+                alert("Se han eliminado los pedidos antiguos.");
+            }
+        }
+
+        function limpiarTodoHistorial() {
+            const today = new Date();
+            const parts = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'America/Costa_Rica' }).formatToParts(today);
+            let year, month, day;
+            for (const part of parts) {
+                if (part.type === 'year') year = part.value;
+                if (part.type === 'month') month = part.value;
+                if (part.type === 'day') day = part.value;
+            }
+            const securityKey = `${year}${month}${day}`;
+            const userInput = prompt("ADVERTENCIA: Está a punto de limpiar TODO el historial de pedidos. Esta acción es IRREVERSIBLE.\n\nPara confirmar, introduzca la clave de seguridad:");
+            if (userInput !== null) {
+                if (userInput === securityKey) {
+                    historial = [];
+                    localStorage.removeItem("historialPedidos");
+                    renderHistorial();
+                    alert("Todo el historial de pedidos ha sido limpiado.");
+                } else {
+                    alert("Clave de seguridad incorrecta.");
+                }
+            }
+        }
+
+        function exportarExcel() {
+            if (historial.length === 0) {
+                alert("No hay datos para exportar.");
+                return;
+            }
+            const data = [
+                ["Fecha", "Solicitante", "Departamento", "Artículo", "Cantidad", "Unidad de Medida"]
+            ];
+            historial.forEach(pedido => {
+                const fechaFormateada = pedido.fecha || new Date(pedido.fechaISO).toLocaleString('es-CR', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+                pedido.detalles.forEach(item => {
+                    data.push([fechaFormateada, pedido.solicitante, pedido.departamento, item.articulo, item.cantidad, item.unidad]);
+                });
+            });
+            const worksheet = XLSX.utils.aoa_to_sheet(data);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Historial");
+            const today = new Date();
+            const formattedDate = `${String(today.getDate()).padStart(2, '0')}-${String(today.getMonth() + 1).padStart(2, '0')}-${today.getFullYear()}`;
+            XLSX.writeFile(workbook, `Historial_Suministros_${formattedDate}.xlsx`);
+        }
+
+        async function exportarPDF() {
+            if (historial.length === 0) {
+                alert("No hay datos para exportar.");
+                return;
+            }
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            doc.setFontSize(16);
+            doc.text("Historial de Solicitudes de Suministros", 14, 20);
+            
+            let y = 35;
+            const margin = 14;
+            const lineHeight = 7;
+            const pageHeight = doc.internal.pageSize.height - 20;
+
+            historial.forEach((pedido, index) => {
+                const fechaFormateada = pedido.fecha || new Date(pedido.fechaISO).toLocaleString('es-CR', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+                const headerText = `--- Pedido #${index + 1} (${fechaFormateada}) - ${pedido.solicitante} (${pedido.departamento}) ---`;
+                const splitHeader = doc.splitTextToSize(headerText, doc.internal.pageSize.width - margin * 2);
+                
+                const requiredHeight = (splitHeader.length * lineHeight) + (pedido.detalles.length * lineHeight * 1.5);
+                if (y + requiredHeight > pageHeight) {
+                    doc.addPage();
+                    y = 20;
+                    doc.setFontSize(16);
+                    doc.text("Historial de Solicitudes (Continuación)", margin, y);
+                    y += 15;
+                }
+
+                doc.setFontSize(12);
+                doc.text(splitHeader, margin, y);
+                y += lineHeight * splitHeader.length;
+
+                doc.setFontSize(9);
+                doc.text("Artículo", margin + 5, y);
+                doc.text("Cant.", margin + 80, y);
+                doc.text("Unidad", margin + 100, y);
+                y += lineHeight * 0.8;
+                
+                pedido.detalles.forEach(item => {
+                    const splitItem = doc.splitTextToSize(`${item.articulo}`, 60);
+                    doc.text(splitItem, margin + 5, y);
+                    doc.text(String(item.cantidad), margin + 80, y);
+                    doc.text(item.unidad, margin + 100, y);
+                    y += lineHeight * Math.max(1, splitItem.length);
+                });
+                y += lineHeight * 1.2;
+            });
+
+            const today = new Date();
+            const formattedDate = `${String(today.getDate()).padStart(2, '0')}-${String(today.getMonth() + 1).padStart(2, '0')}-${today.getFullYear()}`;
+            doc.save(`Historial_Suministros_${formattedDate}.pdf`);
+        }
+        // --- FIN: CÓDIGO JS FORMATEADO ---
     </script>
 
 </body>
