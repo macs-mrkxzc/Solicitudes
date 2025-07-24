@@ -99,21 +99,7 @@
             <button onclick="guardarArticulos()" class="btn btn-send">💾 Guardar Cambios</button>
         </div>
     </div>
-    <div class="container hidden" id="comprasContainer">
-        <h2>Registrar Compra a Proveedor</h2>
-        <div class="info-section">
-            <div class="form-group"><label for="compra-registradopor">Registrado por:</label><input type="text" id="compra-registradopor" placeholder="Tu nombre completo"></div>
-            <div class="form-group"><label for="compra-proveedor">Proveedor:</label><input type="text" id="compra-proveedor" placeholder="Nombre del proveedor"></div>
-            <div class="form-group"><label for="compra-fecha">Fecha de Compra:</label><input type="date" id="compra-fecha"></div>
-            <div class="form-group"><label for="compra-articulo">Artículo Comprado:</label><select id="compra-articulo"><option value="">Cargando...</option></select></div>
-            <div class="form-group"><label for="compra-cantidad">Cantidad:</label><input type="number" id="compra-cantidad" placeholder="Ej: 10" min="1"></div>
-            <div class="form-group"><label for="compra-costo">Costo Total (₡):</label><input type="number" id="compra-costo" placeholder="Ej: 15000" min="0"></div>
-        </div>
-        <div class="controls">
-            <button onclick="goBack()" class="btn btn-cancel">⬅️ Volver</button>
-            <button onclick="registrarCompra()" class="btn btn-send">✅ Registrar Compra</button>
-        </div>
-    </div>
+    <div class="container hidden" id="comprasContainer"></div>
 
     <div id="summaryModal" class="modal"></div>
 
@@ -365,13 +351,8 @@
         function eliminarFilaAdmin(boton) {
             const userInput = prompt("Ingrese la clave de seguridad para eliminar el artículo:");
             if (userInput === null) return;
-
             const today = new Date();
-            const year = today.getFullYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0');
-            const day = String(today.getDate()).padStart(2, '0');
-            const securityKey = `${year}${month}${day}`;
-
+            const securityKey = `${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, '0')}${String(today.getDate()).padStart(2, '0')}`;
             if (userInput === securityKey) {
                 boton.closest('tr').remove();
             } else {
@@ -382,27 +363,18 @@
         async function guardarArticulos() {
             const userInput = prompt("Ingrese la clave de seguridad para confirmar los cambios:");
             if (userInput === null) return;
-
             const today = new Date();
-            const year = today.getFullYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0');
-            const day = String(today.getDate()).padStart(2, '0');
-            const securityKey = `${year}${month}${day}`;
-
+            const securityKey = `${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, '0')}${String(today.getDate()).padStart(2, '0')}`;
             if (userInput !== securityKey) {
-                alert('Clave incorrecta. Los cambios no se guardaron.');
-                return;
+                return alert('Clave incorrecta. Los cambios no se guardaron.');
             }
-
             const newArticulos = [];
             views.adminContainer.querySelectorAll('tbody tr').forEach(row => {
                 const nombre = row.cells[0].querySelector('input').value.trim();
                 const unidad = row.cells[1].querySelector('input').value.trim();
                 if (nombre && unidad) newArticulos.push({ nombre, unidad });
             });
-
             if (!confirm(`¿Desea sobrescribir la lista con ${newArticulos.length} registros?`)) return;
-
             try {
                 await fetch(WEB_APP_URL, {
                     method: 'POST', mode: 'no-cors',
@@ -415,37 +387,99 @@
         }
 
         async function showCompras() {
+            views.comprasContainer.innerHTML = `
+                <h2>Registrar Compra a Proveedor</h2>
+                <div class="info-section">
+                    <div class="form-group"><label for="compra-registradopor">Registrado por:</label><input type="text" id="compra-registradopor" placeholder="Tu nombre completo"></div>
+                    <div class="form-group"><label for="compra-proveedor">Proveedor:</label><input type="text" id="compra-proveedor" placeholder="Nombre del proveedor"></div>
+                    <div class="form-group"><label for="compra-fecha">Fecha de Compra:</label><input type="date" id="compra-fecha"></div>
+                </div>
+                <table id="compras-table">
+                    <thead><tr><th>Artículo</th><th>Cantidad</th><th>Costo Unitario (₡)</th><th>Total (₡)</th><th>Acción</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+                <h3 style="text-align:right; margin-top:20px;">Total General: <span id="compra-total-general">0.00</span> ₡</h3>
+                <div class="controls">
+                    <button onclick="agregarFilaCompra()" class="btn btn-add">➕ Agregar Artículo</button>
+                    <button onclick="goBack()" class="btn btn-cancel">⬅️ Volver</button>
+                    <button onclick="registrarCompra()" class="btn btn-send">✅ Registrar Compra</button>
+                </div>`;
             showView('comprasContainer');
             await cargarCatalogoArticulos();
-            const select = views.comprasContainer.querySelector('#compra-articulo');
-            select.innerHTML = '<option value="" disabled selected>Seleccione un artículo</option>';
-            catalogoArticulos.forEach(item => {
-                select.innerHTML += `<option value="${item.nombre}">${item.nombre}</option>`;
-            });
             document.getElementById('compra-fecha').valueAsDate = new Date();
+            agregarFilaCompra();
         }
+
+        function agregarFilaCompra() {
+            const tableBody = document.getElementById('compras-table').querySelector('tbody');
+            const newRow = tableBody.insertRow();
+            let opcionesArticulo = catalogoArticulos.map(a => `<option value="${a.nombre}">${a.nombre}</option>`).join('');
+            newRow.innerHTML = `
+                <td><select class="compra-articulo">${opcionesArticulo}</select></td>
+                <td><input type="number" class="compra-cantidad" value="1" min="1" oninput="actualizarTotalesCompra()"></td>
+                <td><input type="number" class="compra-costo-unitario" value="0" min="0" step="100" oninput="actualizarTotalesCompra()"></td>
+                <td class="compra-costo-total" style="font-weight:bold;">0.00</td>
+                <td><button class="btn btn-danger" onclick="this.closest('tr').remove(); actualizarTotalesCompra();">X</button></td>`;
+            actualizarTotalesCompra();
+        }
+        
+        function actualizarTotalesCompra() {
+            let totalGeneral = 0;
+            document.querySelectorAll('#compras-table tbody tr').forEach(row => {
+                const cantidad = parseFloat(row.querySelector('.compra-cantidad').value) || 0;
+                const costoUnitario = parseFloat(row.querySelector('.compra-costo-unitario').value) || 0;
+                const costoTotal = cantidad * costoUnitario;
+                row.querySelector('.compra-costo-total').textContent = costoTotal.toFixed(2);
+                totalGeneral += costoTotal;
+            });
+            document.getElementById('compra-total-general').textContent = totalGeneral.toFixed(2);
+        }
+        
         async function registrarCompra() {
-            const compra = {
-                registradoPor: document.getElementById('compra-registradopor').value,
-                proveedor: document.getElementById('compra-proveedor').value,
-                fecha: document.getElementById('compra-fecha').value,
-                articulo: document.getElementById('compra-articulo').value,
-                cantidad: document.getElementById('compra-cantidad').value,
-                costo: document.getElementById('compra-costo').value
-            };
-            if (!compra.registradoPor||!compra.proveedor||!compra.fecha||!compra.articulo||!compra.cantidad||!compra.costo) {
-                return alert('Por favor, complete todos los campos.');
+            const userInput = prompt("Ingrese la clave de seguridad para registrar la compra:");
+            if (userInput === null) return;
+            const today = new Date();
+            const securityKey = `${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, '0')}${String(today.getDate()).padStart(2, '0')}`;
+            if (userInput !== securityKey) {
+                return alert('Clave incorrecta. La compra no se registró.');
             }
+
+            const header = {
+                registradoPor: document.getElementById('compra-registradopor').value.trim(),
+                proveedor: document.getElementById('compra-proveedor').value.trim(),
+                fecha: document.getElementById('compra-fecha').value
+            };
+            if (!header.registradoPor || !header.proveedor || !header.fecha) {
+                return alert('Por favor, complete los datos del encabezado (registrado por, proveedor y fecha).');
+            }
+
+            const items = [];
+            document.querySelectorAll('#compras-table tbody tr').forEach(row => {
+                const item = {
+                    articulo: row.querySelector('.compra-articulo').value,
+                    cantidad: parseFloat(row.querySelector('.compra-cantidad').value) || 0,
+                    costoUnitario: parseFloat(row.querySelector('.compra-costo-unitario').value) || 0,
+                    costoTotal: parseFloat(row.querySelector('.compra-costo-total').textContent) || 0
+                };
+                if (item.cantidad > 0 && item.costoUnitario > 0) {
+                    items.push(item);
+                }
+            });
+
+            if (items.length === 0) {
+                return alert('Debe agregar al menos un artículo con cantidad y costo válidos.');
+            }
+
             try {
-                 await fetch(WEB_APP_URL, {
+                await fetch(WEB_APP_URL, {
                     method: 'POST', mode: 'no-cors',
-                    body: JSON.stringify({ action: 'addCompra', payload: compra })
+                    body: JSON.stringify({ action: 'addCompra', payload: { header, items } })
                 });
                 alert('¡Compra registrada con éxito!');
-                views.comprasContainer.querySelectorAll('input, select').forEach(el => el.value = '');
-                document.getElementById('compra-fecha').valueAsDate = new Date();
                 goBack();
-            } catch (error) { alert('Error al registrar la compra.'); }
+            } catch (error) {
+                alert('Error al registrar la compra.');
+            }
         }
     </script>
 </body>
