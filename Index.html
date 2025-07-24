@@ -93,12 +93,10 @@
         #orderSummaryContent { font-family: 'Roboto', sans-serif; background-color: #f8f9fa; padding: 1em; border-radius: 10px; border: 1px solid #dee2e6; max-height: 60vh; overflow-y: auto; }
         .modal-actions { display: flex; justify-content: flex-end; gap: 1em; margin-top: 1.5em; flex-wrap: wrap; }
         .modal-actions .btn { padding: 0.8em 1.5em; font-size: 1em; width: auto; }
-        .btn-confirm { background-color: var(--success-color); color: white; }
-        .btn-confirm:hover { background-color: #218838; }
+        .btn-confirm-whatsapp { background-color: var(--whatsapp-color); color: white; flex-grow: 1; }
+        .btn-confirm-whatsapp:hover { background-color: #1EBE57; }
         .btn-cancel { background-color: var(--cancel-color); color: white; }
         .btn-cancel:hover { background-color: #5a6268; }
-        .btn-whatsapp { background-color: var(--whatsapp-color); color: white; }
-        .btn-whatsapp:hover { background-color: #1EBE57; }
         .menu-options { display: flex; justify-content: center; gap: 2em; margin-top: 2em; flex-wrap: wrap; }
         .menu-options .btn { min-width: 180px; padding: 1.2em 2em; font-size: 1.1em; flex-grow: 1; max-width: 300px; }
         .hidden { display: none; }
@@ -109,11 +107,11 @@
 <body>
 
     <div class="container" id="mainMenu">
-        <div class="header-logo"> <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTI4IDEyOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxyZWN0IHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiBmaWxsPSJ3aGl0ZSIvPgogICAgPHBhdGggZD0iTTM1IDYwTDIwIDQ1VjIySDQ3VjMwTDM1IDQyVjYwWk04MyA2MEw2OCA0NVYyMkg5NVYzMEw4MyA0MlY2MFpNNzMgNjBMODMgNzVWOTdINzNWNzVMMzMgNTlWMjJIMTU2VjU5WiIgc3Ryb2tlPSIjMDA1NmIzIiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSIxMDgiIGhlaWdodD0iNzUiIHg9IjEwIiB5PSI1MCIgc3Ryb2tlPSIjNjU2NTY1IiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSI4NiIgaGVpZGh0PSI0NiIgeD0iMjEiIHk9IjY5IiBmaWxsPSIjRDBFN0YxIi8+CiAgICA8cGF0aCBkPSJNNTAgNzVWNzVINzRWNzVMMTAwIDc1VjEwMEgzMEw1MCA3NVpNMjUgODVMNTIgODVWOTdIMjVWODVaIiBzdHJva2U9IiMwMDVkYTMiIHN0cm9rZS13aWR0aGg9IjQiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSI1MCIgaGVpZHRoPSIxMiIgeD0iMzkuNTUgeT0iNzMiIGZpbGw9IiMwMDVkYTMiLz4KICAgIDxjaXJjbGUgY3g9IjM1IiBjeT0iNDgiIHI9IjgiIGZpbGw9IiMwMDVkYTMiLz4KICAgIDxjaXJjbGUgY3g9IjM1IiBjeT0iNDgiIHI9IjgiIGZpbGw9IiM2NTY1NjUiLz4KICAgIDxwYXRoIGQ9Ik01NSA0MEwzOSAyOEg2OSBMNTUgMTRWNjZaIiBzdHJva2U9IiMwMDU2YjMiIHN0cm9rZS13aWR0aGg9IjMiIGZpbGw9Im5vbmUiLz4KPC9zdmc=" alt="Logo"> <h1>Tesoros Americanos Costa Rica</h1> <h2 class="subtitle">Sistema de Solicitudes de Suministros</h2> </div> <div class="menu-options"> <button class="btn" onclick="showForm()">📦 Nuevo Pedido</button> <button class="btn" onclick="showHistory()">📜 Ver Historial</button> </div>
+        <div class="header-logo"> <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTI4IDEyOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxyZWN0IHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiBmaWxsPSJ3aGl0ZSIvPgogICAgPHBhdGggZD0iTTM1IDYwTDIwIDQ1VjIySDQ3VjMwTDM1IDQyVjYwWk04MyA2MEw2OCA0NVYyMkg5NVYzMEw4MyA0MlY2MFpNNzMgNjBMODMgNzVWOTdINzNWNzVMMzMgNTlWMjJIMTU2VjUб5WiIgc3Ryb2tlPSIjMDA1NmIzIiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSIxMDgiIGhlaWdodD0iNzUiIHg9IjEwIiB5PSI1MCIgc3Ryb2tlPSIjNjU2NTY1IiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSI4NiIgaGVpZ2h0PSI0NiIgeD0iMjEiIHk9IjY5IiBmaWxsPSIjRDBFN0YxIi8+CiAgICA8cGF0aCBkPSJNNTAgNzVWNzVINzRWNzVMMTAwIDc1VjEwMEgzMEw1MCA3NVpNMjUgODVMNTIgODVWOTdIMjVWODVaIiBzdHJva2U9IiMwMDVkYTMiIHN0cm9rZS13aWR0aGg9IjQiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSI1MCIgaGVpZ2h0PSIxMiIgeD0iMzkuNTUgeT0iNzMiIGZpbGw9IiMwMDVkYTMiLz4KICAgIDxjaXJjbGUgY3g9IjM1IiBjeT0iNDgiIHI9IjgiIGZpbGw9IiMwMDVkYTMiLz4KICAgIDxjaXJjbGUgY3g9IjM1IiBjeT0iNDgiIHI9IjgiIGZpbGw9IiM2NTY1NjUiLz4KICAgIDxwYXRoIGQ9Ik01NSA0MEwzOSAyOEg2OSBMNTUgMTRWNjZaIiBzdHJva2U9IiMwMDU2YjMiIHN0cm9rZS13aWR0aGg9IjMiIGZpbGw9Im5vbmUiLz4KPC9zdmc=" alt="Logo"> <h1>Tesoros Americanos Costa Rica</h1> <h2 class="subtitle">Sistema de Solicitudes de Suministros</h2> </div> <div class="menu-options"> <button class="btn" onclick="showForm()">📦 Nuevo Pedido</button> <button class="btn" onclick="showHistory()">📜 Ver Historial</button> </div>
     </div>
 
     <div class="container hidden" id="formContainer">
-        <div class="header-logo" style="margin-bottom: 20px;"> <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTI4IDEyOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxyZWN0IHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiBmaWxsPSJ3aGl0ZSIvPgogICAgPHBhdGggZD0iTTM1IDYwTDIwIDQ1VjIySDQ3VjMwTDM1IDQyVjYwWk04MyA2MEw2OCA0NVYyMkg5NVYzMEw4MyA0MlY2MFpNNzMgNjBMODMgNzVWOTdINzNWNzVMMzMgNTlWMjJIMTU2VjU5WiIgc3Ryb2tlPSIjMDA1NmIzIiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSIxMDgiIGhlaWdodD0iNzUiIHg9IjEwIiB5PSI1MCIgc3Ryb2tlPSIjNjU2NTY1IiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSI4NiIgaGVpZ2h0PSI0NiIgeD0iMjEiIHk9IjY5IiBmaWxsPSIjRDBFN0YxIi8+CiAgICA8cGF0aCBkPSJNNTAgNzVWNzVINzRWNzVMMTAwIDc1VjEwMEgzMEw1MCA3NVpNMjUgODVMNTIgODVWOTdIMjVWODVaIiBzdHJva2U9IiMwMDVkYTMiIHN0cm9rZS13aWR0aGg9IjQiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSI1MCIgaGVpZ2h0PSIxMiIgeD0iMzkuNTUgeT0iNzMiIGZpbGw9IiMwMDVkYTMiLz4KICAgIDxjaXJjbGUgY3g9IjM1IiBjeT0iNDgiIHI9IjgiIGZpbGw9IiMwMDVkYTMiLz4KICAgIDxjaXJjbGUgY3g9IjM1IiBjeT0iNDgiIHI9IjgiIGZpbGw9IiM2NTY1NjUiLz4KICAgIDxwYXRoIGQ9Ik01NSA0MEwzOSAyOEg2OSBMNTUgMTRWNjZaIiBzdHJva2U9IiMwMDU2YjMiIHN0cm9rZS13aWR0aGg9IjMiIGZpbGw9Im5vbmUiLz4KPC9zdmc=" alt="Logo"> <h1>Tesoros Americanos Costa Rica</h1> <h2 class="subtitle">Formulario de Solicitud de Suministros</h2> </div> <h2>Nuevo Pedido</h2> <div class="info-section"> <div> <label for="solicitante">Solicitado por:</label> <input type="text" id="solicitante" placeholder="Nombre completo" required> </div> <div> <label for="departamento">Departamento:</label> <input type="text" id="departamento" placeholder="Ej: Contabilidad, TI" required> </div> </div> <table id="pedido-table"> <thead> <tr> <th>Artículo</th> <th>Cantidad</th> <th>Unidad de Medida</th> <th>Acción</th> </tr> </thead> <tbody></tbody> </table> <div class="controls"> <div class="left-buttons"> <button onclick="agregarFila()" class="btn btn-add">➕ Agregar Artículo</button> </div> <button onclick="previsualizarPedido()" class="btn btn-send">✉️ Previsualizar y Enviar</button> <button onclick="goBack()" class="btn" style="background-color: var(--cancel-color);">⬅️ Volver</button> </div>
+        <div class="header-logo" style="margin-bottom: 20px;"> <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTI4IDEyOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxyZWN0IHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiBmaWxsPSJ3aGl0ZSIvPgogICAgPHBhdGggZD0iTTM1IDYwTDIwIDQ1VjIySDQ3VjMwTDM1IDQyVjYwWk04MyA2MEw2OCA0NVYyMkg5NVYzMEw4MyA0MlY2MFpNNzMgNjBMODMgNzVWOTdINzNWNzVMMzMgNTlWMjJIMTU2VjU5WiIgc3Ryb2tlPSIjMDA1NmIzIiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSIxMDgiIGhlaWdodD0iNzUiIHg9IjEwIiB5PSI1MCIgc3Ryb2tlPSIjNjU2NTY1IiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSI4NiIgaGVpZ2h0PSI0NiIgeD0iMjEiIHk9IjY5IiBmaWxsPSIjRDBFN0YxIi8+CiAgICA8cGF0aCBkPSJNNTAgNzVWNzVINzRWNzVMMTAwIDc1VjEwMEgzMEw1MCA3NVpNMjUgODVMNTIgODVWOTdIMjVWODVaIiBzdHJva2U9IiMwMDVkYTMiIHN0cm9rZS13aWR0aGg9IjQiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSI1MCIgaGVpZ2h0PSIxMiIgeD0iMzkuNTUgeT0iNzMiIGZpbGw9IiMwMDVkYTMiLz4KICAgIDxjaXJjbGUgY3g9IjM1IiBjeT0iNDgiIHI9IjgiIGZpbGw9IiMwMDVkYTMiLz4KICAgIDxjaXJjbGUgY3g9IjM1IiBjeT0iNDgiIHI9IjgiIGZpbGw9IiM2NTY1NjUiLz4KICAgIDxwYXRoIGQ9Ik01NSA0MEwzOSAyOEg2OSBMNTUgMTRWNjZaIiBzdHJva2U9IiMwMDU2YjMiIHN0cm9rZS13aWR0aGg9IjMiIGZpbGw9Im5vbmUiLz4KPC9zdmc=" alt="Logo"> <h1>Tesoros Americanos Costa Rica</h1> <h2 class="subtitle">Formulario de Solicitud de Suministros</h2> </div> <h2>Nuevo Pedido</h2> <div class="info-section"> <div> <label for="solicitante">Solicitado por:</label> <input type="text" id="solicitante" placeholder="Nombre completo" required> </div> <div> <label for="departamento">Departamento:</label> <input type="text" id="departamento" placeholder="Ej: Contabilidad, TI" required> </div> </div> <table id="pedido-table"> <thead> <tr> <th>Artículo</th> <th>Cantidad</th> <th>Unidad de Medida</th> <th>Acción</th> </tr> </thead> <tbody></tbody> </table> <div class="controls"> <div class="left-buttons"> <button onclick="agregarFila()" class="btn btn-add">➕ Agregar Artículo</button> </div> <button onclick="previsualizarPedido()" class="btn btn-send">📲 Previsualizar y Enviar</button> <button onclick="goBack()" class="btn" style="background-color: var(--cancel-color);">⬅️ Volver</button> </div>
     </div>
 
     <div class="container hidden" id="historyContainer">
@@ -131,8 +129,7 @@
                 <div id="orderSummaryContent"></div>
                 <div class="modal-actions">
                     <button onclick="closeModal()" class="btn btn-cancel">Cancelar</button>
-                    <button onclick="enviarPorWhatsApp()" class="btn btn-whatsapp">📲 Enviar por WhatsApp</button>
-                    <button onclick="confirmarYEnviar()" class="btn btn-confirm">📧 Confirmar y Enviar por Correo</button>
+                    <button onclick="confirmarYEnviarWhatsApp()" class="btn btn-confirm-whatsapp">📲 Confirmar y Enviar por WhatsApp</button>
                 </div>
             </div>
         </div>
@@ -142,7 +139,7 @@
         let historial = JSON.parse(localStorage.getItem("historialPedidos")) || [];
         const summaryModal = document.getElementById('summaryModal');
         const orderSummaryContent = document.getElementById('orderSummaryContent');
-        let currentEmailData = {};
+        let currentRequestData = {};
 
         const listaArticulos = [ { nombre: "Cloro", unidad: "Galón" }, { nombre: "Desinfectante", unidad: "Galón" }, { nombre: "Jabón de manos", unidad: "Galón" }, { nombre: "Cinta empaque", unidad: "Unidad" }, { nombre: "Rollo Termíco", unidad: "Unidad" }, { nombre: "Lavaplatos kilo", unidad: "Unidad" }, { nombre: "Jabón en polvo kilo", unidad: "Unidad" }, { nombre: "Rollo paletizar", unidad: "Unidad" }, { nombre: "Café 500grs", unidad: "Unidad" }, { nombre: "Etiquetas premium", unidad: "Unidad" }, { nombre: "Etiquetas vitrina", unidad: "Unidad" }, { nombre: "Tinta ribboun", unidad: "Unidad" }, { nombre: "Bolsas biodegradables 50 unds", unidad: "Paquete" }, { nombre: "Mechas", unidad: "Unidad" }, { nombre: "Servilletas de mesa", unidad: "Unidad" }, { nombre: "Papel higienico ECO", unidad: "Unidad" }, { nombre: "Toallas de mano", unidad: "Unidad" }, { nombre: "Toallas microfibras", unidad: "Unidad" }, { nombre: "Azúcar 2K", unidad: "Unidad" }, { nombre: "Tinta ecotank (4 colores)", unidad: "Caja" }, { nombre: "Grapas", unidad: "Caja" }, { nombre: "Resmas Hojas", unidad: "Contenedor" }, { nombre: "Esponjas", unidad: "Contenedor" }, { nombre: "Toallas de tarro", unidad: "Contenedor" }, { nombre: "Etiquetas pequeñas", unidad: "Contenedor" }, { nombre: "Etiquetas medianas", unidad: "Contenedor" }, { nombre: "Etiquetas grandes", unidad: "Contenedor" }, { nombre: "Alcohol en gel", unidad: "Contenedor" }, { nombre: "Bolsas de basura variado", unidad: "Contenedor" }, { nombre: "Toallas humedas paq", unidad: "Contenedor" }, { nombre: "Papel higienico", unidad: "Contenedor" }, { nombre: "Bolsas Nacional 8x16", unidad: "Kilo" }, { nombre: "Bolsas Nacional 10x20", unidad: "Kilo" }, { nombre: "Bolsas Nacional 12x25", unidad: "Kilo" }, { nombre: "Bolsas Jumbo 15x37", unidad: "Kilo" }, { nombre: "Bolsas Basura Transparentes 37x55", unidad: "Kilo" }, { nombre: "Camisa de mujer XS", unidad: "Uniforme" }, { nombre: "Camisa de mujer S", unidad: "Uniforme" }, { nombre: "Camisa de mujer M", unidad: "Uniforme" }, { nombre: "Camisa de mujer L", unidad: "Uniforme" }, { nombre: "Camisa de mujer XL", unidad: "Uniforme" }, { nombre: "Camisa de mujer 2XL", unidad: "Uniforme" }, { nombre: "Camisa de mujer 3XL", unidad: "Uniforme" }, { nombre: "Camisa de hombre XS", unidad: "Uniforme" }, { nombre: "Camisa de hombre S", unidad: "Uniforme" }, { nombre: "Camisa de hombre M", unidad: "Uniforme" }, { nombre: "Camisa de hombre L", unidad: "Uniforme" }, { nombre: "Camisa de hombre XL", unidad: "Uniforme" }, { nombre: "Camisa de hombre 2XL", unidad: "Uniforme" }, { nombre: "Camisa de hombre 3XL", unidad: "Uniforme" } ];
 
@@ -245,10 +242,20 @@
                 alert('Debe agregar al menos un artículo válido al pedido.');
                 return;
             }
+
+            // --- INICIO DE LA MODIFICACIÓN ---
             let pedidoHTML = `<p><strong>Solicitante:</strong> ${solicitante}</p><p><strong>Departamento:</strong> ${departamento}</p><table style="width: 100%; border-collapse: collapse; margin-top: 15px;"><thead style="background-color: #004d99; color: white;"><tr><th style="padding: 8px; border: 1px solid #ddd;">Artículo</th><th style="padding: 8px; border: 1px solid #ddd;">Cantidad</th><th style="padding: 8px; border: 1px solid #ddd;">Unidad</th></tr></thead><tbody>`;
-            let pedidoTextoPlano = `*Solicitud de Suministros*\n\n*Solicitante:* ${solicitante}\n*Departamento:* ${departamento}\n\n`;
+            
+            const fechaActual = new Date().toLocaleString('es-CR', { dateStyle: 'long', timeStyle: 'short' });
+            let pedidoTextoPlano = `*Solicitud de Suministros* 📄\n`;
+            pedidoTextoPlano += `------------------------------------\n`;
+            pedidoTextoPlano += `*Fecha:* ${fechaActual}\n`;
+            pedidoTextoPlano += `*Solicitante:* _${solicitante}_\n`;
+            pedidoTextoPlano += `*Departamento:* _${departamento}_\n`;
+            pedidoTextoPlano += `------------------------------------\n\n`;
+            pedidoTextoPlano += `*Detalle del Pedido:*\n`;
             pedidoTextoPlano += '```\n';
-            const col1 = 22, col2 = 6, col3 = 12;
+            const col1 = 25, col2 = 6, col3 = 12;
             pedidoTextoPlano += 'Artículo'.padEnd(col1) + '| ' + 'Cant.'.padEnd(col2) + '| ' + 'Unidad'.padEnd(col3) + '\n';
             pedidoTextoPlano += '-'.repeat(col1 + col2 + col3 + 4) + '\n';
             pedidoItems.forEach(item => {
@@ -258,63 +265,61 @@
             });
             pedidoHTML += `</tbody></table>`;
             pedidoTextoPlano += '```';
+            // --- FIN DE LA MODIFICACIÓN ---
+
             const excelData = [['Artículo', 'Cantidad', 'Unidad de Medida'], ...pedidoItems.map(p => [p.articulo, p.cantidad, p.unidad])];
-            currentEmailData = {
-                bodyHTML: pedidoHTML,
-                bodyTexto: pedidoTextoPlano,
-                subject: `Solicitud de Suministros - ${solicitante} (${departamento})`,
+            currentRequestData = {
+                whatsappBody: pedidoTextoPlano,
                 excel: excelData,
                 solicitante,
                 departamento,
                 detalles: pedidoItems,
                 fecha: new Date().toISOString()
             };
-            orderSummaryContent.innerHTML = currentEmailData.bodyHTML;
+            orderSummaryContent.innerHTML = pedidoHTML;
             summaryModal.style.display = 'flex';
         }
+
         function guardarPedidoEnHistorial() {
              historial.push({
-                fecha: new Date(currentEmailData.fecha).toLocaleString('es-CR', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }),
-                fechaISO: currentEmailData.fecha,
-                solicitante: currentEmailData.solicitante,
-                departamento: currentEmailData.departamento,
-                detalles: currentEmailData.detalles
+                fecha: new Date(currentRequestData.fecha).toLocaleString('es-CR', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }),
+                fechaISO: currentRequestData.fecha,
+                solicitante: currentRequestData.solicitante,
+                departamento: currentRequestData.departamento,
+                detalles: currentRequestData.detalles
             });
             localStorage.setItem("historialPedidos", JSON.stringify(historial));
         }
-        function enviarPorWhatsApp() {
-            const link = `https://wa.me/?text=${encodeURIComponent(currentEmailData.bodyTexto)}`;
+        
+        function confirmarYEnviarWhatsApp() {
+            const link = `https://wa.me/?text=${encodeURIComponent(currentRequestData.whatsappBody)}`;
             window.open(link, '_blank');
-            guardarPedidoEnHistorial();
-            closeModal();
-            alert('El pedido se ha guardado en el historial. Por favor, confirme el envío en WhatsApp.');
-        }
-        function confirmarYEnviar() {
-            const emailDestino = 'soporteit@atcostarica.com';
-            const mailtoBody = `<html><head><style>body{font-family:sans-serif}table{width:100%;border-collapse:collapse}th,td{padding:8px;border:1px solid #ddd;text-align:left}th{background-color:#f2f2f2}</style></head><body><p>Estimado equipo de Soporte IT,</p><p>Se ha generado una nueva solicitud de suministros con los siguientes detalles:</p>${currentEmailData.bodyHTML}<p>Favor procesar esta solicitud. Gracias.</p><p>Atentamente,<br>${currentEmailData.solicitante}</p></body></html>`;
-            const mailtoLink = `mailto:${emailDestino}?subject=${encodeURIComponent(currentEmailData.subject)}&body=${encodeURIComponent(mailtoBody)}`;
-            window.location.href = mailtoLink;
-            const ws = XLSX.utils.aoa_to_sheet(currentEmailData.excel);
+            const ws = XLSX.utils.aoa_to_sheet(currentRequestData.excel);
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, "Suministros");
             const today = new Date();
             const formattedDate = `${String(today.getDate()).padStart(2, '0')}-${String(today.getMonth() + 1).padStart(2, '0')}-${today.getFullYear()}`;
-            const fileName = `Pedido_Suministros_${currentEmailData.solicitante.replace(/ /g, '_')}_${formattedDate}.xlsx`;
+            const fileName = `Pedido_Suministros_${currentRequestData.solicitante.replace(/ /g, '_')}_${formattedDate}.xlsx`;
             XLSX.writeFile(wb, fileName);
             guardarPedidoEnHistorial();
             closeModal();
-            alert('Su solicitud ha sido enviada por correo, el archivo Excel ha sido descargado y el pedido se guardó en el historial.');
+            alert('El pedido se ha guardado en el historial y el archivo Excel ha sido descargado. Por favor, confirme el envío en la pestaña de WhatsApp.');
         }
+
         function closeModal() {
             summaryModal.style.display = 'none';
             goBack();
         }
+
         window.onclick = function(event) { if (event.target == summaryModal) closeModal(); }
-        function renderHistorial(){const t=document.querySelector("#historialTable tbody");if(t.innerHTML="",0===historial.length){const e=t.insertRow(),o=e.insertCell(0);o.colSpan=4,o.textContent="No hay pedidos en el historial.",o.style.textAlign="center",o.style.padding="20px",o.style.color="var(--light-text-color)";return}historial.forEach(e=>{const o=document.createElement("tr"),l=e.fecha||new Date(e.fechaISO).toLocaleString("es-CR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"});o.innerHTML=`\n                    <td data-label="Fecha:">${l}</td>\n                    <td data-label="Solicitante:">${e.solicitante}</td>\n                    <td data-label="Departamento:">${e.departamento}</td>\n                    <td data-label="Detalles del Pedido:">\n                        <table class="details-table">\n                            <thead>\n                                <tr><th>Artículo</th><th>Cant.</th><th>Unidad</th></tr>\n                            </thead>\n                            <tbody>\n                                ${e.detalles.map(t=>`\n                                    <tr>\n                                        <td data-label="Artículo:">${t.articulo}</td>\n                                        <td data-label="Cantidad:">${t.cantidad}</td>\n                                        <td data-label="Unidad:">${t.unidad}</td>\n                                    </tr>\n                                `).join("")}\n                            </tbody>\n                        </table>\n                    </td>`,t.appendChild(o)})}
+        
+        // El resto de las funciones de historial y exportación permanecen igual...
+        function renderHistorial(){const t=document.querySelector("#historialTable tbody");if(t.innerHTML="",0===historial.length){const e=t.insertRow(),o=e.insertCell(0);o.colSpan=4,o.textContent="No hay pedidos en el historial.",o.style.textAlign="center",o.style.padding="20px",o.style.color="var(--light-text-color)";return}historial.forEach(e=>{const o=document.createElement("tr"),l=e.fecha||new Date(e.fechaISO).toLocaleString("es-CR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"});o.innerHTML=`\n <td data-label="Fecha:">${l}</td>\n <td data-label="Solicitante:">${e.solicitante}</td>\n <td data-label="Departamento:">${e.departamento}</td>\n <td data-label="Detalles del Pedido:">\n <table class="details-table">\n <thead>\n <tr><th>Artículo</th><th>Cant.</th><th>Unidad</th></tr>\n </thead>\n <tbody>\n ${e.detalles.map(t=>`\n <tr>\n <td data-label="Artículo:">${t.articulo}</td>\n <td data-label="Cantidad:">${t.cantidad}</td>\n <td data-label="Unidad:">${t.unidad}</td>\n </tr>\n `).join("")}\n </tbody>\n </table>\n </td>`,t.appendChild(o)})}
         function limpiarHistorialAntiguo(){const t=new Date;t.setMonth(t.getMonth()-1);const e=historial.filter(e=>new Date(e.fechaISO)>=t);if(e.length===historial.length)return void alert("No hay pedidos con más de un mes de antigüedad.");confirm("¿Desea eliminar los pedidos con más de un mes de antigüedad?")&&(historial=e,localStorage.setItem("historialPedidos",JSON.stringify(historial)),renderHistorial(),alert("Se han eliminado los pedidos antiguos."))}
         function limpiarTodoHistorial(){const t=new Date,e={year:"numeric",month:"2-digit",day:"2-digit",timeZone:"America/Costa_Rica"},o=new Intl.DateTimeFormat("en-US",e).formatToParts(t);let l,n,a;for(const r of o)"year"===r.type&&(l=r.value),"month"===r.type&&(n=r.value),"day"===r.type&&(a=r.value);const c=`${l}${n}${a}`,i=prompt("ADVERTENCIA: Está a punto de limpiar TODO el historial de pedidos. Esta acción es IRREVERSIBLE.\n\nPara confirmar, introduzca la clave de seguridad:");if(null!==i)if(i===c)historial=[],localStorage.removeItem("historialPedidos"),renderHistorial(),alert("Todo el historial de pedidos ha sido limpiado.");else alert("Clave de seguridad incorrecta.")}
         function exportarExcel(){if(0===historial.length)return void alert("No hay datos para exportar.");const t=[["Fecha","Solicitante","Departamento","Artículo","Cantidad","Unidad de Medida"]];historial.forEach(e=>{const o=e.fecha||new Date(e.fechaISO).toLocaleString("es-CR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"});e.detalles.forEach(l=>{t.push([o,e.solicitante,e.departamento,l.articulo,l.cantidad,l.unidad])})});const e=XLSX.utils.aoa_to_sheet(t),o=XLSX.utils.book_new();XLSX.utils.book_append_sheet(o,e,"Historial");const l=new Date,n=`${String(l.getDate()).padStart(2,"0")}-${String(l.getMonth()+1).padStart(2,"0")}-${l.getFullYear()}`;XLSX.writeFile(o,`Historial_Suministros_${n}.xlsx`)}
         async function exportarPDF(){if(0===historial.length)return void alert("No hay datos para exportar.");const{jsPDF:t}=window.jspdf,e=new t;e.setFontSize(16),e.text("Historial de Solicitudes de Suministros",14,20);let o=35;const l=14,n=7,a=e.internal.pageSize.height-20;historial.forEach((r,c)=>{const i=r.fecha||new Date(r.fechaISO).toLocaleString("es-CR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"}),d=`--- Pedido #${c+1} (${i}) - ${r.solicitante} (${r.departamento}) ---`,s=e.splitTextToSize(d,e.internal.pageSize.width-2*l);o+(s.length*n+r.detalles.length*n*1.5)>a&&(e.addPage(),o=20,e.setFontSize(16),e.text("Historial de Solicitudes (Continuación)",l,o),o+=15),e.setFontSize(12),e.text(s,l,o),o+=n*s.length,e.setFontSize(9),e.text("Artículo",l+5,o),e.text("Cant.",l+80,o),e.text("Unidad",l+100,o),o+=.8*n,r.detalles.forEach(t=>{const r=e.splitTextToSize(`${t.articulo}`,60);e.text(r,l+5,o),e.text(String(t.cantidad),l+80,o),e.text(t.unidad,l+100,o),o+=n*Math.max(1,r.length)}),o+=1.2*n});const r=new Date,c=`${String(r.getDate()).padStart(2,"0")}-${String(r.getMonth()+1).padStart(2,"0")}-${r.getFullYear()}`;e.save(`Historial_Suministros_${c}.pdf`)}
+
     </script>
 
 </body>
