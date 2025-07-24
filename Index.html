@@ -42,12 +42,12 @@
             body { padding: 15px; }
             .container { padding: 20px; }
             .menu-options, .info-section { grid-template-columns: 1fr; }
-            #pedido-table thead, #historialTable thead { display: none; }
-            #pedido-table, #historialTable, #pedido-table tbody, #historialTable tbody, #pedido-table tr, #historialTable tr { display: block; width: 100%; }
-            #pedido-table tr, #historialTable tr { margin-bottom: 20px; border: 1px solid var(--border-color); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,.05); overflow: hidden; }
-            #pedido-table > tbody > tr > td, #historialTable > tbody > tr > td { display: flex; justify-content: space-between; align-items: center; text-align: right; padding: 12px 15px; border: none; word-break: break-word; min-height: 44px; border-bottom: 1px dotted var(--border-color); }
-            #pedido-table > tbody > tr > td:last-child, #historialTable > tbody > tr > td:last-child { border-bottom: none; }
-            #pedido-table > tbody > tr > td::before, #historialTable > tbody > tr > td::before { content: attr(data-label); font-weight: 700; color: var(--primary-color); text-align: left; padding-right: 15px; flex-shrink: 0; }
+            #pedido-table thead, #historialTable thead, #compras-table thead, #historial-compras-table thead { display: none; }
+            .responsive-table, .responsive-table tbody, .responsive-table tr { display: block; width: 100%; }
+            .responsive-table tr { margin-bottom: 20px; border: 1px solid var(--border-color); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,.05); overflow: hidden; }
+            .responsive-table > tbody > tr > td { display: flex; justify-content: space-between; align-items: center; text-align: right; padding: 12px 15px; border: none; word-break: break-word; min-height: 44px; border-bottom: 1px dotted var(--border-color); }
+            .responsive-table > tbody > tr > td:last-child { border-bottom: none; }
+            .responsive-table > tbody > tr > td::before { content: attr(data-label); font-weight: 700; color: var(--primary-color); text-align: left; padding-right: 15px; flex-shrink: 0; }
             #historialTable > tbody > tr > td:nth-of-type(1)::before { content: "Seleccionar"; }
             #historialTable > tbody > tr > td:nth-of-type(2)::before { content: "Fecha"; }
             #historialTable > tbody > tr > td:nth-of-type(3)::before { content: "Solicitante"; }
@@ -57,9 +57,18 @@
             #pedido-table > tbody > tr > td:nth-of-type(2)::before { content: "Artículo"; }
             #pedido-table > tbody > tr > td:nth-of-type(3)::before { content: "Cantidad"; }
             #pedido-table > tbody > tr > td:nth-of-type(4)::before { content: ""; }
-            #pedido-table select, #pedido-table .quantity-control { flex-grow: 1; min-width: 120px; max-width: 65%; }
+            #compras-table > tbody > tr > td:nth-of-type(1)::before { content: "Artículo"; }
+            #compras-table > tbody > tr > td:nth-of-type(2)::before { content: "Cantidad"; }
+            #compras-table > tbody > tr > td:nth-of-type(3)::before { content: "Costo Unitario"; }
+            #compras-table > tbody > tr > td:nth-of-type(4)::before { content: "Total"; }
+            #compras-table > tbody > tr > td:nth-of-type(5)::before { content: ""; }
+            #historial-compras-table > tbody > tr > td:nth-of-type(1)::before { content: "Fecha"; }
+            #historial-compras-table > tbody > tr > td:nth-of-type(2)::before { content: "Proveedor"; }
+            #historial-compras-table > tbody > tr > td:nth-of-type(3)::before { content: "Artículo"; }
+            #historial-compras-table > tbody > tr > td:nth-of-type(4)::before { content: "Cantidad"; }
+            #historial-compras-table > tbody > tr > td:nth-of-type(5)::before { content: "Costo Total"; }
+            .responsive-table select, .responsive-table .quantity-control { flex-grow: 1; min-width: 120px; max-width: 65%; }
             #pedido-table > tbody > tr > td:nth-of-type(4) { padding: 0; }
-            .action-button { width: 100%; padding: 12px; border-radius: 0; border: none; }
             .details-table, .details-table tbody, .details-table tr, .details-table td { display: block; width: 100%; border: none; box-shadow: none; margin: 0; padding: 4px 0; min-height: auto; text-align: left; }
             .details-table td { display: flex; justify-content: space-between; border-bottom: 1px solid #f0f0f0; }
             .details-table tr:last-child td { border-bottom: none; }
@@ -79,9 +88,10 @@
         </div>
         <div class="menu-options">
             <button class="btn" onclick="showForm()">📦 Nuevo Pedido</button>
-            <button class="btn" onclick="showHistory()">📜 Ver Historial de Pedidos</button>
+            <button class="btn" onclick="showHistory()">📜 Ver Pedidos</button>
             <button class="btn" onclick="showAdminArticulos()">✏️ Administrar Artículos</button>
             <button class="btn" onclick="showCompras()">🛒 Registrar Compra</button>
+            <button class="btn" onclick="showHistorialCompras()">📊 Consultar Compras</button>
         </div>
     </div>
 
@@ -100,13 +110,14 @@
         </div>
     </div>
     <div class="container hidden" id="comprasContainer"></div>
-
+    <div class="container hidden" id="historialComprasContainer"></div>
     <div id="summaryModal" class="modal"></div>
 
     <script>
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxZwboxYJuMqF6pwc8icP2F3j4Xywrjhyjgbor5fFrUmBXW3cTx18DlFm8CGfFyIOcRBQ/exec";
         let catalogoArticulos = [];
         let historial = [];
+        let historialCompras = [];
         let currentRequestData = {};
 
         const views = {
@@ -115,6 +126,7 @@
             historyContainer: document.getElementById('historyContainer'),
             adminContainer: document.getElementById('adminContainer'),
             comprasContainer: document.getElementById('comprasContainer'),
+            historialComprasContainer: document.getElementById('historialComprasContainer'),
             summaryModal: document.getElementById('summaryModal')
         };
 
@@ -134,7 +146,7 @@
                 catalogoArticulos = await response.json();
             } catch (error) {
                 console.error(error);
-                alert("No se pudo cargar la lista de artículos desde la base de datos.");
+                alert("No se pudo cargar la lista de artículos.");
             }
         }
         
@@ -146,7 +158,7 @@
                     <div class="form-group"><label for="solicitante">Solicitado por:</label><input type="text" id="solicitante" placeholder="Nombre completo"></div> 
                     <div class="form-group"><label for="departamento">Departamento:</label><select id="departamento"><option value="" disabled selected>Seleccione</option><option>Oficina</option><option>Centro Distribución</option><option>Barrio México</option><option>San Francisco</option><option>Alto Valor</option><option>Directtools SF</option><option>Directtools BM</option></select></div>
                 </div>
-                <table id="pedido-table"><thead><tr><th>Unidad</th><th>Artículo</th><th>Cantidad</th><th>Acción</th></tr></thead><tbody></tbody></table>
+                <table id="pedido-table" class="responsive-table"><thead><tr><th>Unidad</th><th>Artículo</th><th>Cantidad</th><th>Acción</th></tr></thead><tbody></tbody></table>
                 <div class="controls">
                     <button onclick="agregarFila()" class="btn btn-add">➕ Agregar Artículo</button>
                     <button onclick="goBack()" class="btn btn-cancel">⬅️ Volver</button>
@@ -164,10 +176,10 @@
             let opcionesUnidad = unidades.map(u => `<option value="${u}">${u}</option>`).join('');
 
             newRow.innerHTML = `
-                <td data-label="Unidad:"><select required onchange="actualizarArticulos(this)"><option value="" disabled selected>Seleccione</option>${opcionesUnidad}</select></td>
-                <td data-label="Artículo:"><select class="articulo-select" required disabled><option value="" disabled selected>Seleccione unidad</option></select></td>
-                <td data-label="Cantidad:"><div class="quantity-control" style="display:flex; align-items:center; justify-content:center;"><button class="btn" onclick="cambiarCantidad(this, -1)">-</button><span style="padding:0 10px; font-weight:bold;">1</span><button class="btn" onclick="cambiarCantidad(this, 1)">+</button></div></td>
-                <td data-label="Acción:"><button class="btn btn-danger" onclick="eliminarFila(this)">Eliminar</button></td>`;
+                <td data-label="Unidad"><select required onchange="actualizarArticulos(this)"><option value="" disabled selected>Seleccione</option>${opcionesUnidad}</select></td>
+                <td data-label="Artículo"><select class="articulo-select" required disabled><option value="" disabled selected>Seleccione unidad</option></select></td>
+                <td data-label="Cantidad"><div style="display:flex; align-items:center; justify-content:flex-end;"><button class="btn" onclick="cambiarCantidad(this, -1)">-</button><span style="padding:0 10px; font-weight:bold;">1</span><button class="btn" onclick="cambiarCantidad(this, 1)">+</button></div></td>
+                <td data-label="Acción"><button class="btn btn-danger" onclick="eliminarFila(this)">Eliminar</button></td>`;
         }
 
         function actualizarArticulos(selectUnidad) {
@@ -288,7 +300,7 @@
         }
         
         async function showHistory() {
-            views.historyContainer.innerHTML = `<h2>Historial Central de Solicitudes</h2><table id="historialTable"><thead><tr><th style="width:5%"><input type="checkbox" onchange="toggleSeleccionarTodos(this)"></th><th>Fecha</th><th>Solicitante</th><th>Departamento</th><th>Detalles</th></tr></thead><tbody><tr><td colspan="5" style="text-align:center">Cargando...</td></tr></tbody></table><div class="controls"><button class="btn btn-whatsapp" onclick="reenviarPedidosSeleccionados()">📲 Reenviar</button><button class="btn btn-cancel" onclick="goBack()">⬅️ Volver</button></div>`;
+            views.historyContainer.innerHTML = `<h2>Historial Central de Pedidos</h2><table id="historialTable" class="responsive-table"><thead><tr><th style="width:5%"><input type="checkbox" onchange="toggleSeleccionarTodos(this)"></th><th>Fecha</th><th>Solicitante</th><th>Departamento</th><th>Detalles</th></tr></thead><tbody><tr><td colspan="5" style="text-align:center">Cargando...</td></tr></tbody></table><div class="controls"><button class="btn btn-whatsapp" onclick="reenviarPedidosSeleccionados()">📲 Reenviar</button><button class="btn btn-cancel" onclick="goBack()">⬅️ Volver</button></div>`;
             showView('historyContainer');
              try {
                 const response = await fetch(WEB_APP_URL);
@@ -394,7 +406,7 @@
                     <div class="form-group"><label for="compra-proveedor">Proveedor:</label><input type="text" id="compra-proveedor" placeholder="Nombre del proveedor"></div>
                     <div class="form-group"><label for="compra-fecha">Fecha de Compra:</label><input type="date" id="compra-fecha"></div>
                 </div>
-                <table id="compras-table">
+                <table id="compras-table" class="responsive-table">
                     <thead><tr><th>Artículo</th><th>Cantidad</th><th>Costo Unitario (₡)</th><th>Total (₡)</th><th>Acción</th></tr></thead>
                     <tbody></tbody>
                 </table>
@@ -415,11 +427,11 @@
             const newRow = tableBody.insertRow();
             let opcionesArticulo = catalogoArticulos.map(a => `<option value="${a.nombre}">${a.nombre}</option>`).join('');
             newRow.innerHTML = `
-                <td><select class="compra-articulo">${opcionesArticulo}</select></td>
-                <td><input type="number" class="compra-cantidad" value="1" min="1" oninput="actualizarTotalesCompra()"></td>
-                <td><input type="number" class="compra-costo-unitario" value="0" min="0" step="100" oninput="actualizarTotalesCompra()"></td>
-                <td class="compra-costo-total" style="font-weight:bold;">0.00</td>
-                <td><button class="btn btn-danger" onclick="this.closest('tr').remove(); actualizarTotalesCompra();">X</button></td>`;
+                <td data-label="Artículo"><select class="compra-articulo">${opcionesArticulo}</select></td>
+                <td data-label="Cantidad"><input type="number" class="compra-cantidad" value="1" min="1" oninput="actualizarTotalesCompra()"></td>
+                <td data-label="Costo Unitario"><input type="number" class="compra-costo-unitario" value="0" min="0" step="100" oninput="actualizarTotalesCompra()"></td>
+                <td data-label="Total" class="compra-costo-total" style="font-weight:bold;">0.00</td>
+                <td data-label="Acción"><button class="btn btn-danger" onclick="this.closest('tr').remove(); actualizarTotalesCompra();">X</button></td>`;
             actualizarTotalesCompra();
         }
         
@@ -480,6 +492,44 @@
             } catch (error) {
                 alert('Error al registrar la compra.');
             }
+        }
+
+        async function showHistorialCompras() {
+            views.historialComprasContainer.innerHTML = `
+                <h2>Historial de Compras</h2>
+                <table id="historial-compras-table" class="responsive-table">
+                    <thead><tr><th>Fecha</th><th>Proveedor</th><th>Artículo</th><th>Cantidad</th><th>Costo Total</th></tr></thead>
+                    <tbody><tr><td colspan="5" style="text-align:center">Cargando...</td></tr></tbody>
+                </table>
+                <div class="controls"><button class="btn btn-cancel" onclick="goBack()">⬅️ Volver</button></div>`;
+            showView('historialComprasContainer');
+            try {
+                const response = await fetch(`${WEB_APP_URL}?action=getCompras`);
+                if (!response.ok) throw new Error("No se pudo cargar el historial.");
+                historialCompras = await response.json();
+                renderHistorialCompras();
+            } catch (e) {
+                console.error(e);
+                views.historialComprasContainer.querySelector("tbody").innerHTML = `<tr><td colspan="5" style="text-align:center; color:red;">Error al cargar el historial.</td></tr>`;
+            }
+        }
+
+        function renderHistorialCompras() {
+            const tableBody = views.historialComprasContainer.querySelector("tbody");
+            tableBody.innerHTML = "";
+            if (historialCompras.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No hay compras registradas.</td></tr>';
+                return;
+            }
+            historialCompras.forEach(compra => {
+                const newRow = tableBody.insertRow();
+                newRow.innerHTML = `
+                    <td data-label="Fecha">${compra.fecha}</td>
+                    <td data-label="Proveedor">${compra.proveedor}</td>
+                    <td data-label="Artículo">${compra.articulo}</td>
+                    <td data-label="Cantidad">${compra.cantidad}</td>
+                    <td data-label="Costo Total">${parseFloat(compra.costoTotal).toFixed(2)} ₡</td>`;
+            });
         }
     </script>
 </body>
