@@ -41,9 +41,31 @@
         @media screen and (max-width: 768px) {
             body { padding: 15px; }
             .container { padding: 20px; }
-            .menu-options { grid-template-columns: 1fr; }
-            .info-section { grid-template-columns: 1fr; }
-            /* ... (los demás estilos responsivos que ya teníamos) ... */
+            .menu-options, .info-section { grid-template-columns: 1fr; }
+            #pedido-table thead, #historialTable thead { display: none; }
+            #pedido-table, #historialTable, #pedido-table tbody, #historialTable tbody, #pedido-table tr, #historialTable tr { display: block; width: 100%; }
+            #pedido-table tr, #historialTable tr { margin-bottom: 20px; border: 1px solid var(--border-color); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,.05); overflow: hidden; }
+            #pedido-table > tbody > tr > td, #historialTable > tbody > tr > td { display: flex; justify-content: space-between; align-items: center; text-align: right; padding: 12px 15px; border: none; word-break: break-word; min-height: 44px; border-bottom: 1px dotted var(--border-color); }
+            #pedido-table > tbody > tr > td:last-child, #historialTable > tbody > tr > td:last-child { border-bottom: none; }
+            #pedido-table > tbody > tr > td::before, #historialTable > tbody > tr > td::before { content: attr(data-label); font-weight: 700; color: var(--primary-color); text-align: left; padding-right: 15px; flex-shrink: 0; }
+            #historialTable > tbody > tr > td:nth-of-type(1)::before { content: "Seleccionar"; }
+            #historialTable > tbody > tr > td:nth-of-type(2)::before { content: "Fecha"; }
+            #historialTable > tbody > tr > td:nth-of-type(3)::before { content: "Solicitante"; }
+            #historialTable > tbody > tr > td:nth-of-type(4)::before { content: "Departamento"; }
+            #historialTable > tbody > tr > td:nth-of-type(5)::before { content: "Artículos"; }
+            #pedido-table > tbody > tr > td:nth-of-type(1)::before { content: "Artículo"; }
+            #pedido-table > tbody > tr > td:nth-of-type(2)::before { content: "Cantidad"; }
+            #pedido-table > tbody > tr > td:nth-of-type(3)::before { content: "Unidad"; }
+            #pedido-table > tbody > tr > td:nth-of-type(4)::before { content: ""; }
+            #pedido-table select, #pedido-table .quantity-control { flex-grow: 1; min-width: 120px; max-width: 65%; }
+            #pedido-table > tbody > tr > td:nth-of-type(4) { padding: 0; }
+            .action-button { width: 100%; padding: 12px; border-radius: 0; border: none; }
+            .details-table, .details-table tbody, .details-table tr, .details-table td { display: block; width: 100%; border: none; box-shadow: none; margin: 0; padding: 4px 0; min-height: auto; text-align: left; }
+            .details-table td { display: flex; justify-content: space-between; border-bottom: 1px solid #f0f0f0; }
+            .details-table tr:last-child td { border-bottom: none; }
+            .details-table td::before { content: "" !important; display: none !important; }
+            .controls, .modal-actions { flex-direction: column; gap: 15px; }
+            .controls .btn, .modal-actions .btn { width: 100%; }
         }
     </style>
 </head>
@@ -64,9 +86,7 @@
     </div>
 
     <div class="container hidden" id="formContainer"></div>
-
     <div class="container hidden" id="historyContainer"></div>
-    
     <div class="container hidden" id="adminContainer">
         <h2>Administrar Lista de Artículos</h2>
         <table id="admin-table">
@@ -79,34 +99,15 @@
             <button onclick="guardarArticulos()" class="btn btn-send">💾 Guardar Cambios</button>
         </div>
     </div>
-
     <div class="container hidden" id="comprasContainer">
         <h2>Registrar Compra a Proveedor</h2>
         <div class="info-section">
-            <div class="form-group">
-                <label for="compra-registradopor">Registrado por:</label>
-                <input type="text" id="compra-registradopor" placeholder="Tu nombre completo">
-            </div>
-            <div class="form-group">
-                <label for="compra-proveedor">Proveedor:</label>
-                <input type="text" id="compra-proveedor" placeholder="Nombre del proveedor">
-            </div>
-            <div class="form-group">
-                <label for="compra-fecha">Fecha de Compra:</label>
-                <input type="date" id="compra-fecha">
-            </div>
-            <div class="form-group">
-                <label for="compra-articulo">Artículo Comprado:</label>
-                <select id="compra-articulo"><option value="">Cargando artículos...</option></select>
-            </div>
-            <div class="form-group">
-                <label for="compra-cantidad">Cantidad:</label>
-                <input type="number" id="compra-cantidad" placeholder="Ej: 10" min="1">
-            </div>
-            <div class="form-group">
-                <label for="compra-costo">Costo Total (₡):</label>
-                <input type="number" id="compra-costo" placeholder="Ej: 15000" min="0">
-            </div>
+            <div class="form-group"><label for="compra-registradopor">Registrado por:</label><input type="text" id="compra-registradopor" placeholder="Tu nombre completo"></div>
+            <div class="form-group"><label for="compra-proveedor">Proveedor:</label><input type="text" id="compra-proveedor" placeholder="Nombre del proveedor"></div>
+            <div class="form-group"><label for="compra-fecha">Fecha de Compra:</label><input type="date" id="compra-fecha"></div>
+            <div class="form-group"><label for="compra-articulo">Artículo Comprado:</label><select id="compra-articulo"><option value="">Cargando...</option></select></div>
+            <div class="form-group"><label for="compra-cantidad">Cantidad:</label><input type="number" id="compra-cantidad" placeholder="Ej: 10" min="1"></div>
+            <div class="form-group"><label for="compra-costo">Costo Total (₡):</label><input type="number" id="compra-costo" placeholder="Ej: 15000" min="0"></div>
         </div>
         <div class="controls">
             <button onclick="goBack()" class="btn btn-cancel">⬅️ Volver</button>
@@ -117,13 +118,11 @@
     <div id="summaryModal" class="modal"></div>
 
     <script>
-        // --- VARIABLES GLOBALES Y CONFIGURACIÓN ---
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxZwboxYJuMqF6pwc8icP2F3j4Xywrjhyjgbor5fFrUmBXW3cTx18DlFm8CGfFyIOcRBQ/exec";
         let catalogoArticulos = [];
         let historial = [];
         let currentRequestData = {};
 
-        // --- NAVEGACIÓN ENTRE VISTAS ---
         const views = {
             mainMenu: document.getElementById('mainMenu'),
             formContainer: document.getElementById('formContainer'),
@@ -132,6 +131,7 @@
             comprasContainer: document.getElementById('comprasContainer'),
             summaryModal: document.getElementById('summaryModal')
         };
+
         function showView(viewId) {
             for (const key in views) {
                 views[key].classList.add('hidden');
@@ -140,8 +140,8 @@
         }
         function goBack() { showView('mainMenu'); }
 
-        // --- LÓGICA PRINCIPAL: CARGAR CATÁLOGO ---
         async function cargarCatalogoArticulos() {
+            if (catalogoArticulos.length > 0) return;
             try {
                 const response = await fetch(`${WEB_APP_URL}?action=getArticulos`);
                 if (!response.ok) throw new Error('Error al cargar catálogo.');
@@ -152,33 +152,199 @@
             }
         }
         
-        // --- VISTA: NUEVO PEDIDO ---
         async function showForm() {
-            views.formContainer.innerHTML = `<h2>Nuevo Pedido</h2>`; // Simplificado por brevedad
-            views.formContainer.innerHTML = `<h2>Nuevo Pedido</h2> <div class="info-section"><div class="form-group"><label for="solicitante">Solicitado por:</label><input type="text" id="solicitante" placeholder="Nombre completo"></div> <div class="form-group"><label for="departamento">Departamento:</label><select id="departamento"><option value="" disabled selected>Seleccione</option><option>Oficina</option><option>Centro Distribución</option><option>Barrio México</option><option>San Francisco</option><option>Alto Valor</option><option>Directtools SF</option><option>Directtools BM</option></select></div></div><table id="pedido-table"><thead><tr><th>Artículo</th><th>Cantidad</th><th>Unidad</th><th>Acción</th></tr></thead><tbody></tbody></table><div class="controls"><button onclick="agregarFila()" class="btn btn-add">➕ Agregar Artículo</button><button onclick="goBack()" class="btn btn-cancel">⬅️ Volver</button><button onclick="previsualizarPedido()" class="btn btn-send">📲 Previsualizar</button></div>`;
+            views.formContainer.innerHTML = `
+                <div class="header-logo" style="margin-bottom: 20px;"> <img src="data:image/svg+xml;base64," alt="Logo"> <h1>Tesoros Americanos Costa Rica</h1> <h2 class="subtitle">Formulario de Solicitud</h2> </div> 
+                <h2>Nuevo Pedido</h2> 
+                <div class="info-section">
+                    <div class="form-group"><label for="solicitante">Solicitado por:</label><input type="text" id="solicitante" placeholder="Nombre completo"></div> 
+                    <div class="form-group"><label for="departamento">Departamento:</label><select id="departamento"><option value="" disabled selected>Seleccione</option><option>Oficina</option><option>Centro Distribución</option><option>Barrio México</option><option>San Francisco</option><option>Alto Valor</option><option>Directtools SF</option><option>Directtools BM</option></select></div>
+                </div>
+                <table id="pedido-table"><thead><tr><th>Artículo</th><th>Cantidad</th><th>Unidad</th><th>Acción</th></tr></thead><tbody></tbody></table>
+                <div class="controls">
+                    <button onclick="agregarFila()" class="btn btn-add">➕ Agregar Artículo</button>
+                    <button onclick="goBack()" class="btn btn-cancel">⬅️ Volver</button>
+                    <button onclick="previsualizarPedido()" class="btn btn-send">📲 Previsualizar</button>
+                </div>`;
             showView('formContainer');
             await cargarCatalogoArticulos();
             agregarFila();
         }
-        function agregarFila() { /* ... (similar a la versión anterior) ... */ }
-        function actualizarArticulos(selectUnidad) { /* ... (usa catalogoArticulos) ... */ }
-        function previsualizarPedido() { /* ... (sin cambios) ... */ }
-        async function guardarPedidoEnAPI(pedido) { /* ... (modificado para nuevo formato de API) ... */ }
 
-        // --- VISTA: HISTORIAL DE PEDIDOS ---
+        function agregarFila() {
+            const tableBody = document.getElementById('pedido-table').querySelector('tbody');
+            const newRow = tableBody.insertRow();
+            const unidades = [...new Set(catalogoArticulos.map(item => item.unidad))];
+            let opcionesUnidad = unidades.map(u => `<option value="${u}">${u}</option>`).join('');
+
+            newRow.innerHTML = `
+                <td data-label="Unidad:"><select required onchange="actualizarArticulos(this)"><option value="" disabled selected>Seleccione</option>${opcionesUnidad}</select></td>
+                <td data-label="Artículo:"><select class="articulo-select" required disabled><option value="" disabled selected>Seleccione unidad</option></select></td>
+                <td data-label="Cantidad:"><div class="quantity-control" style="display:flex; align-items:center; justify-content:center;"><button class="btn" onclick="cambiarCantidad(this, -1)">-</button><span style="padding:0 10px; font-weight:bold;">1</span><button class="btn" onclick="cambiarCantidad(this, 1)">+</button></div></td>
+                <td data-label="Acción:"><button class="btn btn-danger" onclick="eliminarFila(this)">Eliminar</button></td>`;
+        }
+
+        function actualizarArticulos(selectUnidad) {
+            const unidadSeleccionada = selectUnidad.value;
+            const fila = selectUnidad.closest('tr');
+            const selectArticulo = fila.querySelector('.articulo-select');
+            selectArticulo.innerHTML = '';
+            if (!unidadSeleccionada) {
+                selectArticulo.disabled = true;
+                selectArticulo.innerHTML = '<option value="" disabled selected>Seleccione unidad</option>';
+                return;
+            }
+            const articulosFiltrados = catalogoArticulos.filter(item => item.unidad === unidadSeleccionada);
+            selectArticulo.disabled = false;
+            selectArticulo.innerHTML = '<option value="" disabled selected>Seleccione artículo</option>';
+            articulosFiltrados.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.nombre;
+                option.textContent = item.nombre;
+                selectArticulo.appendChild(option);
+            });
+        }
+        
+        function cambiarCantidad(btn,delta){const display=btn.parentElement.querySelector('span');let val=parseInt(display.textContent);val+=delta;if(val<1)val=1;display.textContent=val;}
+        function eliminarFila(btn){btn.closest('tr').remove();}
+
+        function previsualizarPedido() {
+            const solicitante = document.getElementById("solicitante").value.trim();
+            const departamento = document.getElementById("departamento").value.trim();
+            if (!solicitante || !departamento) return alert("Por favor, complete su nombre y departamento.");
+            
+            const tableRows = document.getElementById("pedido-table").querySelector("tbody").rows;
+            let pedidoItems = [];
+            const addedArticles = new Set();
+
+            for (let i = 0; i < tableRows.length; i++) {
+                const row = tableRows[i];
+                const articulo = row.querySelector(".articulo-select").value;
+                const cantidad = parseInt(row.querySelector("span").textContent);
+                const unidad = row.querySelector('select[onchange="actualizarArticulos(this)"]').value;
+
+                if (!articulo || !unidad) return alert(`Por favor, complete todos los campos en la fila ${i + 1}.`);
+                if (addedArticles.has(articulo)) return alert(`Artículo duplicado: "${articulo}".`);
+                
+                addedArticles.add(articulo);
+                pedidoItems.push({ articulo, cantidad, unidad });
+            }
+
+            if (pedidoItems.length === 0) return alert("Debe agregar al menos un artículo.");
+
+            currentRequestData = { solicitante, departamento, detalles: pedidoItems };
+            const fechaActual = new Date().toLocaleString("es-CR", { dateStyle: "long", timeStyle: "short" });
+            let whatsappMsg = `*Solicitud de Suministros* 📄\n------------------------------------\n`;
+            whatsappMsg += `*Fecha:* ${fechaActual}\n*Solicitante:* _${solicitante}_\n*Departamento:* _${departamento}_\n------------------------------------\n\n*Detalle:*\n\`\`\`\n`;
+            pedidoItems.forEach(item => { whatsappMsg += `- ${item.articulo} (${item.cantidad} ${item.unidad})\n`; });
+            whatsappMsg += "```";
+            currentRequestData.whatsappBody = whatsappMsg;
+
+            let summaryHTML = `<p><strong>Solicitante:</strong> ${solicitante}</p><p><strong>Departamento:</strong> ${departamento}</p>`;
+            summaryHTML += `<pre style="white-space: pre-wrap; word-wrap: break-word; font-family: 'Roboto', sans-serif;">${whatsappMsg}</pre>`;
+            
+            views.summaryModal.innerHTML = `
+                <div class="modal-content">
+                    <span class="close-button" onclick="views.summaryModal.style.display='none'" style="position:absolute; top:10px; right:20px; font-size:2em; cursor:pointer;">&times;</span><h2>Revisión del Pedido</h2>
+                    <div style="max-height: 60vh; overflow-y: auto; padding: 1em; background-color: #f8f9fa; border-radius: 8px;">${summaryHTML}</div>
+                    <div class="modal-actions" style="margin-top: 1.5em; display:flex; flex-direction:column; gap: 10px;">
+                        <button onclick="confirmarYGuardar(event)" class="btn btn-success">✅ Guardar Pedido</button>
+                        <button onclick="guardarYEnviarPorWhatsApp(event)" class="btn btn-whatsapp">📲 Guardar y Enviar por WhatsApp</button>
+                        <button onclick="views.summaryModal.style.display='none'" class="btn btn-cancel">Cancelar</button>
+                    </div>
+                </div>`;
+            views.summaryModal.style.display = "flex";
+        }
+
+        async function guardarPedidoEnAPI(pedido) {
+            try {
+                await fetch(WEB_APP_URL, {
+                    method: 'POST', mode: 'no-cors',
+                    body: JSON.stringify({ action: 'addPedido', payload: pedido })
+                });
+            } catch (error) {
+                console.error("Error al enviar el pedido a la API:", error);
+                alert("Hubo un error al guardar el pedido en la base de datos central.");
+                throw error;
+            }
+        }
+
+        async function confirmarYGuardar(event) {
+            const boton = event.target;
+            boton.textContent = 'Guardando...';
+            boton.disabled = true;
+            try {
+                await guardarPedidoEnAPI(currentRequestData);
+                alert('¡Pedido guardado con éxito!');
+                views.summaryModal.style.display = 'none';
+                goBack();
+            } catch (e) {
+                boton.textContent = '✅ Guardar Pedido';
+                boton.disabled = false;
+            }
+        }
+
+        async function guardarYEnviarPorWhatsApp(event) {
+            const boton = event.target;
+            boton.textContent = 'Guardando y Abriendo...';
+            boton.disabled = true;
+            try {
+                await guardarPedidoEnAPI(currentRequestData);
+                const link = `https://wa.me/?text=${encodeURIComponent(currentRequestData.whatsappBody)}`;
+                window.open(link, '_blank');
+                alert('¡Pedido guardado! Ahora puedes confirmar el envío en WhatsApp.');
+                views.summaryModal.style.display = 'none';
+                goBack();
+            } catch (e) {
+                boton.textContent = '📲 Guardar y Enviar por WhatsApp';
+                boton.disabled = false;
+            }
+        }
+        
         async function showHistory() {
-             views.historyContainer.innerHTML = `<h2>Historial de Pedidos</h2><table id="historialTable"><thead>...</thead><tbody><tr><td colspan="5">Cargando...</td></tr></tbody></table><div class="controls">...</div>`; // Simplificado
-             views.historyContainer.innerHTML = `<h2>Historial Central de Solicitudes</h2><table id="historialTable"><thead><tr><th style="width:5%"><input type="checkbox" onchange="toggleSeleccionarTodos(this)"></th><th>Fecha</th><th>Solicitante</th><th>Departamento</th><th>Detalles</th></tr></thead><tbody></tbody></table><div class="controls"><button class="btn btn-whatsapp" onclick="reenviarPedidosSeleccionados()">📲 Reenviar</button><button class="btn btn-cancel" onclick="goBack()">⬅️ Volver</button></div>`;
+            views.historyContainer.innerHTML = `<h2>Historial Central de Solicitudes</h2><table id="historialTable"><thead><tr><th style="width:5%"><input type="checkbox" onchange="toggleSeleccionarTodos(this)"></th><th>Fecha</th><th>Solicitante</th><th>Departamento</th><th>Detalles</th></tr></thead><tbody><tr><td colspan="5" style="text-align:center">Cargando...</td></tr></tbody></table><div class="controls"><button class="btn btn-whatsapp" onclick="reenviarPedidosSeleccionados()">📲 Reenviar</button><button class="btn btn-cancel" onclick="goBack()">⬅️ Volver</button></div>`;
             showView('historyContainer');
              try {
-                const response = await fetch(WEB_APP_URL); // La acción por defecto es getPedidos
+                const response = await fetch(WEB_APP_URL);
                 historial = await response.json();
                 renderHistorial();
              } catch (e) { console.error(e); }
         }
-        function renderHistorial() { /* ... (sin cambios) ... */ }
+        function renderHistorial() {
+            const tableBody = views.historyContainer.querySelector("tbody");
+            tableBody.innerHTML = "";
+            if (historial.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No hay pedidos.</td></tr>';
+                return;
+            }
+            historial.forEach((pedido, index) => {
+                const newRow = tableBody.insertRow();
+                newRow.innerHTML = `
+                    <td data-label="Seleccionar:" style="text-align: center;"><input type="checkbox" class="pedido-checkbox" data-index="${index}"></td>
+                    <td data-label="Fecha:">${pedido.fecha}</td>
+                    <td data-label="Solicitante:">${pedido.solicitante}</td>
+                    <td data-label="Departamento:">${pedido.departamento}</td>
+                    <td data-label="Detalles:"><table class="details-table"><tbody>${pedido.detalles.map(item => `<tr><td>${item.articulo}</td><td>${item.cantidad} ${item.unidad}</td></tr>`).join('')}</tbody></table></td>`;
+            });
+        }
 
-        // --- VISTA: ADMINISTRAR ARTÍCULOS ---
+        function toggleSeleccionarTodos(source) {
+            document.querySelectorAll('.pedido-checkbox').forEach(cb => { cb.checked = source.checked; });
+        }
+
+        function reenviarPedidosSeleccionados() {
+            const indices = Array.from(document.querySelectorAll('.pedido-checkbox:checked')).map(cb => parseInt(cb.dataset.index));
+            if (indices.length === 0) return alert("Por favor, seleccione al menos un pedido.");
+            let msg = "*Reenvío de Solicitudes* 📦\n====================\n\n";
+            indices.forEach((idx, i) => {
+                const p = historial[idx];
+                msg += `*Pedido ${i + 1} de ${indices.length}*\n*Fecha:* ${p.fecha}\n*Solicitante:* _${p.solicitante}_\n*Departamento:* _${p.departamento}_\n*Detalle:*\n\`\`\`\n`;
+                p.detalles.forEach(item => { msg += `- ${item.articulo} (${item.cantidad} ${item.unidad})\n`; });
+                msg += "```\n--------------------\n\n";
+            });
+            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+        }
+
         async function showAdminArticulos() {
             showView('adminContainer');
             const tableBody = views.adminContainer.querySelector('tbody');
@@ -200,28 +366,20 @@
             views.adminContainer.querySelectorAll('tbody tr').forEach(row => {
                 const nombre = row.cells[0].querySelector('input').value.trim();
                 const unidad = row.cells[1].querySelector('input').value.trim();
-                if (nombre && unidad) {
-                    newArticulos.push({ nombre, unidad });
-                }
+                if (nombre && unidad) newArticulos.push({ nombre, unidad });
             });
-            
-            if (!confirm(`¿Está seguro de que desea sobrescribir la lista de artículos con ${newArticulos.length} registros? Esta acción no se puede deshacer.`)) return;
-
+            if (!confirm(`¿Desea sobrescribir la lista con ${newArticulos.length} registros?`)) return;
             try {
                 await fetch(WEB_APP_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
+                    method: 'POST', mode: 'no-cors',
                     body: JSON.stringify({ action: 'updateArticulos', payload: newArticulos })
                 });
-                alert('¡Lista de artículos actualizada con éxito!');
-                catalogoArticulos = newArticulos; // Actualiza el catálogo local
+                alert('¡Lista de artículos actualizada!');
+                catalogoArticulos = newArticulos;
                 goBack();
-            } catch (error) {
-                alert('Error al guardar los artículos.');
-            }
+            } catch (error) { alert('Error al guardar.'); }
         }
 
-        // --- VISTA: REGISTRAR COMPRA ---
         async function showCompras() {
             showView('comprasContainer');
             await cargarCatalogoArticulos();
@@ -230,7 +388,6 @@
             catalogoArticulos.forEach(item => {
                 select.innerHTML += `<option value="${item.nombre}">${item.nombre}</option>`;
             });
-            // Poner fecha actual por defecto
             document.getElementById('compra-fecha').valueAsDate = new Date();
         }
         async function registrarCompra() {
@@ -242,29 +399,20 @@
                 cantidad: document.getElementById('compra-cantidad').value,
                 costo: document.getElementById('compra-costo').value
             };
-            if (!compra.registradoPor || !compra.proveedor || !compra.fecha || !compra.articulo || !compra.cantidad || !compra.costo) {
+            if (!compra.registradoPor||!compra.proveedor||!compra.fecha||!compra.articulo||!compra.cantidad||!compra.costo) {
                 return alert('Por favor, complete todos los campos.');
             }
             try {
                  await fetch(WEB_APP_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
+                    method: 'POST', mode: 'no-cors',
                     body: JSON.stringify({ action: 'addCompra', payload: compra })
                 });
                 alert('¡Compra registrada con éxito!');
-                // Limpiar formulario
                 views.comprasContainer.querySelectorAll('input, select').forEach(el => el.value = '');
                 document.getElementById('compra-fecha').valueAsDate = new Date();
                 goBack();
-            } catch (error) {
-                alert('Error al registrar la compra.');
-            }
+            } catch (error) { alert('Error al registrar la compra.'); }
         }
-        
-        // (Aquí irían las demás funciones de apoyo como previsualizarPedido, cambiarCantidad, etc. que han sido omitidas por brevedad pero deben estar en tu código final)
-        // Nota: El código completo es muy extenso, se han simplificado algunas funciones repetidas para claridad.
-        // Asegúrate de re-integrar las funciones completas de la versión anterior que no están aquí.
-
     </script>
 </body>
 </html>
