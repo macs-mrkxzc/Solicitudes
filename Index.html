@@ -83,42 +83,155 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
         
         @media screen and (max-width: 768px) {
-            body { padding: 15px; }
-            .container { padding: 20px; }
-            .header-logo img { max-width: 150px; }
-            .header-logo h1 { font-size: 1.8em; }
-            h2 { font-size: 1.6em; }
-            table { border: 0; }
-            table thead { display: none; }
-            table, tbody, tr, td { display: block; width: 100%; }
-            table tr { margin-bottom: 15px; border: 1px solid var(--border-color); border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, .05); }
-            table td { display: flex; justify-content: space-between; align-items: center; text-align: right; padding: 12px 15px; border: none; word-break: break-word; min-height: 44px; }
-            table td::before { content: attr(data-label); font-weight: 700; color: var(--primary-color); text-align: left; padding-right: 15px; flex-shrink: 0; }
-            #historialTable td:nth-of-type(1)::before { content: "Seleccionar"; }
-            #historialTable td:nth-of-type(2)::before { content: "Fecha"; }
-            #historialTable td:nth-of-type(3)::before { content: "Solicitante"; }
-            #historialTable td:nth-of-type(4)::before { content: "Departamento"; }
-            #historialTable td:nth-of-type(5)::before { content: "Artículos"; }
-            #pedido-table td:nth-of-type(1)::before { content: "Artículo"; }
-            #pedido-table td:nth-of-type(2)::before { content: "Cantidad"; }
-            #pedido-table td:nth-of-type(3)::before { content: "Unidad"; }
-            #pedido-table td:nth-of-type(4)::before { content: ""; }
-            #pedido-table td:nth-of-type(4) { padding: 0; }
-            .action-button { width: 100%; padding: 12px; border-radius: 0 0 7px 7px; border: none; }
-            .quantity-control { width: 150px; flex-grow: 0; flex-shrink: 0; }
-            table td select, .quantity-control { max-width: 60%; }
-            .info-section { flex-direction: column; gap: 15px; }
-            .controls { flex-direction: column; gap: 10px; }
-            .controls .btn, .modal-actions .btn { width: 100%; }
-            .controls .left-buttons { flex-direction: column; margin-right: 0; width: 100%; }
-            .menu-options { flex-direction: column; gap: 15px; }
-            .menu-options .btn { max-width: unset; }
-            .modal-content { width: 95%; }
-            .modal-actions { flex-direction: column; }
-            .details-table { border: none; margin-top: 5px; }
-            .details-table thead { display: none; }
-            .details-table tr { margin-bottom: 0; border: none; box-shadow: none; }
-            .details-table td { padding: 4px 0; font-size: .9em; }
+            body {
+                padding: 15px;
+            }
+            .container {
+                padding: 20px;
+            }
+            .header-logo img {
+                max-width: 150px;
+            }
+            .header-logo h1 {
+                font-size: 1.8em;
+            }
+            h2 {
+                font-size: 1.6em;
+            }
+            
+            /* --- INICIO DE CORRECCIONES PARA MÓVIL --- */
+
+            /* Regla general para ocultar la cabecera de las tablas principales */
+            #pedido-table thead, #historialTable thead {
+                display: none;
+            }
+
+            /* Contenedores principales de las filas */
+            #pedido-table, #historialTable,
+            #pedido-table tbody, #historialTable tbody,
+            #pedido-table tr, #historialTable tr {
+                display: block;
+                width: 100%;
+            }
+
+            #pedido-table tr, #historialTable tr {
+                margin-bottom: 20px;
+                border: 1px solid var(--border-color);
+                border-radius: 8px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, .05);
+                overflow: hidden;
+            }
+            
+            /* Estilo específico para las celdas de las tablas principales */
+            #pedido-table > tbody > tr > td, 
+            #historialTable > tbody > tr > td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                text-align: right;
+                padding: 12px 15px;
+                border: none;
+                word-break: break-word;
+                min-height: 44px;
+                border-bottom: 1px dotted var(--border-color);
+            }
+            #pedido-table > tbody > tr > td:last-child,
+            #historialTable > tbody > tr > td:last-child {
+                border-bottom: none;
+            }
+
+            /* Estilo específico para las etiquetas (evita que afecte a tablas anidadas) */
+            #pedido-table > tbody > tr > td::before, 
+            #historialTable > tbody > tr > td::before {
+                content: attr(data-label);
+                font-weight: 700;
+                color: var(--primary-color);
+                text-align: left;
+                padding-right: 15px;
+                flex-shrink: 0;
+            }
+            
+            /* Asignación de etiquetas a cada columna */
+            #historialTable > tbody > tr > td:nth-of-type(1)::before { content: "Seleccionar"; }
+            #historialTable > tbody > tr > td:nth-of-type(2)::before { content: "Fecha"; }
+            #historialTable > tbody > tr > td:nth-of-type(3)::before { content: "Solicitante"; }
+            #historialTable > tbody > tr > td:nth-of-type(4)::before { content: "Departamento"; }
+            #historialTable > tbody > tr > td:nth-of-type(5)::before { content: "Artículos"; }
+
+            #pedido-table > tbody > tr > td:nth-of-type(1)::before { content: "Artículo"; }
+            #pedido-table > tbody > tr > td:nth-of-type(2)::before { content: "Cantidad"; }
+            #pedido-table > tbody > tr > td:nth-of-type(3)::before { content: "Unidad"; }
+            #pedido-table > tbody > tr > td:nth-of-type(4)::before { content: ""; }
+
+            /* Ajuste para que los campos de formulario y controles no se desborden */
+            #pedido-table select, #pedido-table .quantity-control {
+                flex-grow: 1;
+                min-width: 120px;
+                max-width: 65%;
+            }
+
+            /* Ajuste para el botón de eliminar */
+            #pedido-table > tbody > tr > td:nth-of-type(4) {
+                padding: 0;
+            }
+            .action-button {
+                width: 100%;
+                padding: 12px;
+                border-radius: 0;
+                border: none;
+            }
+            
+            /* Estilos para la tabla de detalles (anidada en el historial) */
+            .details-table {
+                width: 100%;
+                margin-top: 10px;
+            }
+            /* Resetear los estilos para la tabla anidada para que se vea como una lista simple */
+            .details-table, .details-table tbody, .details-table tr, .details-table td {
+                display: block;
+                width: 100%;
+                border: none;
+                box-shadow: none;
+                margin: 0;
+                padding: 4px 0;
+                min-height: auto;
+                text-align: left;
+            }
+            .details-table td {
+                display: flex; /* Usamos flex para separar artículo y cantidad */
+                justify-content: space-between;
+                border-bottom: 1px solid #f0f0f0;
+            }
+            .details-table tr:last-child td {
+                border-bottom: none;
+            }
+            /* Ocultar el pseudo-elemento en la tabla anidada */
+            .details-table td::before {
+                content: "" !important;
+                display: none !important;
+            }
+
+            /* --- FIN DE CORRECCIONES PARA MÓVIL --- */
+
+            /* Resto de reglas generales para móvil */
+            .info-section, .controls, .menu-options, .modal-actions {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .controls .btn, .modal-actions .btn {
+                width: 100%;
+            }
+            .controls .left-buttons {
+                flex-direction: column;
+                margin-right: 0;
+                width: 100%;
+            }
+            .menu-options .btn {
+                max-width: unset;
+            }
+            .modal-content {
+                width: 95%;
+            }
         }
     </style>
 </head>
@@ -268,7 +381,7 @@
             } catch (error) {
                 console.error("Error al enviar el pedido a la API:", error);
                 alert("Hubo un error al guardar el pedido en la base de datos central.");
-                throw error; // Lanza el error para que la función que llama sepa que falló
+                throw error;
             }
         }
 
@@ -282,7 +395,6 @@
                 summaryModal.style.display = 'none';
                 goBack();
             } catch (e) {
-                // El alert de error ya se muestra en guardarPedidoEnAPI
                 boton.textContent = '✅ Guardar Pedido';
                 boton.disabled = false;
             }
