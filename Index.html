@@ -5,12 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Gestión - Tesoros Americanos Costa Rica</title>
     <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Mono&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary-color: #004d99; --secondary-color: #007bff; --text-color: #2c3e50; --light-text-color: #7f8c8d;
             --background-color: #ecf0f1; --card-background: #ffffff; --border-color: #dde1e5; --success-color: #27ae60;
             --danger-color: #e74c3c; --cancel-color: #95a5a6; --whatsapp-color: #25D366; --hover-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            --pdf-color: #c0392b;
         }
         body { font-family: 'Roboto', sans-serif; margin: 0; padding: 2.5vw; background-color: var(--background-color); color: var(--text-color); }
         .container { max-width: 1200px; margin: auto; background: var(--card-background); padding: 3vw; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); border: 1px solid var(--border-color); margin-bottom: 30px; }
@@ -31,6 +34,7 @@
         .btn-whatsapp { background-color: var(--whatsapp-color); color: white; }
         .btn-cancel { background-color: var(--cancel-color); color: white; }
         .btn-danger { background-color: var(--danger-color); color: white; }
+        .btn-pdf { background-color: var(--pdf-color); color: white; }
         .info-section { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5em; margin-bottom: 2em; }
         .form-group label { display: block; margin-bottom: 0.5em; font-weight: 500; color: var(--light-text-color); }
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.7); justify-content: center; align-items: center; padding: 1em; }
@@ -38,31 +42,38 @@
         .menu-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5em; margin-top: 2em; }
         .hidden { display: none; }
         .controls { margin-top: 40px; display: flex; justify-content: flex-end; gap: 1em; align-items: center; padding-top: 25px; border-top: 1px solid var(--border-color); flex-wrap: wrap; }
+        .controls .left-buttons { margin-right: auto; display: flex; gap: 1em; }
         @media screen and (max-width: 768px) {
-            body { padding: 15px; }
-            .container { padding: 20px; }
-            .menu-options, .info-section { grid-template-columns: 1fr; }
+            body { padding: 15px; } .container { padding: 20px; } .menu-options, .info-section { grid-template-columns: 1fr; }
             .responsive-table thead { display: none; }
             .responsive-table, .responsive-table tbody, .responsive-table tr { display: block; width: 100%; }
             .responsive-table tr { margin-bottom: 20px; border: 1px solid var(--border-color); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,.05); overflow: hidden; }
             .responsive-table > tbody > tr > td { display: flex; justify-content: space-between; align-items: center; text-align: right; padding: 12px 15px; border: none; word-break: break-word; min-height: 44px; border-bottom: 1px dotted var(--border-color); }
             .responsive-table > tbody > tr > td:last-child { border-bottom: none; }
             .responsive-table > tbody > tr > td::before { content: attr(data-label); font-weight: 700; color: var(--primary-color); text-align: left; padding-right: 15px; flex-shrink: 0; }
-            #pedido-table > tbody > tr > td:nth-of-type(1)::before { content: "Unidad"; }
-            #pedido-table > tbody > tr > td:nth-of-type(2)::before { content: "Artículo"; }
-            #pedido-table > tbody > tr > td:nth-of-type(3)::before { content: "Cantidad"; }
-            #pedido-table > tbody > tr > td:nth-of-type(4)::before { content: "Costo Total"; }
-            #pedido-table > tbody > tr > td:nth-of-type(5)::before { content: ""; }
+            .controls { flex-direction: column; gap: 10px; } .controls .btn { width: 100%; }
+            .controls .left-buttons { flex-direction: column; width: 100%; margin: 0 0 10px 0; }
             /* ... (resto de estilos responsivos) ... */
-            .controls, .modal-actions { flex-direction: column; gap: 15px; }
-            .controls .btn, .modal-actions .btn { width: 100%; }
         }
     </style>
 </head>
 <body>
 
     <div class="container" id="mainMenu">
+        <div class="header-logo">
+             <img src="data:image/svg+xml;base64," alt="Logo">
+            <h1>Tesoros Americanos Costa Rica</h1>
+            <h2 class="subtitle">Sistema de Gestión de Suministros</h2>
         </div>
+        <div class="menu-options">
+            <button class="btn" onclick="showForm()">📦 Nuevo Pedido</button>
+            <button class="btn" onclick="showHistory()">📜 Ver Pedidos</button>
+            <button class="btn" onclick="showAdminArticulos()">✏️ Administrar Artículos</button>
+            <button class="btn" onclick="showCompras()">🛒 Registrar Compra</button>
+            <button class="btn" onclick="showHistorialCompras()">📊 Consultar Compras</button>
+            <button class="btn" onclick="showInventario()">📈 Ver Inventario</button>
+        </div>
+    </div>
 
     <div class="container hidden" id="formContainer"></div>
     <div class="container hidden" id="historyContainer"></div>
@@ -79,21 +90,16 @@
         let currentRequestData = {};
 
         const views = {
-            mainMenu: document.getElementById('mainMenu'),
-            formContainer: document.getElementById('formContainer'),
-            historyContainer: document.getElementById('historyContainer'),
-            adminContainer: document.getElementById('adminContainer'),
-            comprasContainer: document.getElementById('comprasContainer'),
-            historialComprasContainer: document.getElementById('historialComprasContainer'),
-            inventarioContainer: document.getElementById('inventarioContainer'),
-            summaryModal: document.getElementById('summaryModal')
+            mainMenu: document.getElementById('mainMenu'), formContainer: document.getElementById('formContainer'),
+            historyContainer: document.getElementById('historyContainer'), adminContainer: document.getElementById('adminContainer'),
+            comprasContainer: document.getElementById('comprasContainer'), historialComprasContainer: document.getElementById('historialComprasContainer'),
+            inventarioContainer: document.getElementById('inventarioContainer'), summaryModal: document.getElementById('summaryModal')
         };
 
         function showView(viewId) { Object.values(views).forEach(v => v.classList.add('hidden')); views[viewId].classList.remove('hidden'); }
         function goBack() { showView('mainMenu'); }
 
         async function cargarDatosEsenciales() {
-            // Carga todos los datos necesarios en paralelo para optimizar
             await Promise.all([
                 (async () => {
                     if (catalogoArticulos.length === 0) await cargarCatalogoArticulos();
@@ -126,13 +132,24 @@
                 calculos[compra.articulo].totalCosto += parseFloat(compra.costoTotal);
                 calculos[compra.articulo].totalCantidad += parseFloat(compra.cantidad);
             });
-            
             costosPromedio = {};
             for (const articulo in calculos) {
                 if (calculos[articulo].totalCantidad > 0) {
                     costosPromedio[articulo] = calculos[articulo].totalCosto / calculos[articulo].totalCantidad;
                 }
             }
+        }
+
+        function checkSecurityKey() {
+            const userInput = prompt("Ingrese la clave de seguridad:");
+            if (userInput === null) return null;
+            const today = new Date();
+            const securityKey = `${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, '0')}${String(today.getDate()).padStart(2, '0')}`;
+            if (userInput !== securityKey) {
+                alert('Clave incorrecta.');
+                return null;
+            }
+            return userInput;
         }
         
         // --- Lógica de PEDIDOS ---
@@ -169,14 +186,22 @@
                 <td data-label="Costo Total" class="pedido-costo-total" style="font-weight:bold;">0.00</td>
                 <td data-label="Acción"><button class="btn btn-danger" onclick="this.closest('tr').remove(); actualizarTotalesPedido();">Eliminar</button></td>`;
         }
-
+        
         function actualizarArticulos(selectUnidad) {
-            // ... (lógica existente para filtrar artículos) ...
+            const unidadSeleccionada = selectUnidad.value;
+            const fila = selectUnidad.closest('tr');
+            const selectArticulo = fila.querySelector('.articulo-select');
+            selectArticulo.innerHTML = '';
+            if (!unidadSeleccionada) { selectArticulo.disabled = true; return; }
+            const articulosFiltrados = catalogoArticulos.filter(item => item.unidad === unidadSeleccionada);
+            selectArticulo.disabled = false;
+            selectArticulo.innerHTML = '<option value="" disabled selected>Seleccione artículo</option>';
+            articulosFiltrados.forEach(item => { selectArticulo.innerHTML += `<option value="${item.nombre}">${item.nombre}</option>`; });
             actualizarTotalesPedido();
         }
-        
-        function cambiarCantidad(btn,delta) {
-            const display = btn.parentElement.querySelector('span');
+
+        function cambiarCantidad(btn,delta){
+            const display=btn.parentElement.querySelector('span');
             let val=parseInt(display.textContent)+delta;
             if(val<1)val=1;
             display.textContent=val;
@@ -197,10 +222,30 @@
         }
 
         function previsualizarPedido() {
-            // ... (lógica existente para recolectar datos) ...
-            // Ahora, modifica el mensaje de WhatsApp para incluir los costos
+            const solicitante = document.getElementById("solicitante").value.trim();
+            const departamento = document.getElementById("departamento").value.trim();
+            if (!solicitante || !departamento) return alert("Por favor, complete su nombre y departamento.");
+            
+            const tableRows = document.getElementById("pedido-table").querySelector("tbody").rows;
+            let pedidoItems = [];
+            const addedArticles = new Set();
+            for (let i = 0; i < tableRows.length; i++) {
+                const row = tableRows[i];
+                const unidad = row.querySelector('select[onchange="actualizarArticulos(this)"]').value;
+                const articulo = row.querySelector(".articulo-select").value;
+                const cantidad = parseInt(row.querySelector("span").textContent);
+                if (!articulo || !unidad) return alert(`Por favor, complete todos los campos en la fila ${i + 1}.`);
+                if (addedArticles.has(articulo)) return alert(`Artículo duplicado: "${articulo}".`);
+                addedArticles.add(articulo);
+                pedidoItems.push({ articulo, cantidad, unidad });
+            }
+            if (pedidoItems.length === 0) return alert("Debe agregar al menos un artículo.");
+
+            currentRequestData = { solicitante, departamento, detalles: pedidoItems };
+            const fechaActual = new Date().toLocaleString("es-CR", { dateStyle: "long", timeStyle: "short" });
+            
             let whatsappMsg = `*Solicitud de Suministros* 📄\n------------------------------------\n`;
-            whatsappMsg += `*Fecha:* ${new Date().toLocaleString("es-CR")}\n*Solicitante:* _${solicitante}_\n*Departamento:* _${departamento}_\n------------------------------------\n\n*Detalle:*\n`;
+            whatsappMsg += `*Fecha:* ${fechaActual}\n*Solicitante:* _${solicitante}_\n*Departamento:* _${departamento}_\n------------------------------------\n\n*Detalle:*\n`;
             let totalPedido = 0;
             pedidoItems.forEach(item => {
                 const costoProm = costosPromedio[item.articulo] || 0;
@@ -210,43 +255,151 @@
             });
             whatsappMsg += `\n*Costo Total Estimado: ₡${totalPedido.toFixed(2)}*`;
             currentRequestData.whatsappBody = whatsappMsg;
-            // ... (resto de la lógica para mostrar el modal) ...
+
+            let summaryHTML = `<p><strong>Solicitante:</strong> ${solicitante}</p><p><strong>Departamento:</strong> ${departamento}</p><pre style="white-space: pre-wrap; word-wrap: break-word; font-family: 'Roboto', sans-serif;">${whatsappMsg}</pre>`;
+            views.summaryModal.innerHTML = `<div class="modal-content"><span onclick="views.summaryModal.style.display='none'" style="position:absolute; top:10px; right:20px; font-size:2em; cursor:pointer;">&times;</span><h2>Revisión del Pedido</h2><div style="max-height: 60vh; overflow-y: auto; padding: 1em; background-color: #f8f9fa; border-radius: 8px;">${summaryHTML}</div><div class="modal-actions" style="margin-top: 1.5em; display:flex; flex-direction:column; gap: 10px;"><button onclick="confirmarYGuardar(event)" class="btn btn-success">✅ Guardar Pedido</button><button onclick="guardarYEnviarPorWhatsApp(event)" class="btn btn-whatsapp">📲 Guardar y Enviar por WhatsApp</button><button onclick="views.summaryModal.style.display='none'" class="btn btn-cancel">Cancelar</button></div></div>`;
+            views.summaryModal.style.display = "flex";
+        }
+        async function guardarPedidoEnAPI(pedido) {
+            try {
+                await fetch(WEB_APP_URL, {
+                    method: 'POST', mode: 'no-cors',
+                    body: JSON.stringify({ action: 'addPedido', payload: pedido })
+                });
+            } catch (error) {
+                console.error("Error al enviar el pedido a la API:", error);
+                alert("Hubo un error al guardar el pedido en la base de datos central.");
+                throw error;
+            }
+        }
+        async function confirmarYGuardar(event) {
+            const boton = event.target;
+            boton.textContent = 'Guardando...';
+            boton.disabled = true;
+            try {
+                await guardarPedidoEnAPI(currentRequestData);
+                alert('¡Pedido guardado con éxito!');
+                views.summaryModal.style.display = 'none';
+                goBack();
+            } catch (e) {
+                boton.textContent = '✅ Guardar Pedido';
+                boton.disabled = false;
+            }
+        }
+        async function guardarYEnviarPorWhatsApp(event) {
+            const boton = event.target;
+            boton.textContent = 'Guardando y Abriendo...';
+            boton.disabled = true;
+            try {
+                await guardarPedidoEnAPI(currentRequestData);
+                const link = `https://wa.me/?text=${encodeURIComponent(currentRequestData.whatsappBody)}`;
+                window.open(link, '_blank');
+                alert('¡Pedido guardado! Ahora puedes confirmar el envío en WhatsApp.');
+                views.summaryModal.style.display = 'none';
+                goBack();
+            } catch (e) {
+                boton.textContent = '📲 Guardar y Enviar por WhatsApp';
+                boton.disabled = false;
+            }
+        }
+        
+        // --- Lógica de HISTORIAL DE PEDIDOS ---
+        async function showHistory() {
+            views.historyContainer.innerHTML = `<h2>Historial de Pedidos</h2><table id="historialTable" class="responsive-table"><thead><tr><th style="width:5%"><input type="checkbox" onchange="toggleSeleccionarTodos(this)"></th><th>Fecha</th><th>Solicitante</th><th>Departamento</th><th>Detalles</th></tr></thead><tbody><tr><td colspan="5" style="text-align:center">Cargando...</td></tr></tbody></table><div class="controls"><div class="left-buttons"><button class="btn btn-danger" onclick="borrarPedidosSeleccionados()">🗑️ Borrar Seleccionados</button></div><button class="btn btn-whatsapp" onclick="reenviarPedidosSeleccionados()">📲 Reenviar</button><button class="btn btn-success" onclick="exportarHistorialPedidosExcel()">📊 Exportar Excel</button><button class="btn btn-pdf" onclick="exportarHistorialPedidosPDF()">📄 Exportar PDF</button><button class="btn btn-cancel" onclick="goBack()">⬅️ Volver</button></div>`;
+            showView('historyContainer');
+             try {
+                const response = await fetch(WEB_APP_URL);
+                historial = await response.json();
+                renderHistorial();
+             } catch (e) { console.error(e); }
+        }
+        function renderHistorial() {
+            const tableBody = views.historyContainer.querySelector("tbody");
+            if (historial.length === 0) { tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No hay pedidos.</td></tr>'; return; }
+            tableBody.innerHTML = historial.map((pedido, index) => `<tr><td data-label="Seleccionar:" style="text-align:center;"><input type="checkbox" class="pedido-checkbox" data-index="${index}"></td><td data-label="Fecha:">${pedido.fecha}</td><td data-label="Solicitante:">${pedido.solicitante}</td><td data-label="Departamento:">${pedido.departamento}</td><td data-label="Detalles:"><table class="details-table"><tbody>${pedido.detalles.map(item => `<tr><td>${item.articulo}</td><td>${item.cantidad} ${item.unidad}</td></tr>`).join('')}</tbody></table></td></tr>`).join('');
+        }
+        function toggleSeleccionarTodos(source) { document.querySelectorAll('.pedido-checkbox').forEach(cb => { cb.checked = source.checked; }); }
+        function reenviarPedidosSeleccionados() { /* ... (sin cambios) ... */ }
+        async function borrarPedidosSeleccionados() {
+            if (!checkSecurityKey()) return;
+            const seleccionados = Array.from(document.querySelectorAll('.pedido-checkbox:checked')).map(cb => historial[parseInt(cb.dataset.index)]);
+            if (seleccionados.length === 0) return alert("Por favor, seleccione al menos un pedido para borrar.");
+            if (!confirm(`¿Está seguro de que desea borrar ${seleccionados.length} pedidos de la base de datos? Esta acción es permanente.`)) return;
+            const payload = seleccionados.map(p => ({ fecha: p.fecha, solicitante: p.solicitante, departamento: p.departamento }));
+            try {
+                await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'deletePedidos', payload }) });
+                alert('Pedidos eliminados con éxito.');
+                showHistory();
+            } catch (error) { alert('Error al eliminar los pedidos.'); }
+        }
+        function exportarHistorialPedidosExcel() {
+            const data = historial.flatMap(p => p.detalles.map(d => ({ Fecha: p.fecha, Solicitante: p.solicitante, Departamento: p.departamento, Artículo: d.articulo, Cantidad: d.cantidad, Unidad: d.unidad })));
+            const worksheet = XLSX.utils.json_to_sheet(data);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Pedidos");
+            XLSX.writeFile(workbook, `Historial_Pedidos_${new Date().toISOString().slice(0,10)}.xlsx`);
+        }
+        function exportarHistorialPedidosPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.text("Historial de Pedidos", 14, 20);
+            historial.forEach((pedido) => {
+                const startY = (doc.autoTable.previous ? doc.autoTable.previous.finalY : 25) + 5;
+                doc.autoTable({
+                    startY: startY,
+                    head: [['Fecha', 'Solicitante', 'Departamento']],
+                    body: [[pedido.fecha, pedido.solicitante, pedido.departamento]],
+                    theme: 'striped'
+                });
+                doc.autoTable({
+                    startY: doc.autoTable.previous.finalY,
+                    head: [['Artículo', 'Cantidad', 'Unidad']],
+                    body: pedido.detalles.map(d => [d.articulo, d.cantidad, d.unidad]),
+                    theme: 'grid',
+                    headStyles: { fillColor: [100, 100, 100] }
+                });
+            });
+            doc.save(`Historial_Pedidos_${new Date().toISOString().slice(0,10)}.pdf`);
         }
 
-        // --- INVENTARIO (Ahora con valor de stock) ---
+        // --- Lógica de ADMIN ARTÍCULOS ---
+        async function showAdminArticulos() { /* ... (sin cambios) ... */ }
+        function agregarFilaAdmin() { /* ... (sin cambios) ... */ }
+        function eliminarFilaAdmin(boton) { if (checkSecurityKey()) { boton.closest('tr').remove(); } }
+        async function guardarArticulos() { /* ... (sin cambios) ... */ }
+
+        // --- Lógica de COMPRAS ---
+        async function showCompras() { /* ... (sin cambios) ... */ }
+        function agregarFilaCompra() { /* ... (sin cambios) ... */ }
+        function cambiarCantidadCompra(btn, delta) { /* ... (sin cambios) ... */ }
+        function actualizarTotalesCompra() { /* ... (sin cambios) ... */ }
+        async function registrarCompra() { /* ... (sin cambios) ... */ }
+
+        // --- Lógica de HISTORIAL DE COMPRAS ---
+        async function showHistorialCompras() { /* ... (sin cambios) ... */ }
+        function renderHistorialCompras() { /* ... (sin cambios) ... */ }
+        function exportarHistorialComprasExcel() { /* ... (sin cambios) ... */ }
+
+        // --- Lógica de INVENTARIO ---
         async function showInventario() {
             views.inventarioContainer.innerHTML = `<h2>Resumen de Inventario</h2><table id="inventario-table" class="responsive-table"><thead><tr><th>Artículo</th><th>Unidad</th><th>Comprado</th><th>Solicitado</th><th>Stock Actual</th><th>Valor del Stock (₡)</th></tr></thead><tbody><tr><td colspan="6" style="text-align:center">Calculando...</td></tr></tbody></table><div class="controls"><button class="btn btn-success" onclick="exportarInventarioExcel()">📊 Exportar a Excel</button><button class="btn btn-cancel" onclick="goBack()">⬅️ Volver</button></div>`;
             showView('inventarioContainer');
             try {
-                await Promise.all([
-                    cargarCatalogoArticulos(),
-                    fetch(WEB_APP_URL).then(res => res.json()).then(data => historial = data),
-                    fetch(`${WEB_APP_URL}?action=getCompras`).then(res => res.json()).then(data => historialCompras = data)
-                ]);
-                calcularCostosPromedio(); // Asegurarse de tener los costos más recientes
-
+                await cargarDatosEsenciales();
                 const comprasAgrupadas = historialCompras.reduce((acc, compra) => {
                     acc[compra.articulo] = (acc[compra.articulo] || 0) + parseFloat(compra.cantidad);
                     return acc;
                 }, {});
-                const pedidosAgrupados = historial.flatMap(p => p.detalles).reduce((acc, item) => {
+                const pedidosAgrupados = (await (await fetch(WEB_APP_URL)).json()).flatMap(p => p.detalles).reduce((acc, item) => {
                     acc[item.articulo] = (acc[item.articulo] || 0) + parseFloat(item.cantidad);
                     return acc;
                 }, {});
-
                 inventario = catalogoArticulos.map(articulo => {
                     const totalComprado = comprasAgrupadas[articulo.nombre] || 0;
                     const totalPedido = pedidosAgrupados[articulo.nombre] || 0;
                     const stock = totalComprado - totalPedido;
                     const costoProm = costosPromedio[articulo.nombre] || 0;
-                    return { 
-                        nombre: articulo.nombre, 
-                        unidad: articulo.unidad, 
-                        comprado: totalComprado, 
-                        solicitado: totalPedido, 
-                        stock: stock,
-                        valorStock: stock * costoProm
-                    };
+                    return { nombre: articulo.nombre, unidad: articulo.unidad, comprado: totalComprado, solicitado: totalPedido, stock: stock, valorStock: stock * costoProm };
                 });
                 renderInventario();
             } catch (e) { console.error(e); }
@@ -256,23 +409,12 @@
             tableBody.innerHTML = inventario.map(item => `<tr><td data-label="Artículo">${item.nombre}</td><td data-label="Unidad">${item.unidad}</td><td data-label="Comprado">${item.comprado}</td><td data-label="Solicitado">${item.solicitado}</td><td data-label="Stock" style="font-weight:bold;">${item.stock}</td><td data-label="Valor Stock" style="font-weight:bold;">${item.valorStock.toFixed(2)} ₡</td></tr>`).join('');
         }
         function exportarInventarioExcel() {
-            const data = inventario.map(i => ({ 
-                Artículo: i.nombre, 
-                Unidad: i.unidad, 
-                Comprado: i.comprado, 
-                Solicitado: i.solicitado, 
-                "Stock Actual": i.stock,
-                "Valor del Stock (₡)": i.valorStock.toFixed(2)
-            }));
+            const data = inventario.map(i => ({ Artículo: i.nombre, Unidad: i.unidad, Comprado: i.comprado, Solicitado: i.solicitado, "Stock Actual": i.stock, "Valor del Stock (₡)": i.valorStock.toFixed(2) }));
             const worksheet = XLSX.utils.json_to_sheet(data);
             const workbook = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(workbook, worksheet, "Inventario");
             XLSX.writeFile(workbook, `Resumen_Inventario_${new Date().toISOString().slice(0,10)}.xlsx`);
         }
-
-        // --- El resto de funciones (showHistory, showAdminArticulos, showCompras, etc.) permanecen aquí ---
-        // Se omiten por brevedad, pero deben estar en tu archivo final.
-        // Asegúrate de copiar este script completo para reemplazar el tuyo.
     </script>
 </body>
 </html>
