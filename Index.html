@@ -58,8 +58,8 @@
             #pedido-table > tbody > tr > td:nth-of-type(3)::before { content: "Cantidad"; }
             #pedido-table > tbody > tr > td:nth-of-type(4)::before { content: ""; }
             #compras-table > tbody > tr > td:nth-of-type(1)::before { content: "Artículo"; }
-            #compras-table > tbody > tr > td:nth-of-type(2)::before { content: "Cantidad"; }
-            #compras-table > tbody > tr > td:nth-of-type(3)::before { content: "Costo Unitario"; }
+            #compras-table > tbody > tr > td:nth-of-type(2)::before { content: "Costo Unitario"; }
+            #compras-table > tbody > tr > td:nth-of-type(3)::before { content: "Cantidad"; }
             #compras-table > tbody > tr > td:nth-of-type(4)::before { content: "Total"; }
             #compras-table > tbody > tr > td:nth-of-type(5)::before { content: ""; }
             #historial-compras-table > tbody > tr > td:nth-of-type(1)::before { content: "Fecha"; }
@@ -407,10 +407,18 @@
                     <div class="form-group"><label for="compra-fecha">Fecha de Compra:</label><input type="date" id="compra-fecha"></div>
                 </div>
                 <table id="compras-table" class="responsive-table">
-                    <thead><tr><th>Artículo</th><th>Cantidad</th><th>Costo Unitario (₡)</th><th>Total (₡)</th><th>Acción</th></tr></thead>
+                    <thead><tr><th>Artículo</th><th>Costo Unitario (₡)</th><th>Cantidad</th><th>Total (₡)</th><th>Acción</th></tr></thead>
                     <tbody></tbody>
                 </table>
-                <h3 style="text-align:right; margin-top:20px;">Total General: <span id="compra-total-general">0.00</span> ₡</h3>
+                <div style="text-align:right; margin-top:20px; font-size: 1.1em;">
+                    <p>Subtotal: <span id="compra-subtotal">0.00</span> ₡</p>
+                    <div style="display:flex; justify-content:flex-end; align-items:center; gap:10px;">
+                        <label for="compra-aplicar-impuesto"><input type="checkbox" id="compra-aplicar-impuesto" onchange="actualizarTotalesCompra()"> Aplicar Impuesto (%):</label>
+                        <input type="number" id="compra-porcentaje-impuesto" value="13" style="width: 80px;" oninput="actualizarTotalesCompra()" disabled>
+                    </div>
+                    <p>Impuesto: <span id="compra-impuesto-monto">0.00</span> ₡</p>
+                    <h3 style="margin-top:10px;">Total General: <span id="compra-total-general">0.00</span> ₡</h3>
+                </div>
                 <div class="controls">
                     <button onclick="agregarFilaCompra()" class="btn btn-add">➕ Agregar Artículo</button>
                     <button onclick="goBack()" class="btn btn-cancel">⬅️ Volver</button>
@@ -428,23 +436,45 @@
             let opcionesArticulo = catalogoArticulos.map(a => `<option value="${a.nombre}">${a.nombre}</option>`).join('');
             newRow.innerHTML = `
                 <td data-label="Artículo"><select class="compra-articulo">${opcionesArticulo}</select></td>
-                <td data-label="Cantidad"><input type="number" class="compra-cantidad" value="1" min="1" oninput="actualizarTotalesCompra()"></td>
                 <td data-label="Costo Unitario"><input type="number" class="compra-costo-unitario" value="0" min="0" step="100" oninput="actualizarTotalesCompra()"></td>
+                <td data-label="Cantidad"><div style="display:flex; align-items:center; justify-content:flex-end;"><button class="btn" onclick="cambiarCantidadCompra(this, -1)">-</button><span class="compra-cantidad" style="padding:0 10px; font-weight:bold;">1</span><button class="btn" onclick="cambiarCantidadCompra(this, 1)">+</button></div></td>
                 <td data-label="Total" class="compra-costo-total" style="font-weight:bold;">0.00</td>
                 <td data-label="Acción"><button class="btn btn-danger" onclick="this.closest('tr').remove(); actualizarTotalesCompra();">X</button></td>`;
             actualizarTotalesCompra();
         }
         
+        function cambiarCantidadCompra(btn, delta) {
+            const display = btn.parentElement.querySelector('span');
+            let val = parseInt(display.textContent) + delta;
+            if (val < 1) val = 1;
+            display.textContent = val;
+            actualizarTotalesCompra();
+        }
+
         function actualizarTotalesCompra() {
-            let totalGeneral = 0;
+            let subtotalGeneral = 0;
             document.querySelectorAll('#compras-table tbody tr').forEach(row => {
-                const cantidad = parseFloat(row.querySelector('.compra-cantidad').value) || 0;
+                const cantidad = parseInt(row.querySelector('.compra-cantidad').textContent) || 0;
                 const costoUnitario = parseFloat(row.querySelector('.compra-costo-unitario').value) || 0;
                 const costoTotal = cantidad * costoUnitario;
                 row.querySelector('.compra-costo-total').textContent = costoTotal.toFixed(2);
-                totalGeneral += costoTotal;
+                subtotalGeneral += costoTotal;
             });
-            document.getElementById('compra-total-general').textContent = totalGeneral.toFixed(2);
+
+            document.getElementById('compra-subtotal').textContent = subtotalGeneral.toFixed(2);
+            
+            const aplicarImpuestoCheckbox = document.getElementById('compra-aplicar-impuesto');
+            const porcentajeInput = document.getElementById('compra-porcentaje-impuesto');
+            porcentajeInput.disabled = !aplicarImpuestoCheckbox.checked;
+
+            let montoImpuesto = 0;
+            if (aplicarImpuestoCheckbox.checked) {
+                const porcentaje = parseFloat(porcentajeInput.value) || 0;
+                montoImpuesto = subtotalGeneral * (porcentaje / 100);
+            }
+
+            document.getElementById('compra-impuesto-monto').textContent = montoImpuesto.toFixed(2);
+            document.getElementById('compra-total-general').textContent = (subtotalGeneral + montoImpuesto).toFixed(2);
         }
         
         async function registrarCompra() {
@@ -465,16 +495,21 @@
                 return alert('Por favor, complete los datos del encabezado (registrado por, proveedor y fecha).');
             }
 
+            const taxPercent = document.getElementById('compra-aplicar-impuesto').checked ? parseFloat(document.getElementById('compra-porcentaje-impuesto').value) || 0 : 0;
+            const taxMultiplier = 1 + (taxPercent / 100);
+
             const items = [];
             document.querySelectorAll('#compras-table tbody tr').forEach(row => {
-                const item = {
-                    articulo: row.querySelector('.compra-articulo').value,
-                    cantidad: parseFloat(row.querySelector('.compra-cantidad').value) || 0,
-                    costoUnitario: parseFloat(row.querySelector('.compra-costo-unitario').value) || 0,
-                    costoTotal: parseFloat(row.querySelector('.compra-costo-total').textContent) || 0
-                };
-                if (item.cantidad > 0 && item.costoUnitario > 0) {
-                    items.push(item);
+                const costoUnitario = parseFloat(row.querySelector('.compra-costo-unitario').value) || 0;
+                const cantidad = parseInt(row.querySelector('.compra-cantidad').textContent) || 0;
+
+                if (cantidad > 0 && costoUnitario > 0) {
+                    items.push({
+                        articulo: row.querySelector('.compra-articulo').value,
+                        cantidad: cantidad,
+                        costoUnitario: costoUnitario,
+                        costoTotal: (costoUnitario * cantidad * taxMultiplier)
+                    });
                 }
             });
 
