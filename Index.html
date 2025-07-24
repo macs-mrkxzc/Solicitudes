@@ -19,25 +19,26 @@
             --success-color: #27ae60; /* Verde éxito */
             --danger-color: #e74c3c; /* Rojo peligro */
             --cancel-color: #95a5a6; /* Gris para cancelar/neutro */
+            --whatsapp-color: #25D366; /* Color de WhatsApp */
             --hover-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
         body {
             font-family: 'Roboto', sans-serif;
             margin: 0;
-            padding: 2.5vw; /* Padding relativo */
+            padding: 2.5vw;
             background-color: var(--background-color);
             color: var(--text-color);
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
-            font-size: 16px; /* Tamaño base para rem */
+            font-size: 16px;
         }
         .container {
             max-width: 1200px;
             margin: auto;
             background: var(--card-background);
-            padding: 3vw; /* Padding relativo */
+            padding: 3vw;
             border-radius: 12px;
             box-shadow: 0 8px 25px rgba(0,0,0,0.1);
             border: 1px solid var(--border-color);
@@ -58,14 +59,14 @@
             margin: 0;
             padding-top: 15px;
             border-top: 2px solid var(--border-color);
-            font-size: clamp(1.8em, 4vw, 2.5em); /* Tamaño de fuente adaptable */
+            font-size: clamp(1.8em, 4vw, 2.5em);
             font-weight: 700;
             color: var(--primary-color);
             letter-spacing: 0.5px;
         }
         .header-logo h2.subtitle {
             margin: 5px 0 0;
-            font-size: clamp(1em, 2.5vw, 1.5em); /* Tamaño de fuente adaptable */
+            font-size: clamp(1em, 2.5vw, 1.5em);
             font-weight: 500;
             color: var(--secondary-color);
             line-height: 1.2;
@@ -74,12 +75,12 @@
             text-align: center;
             color: var(--primary-color);
             margin-bottom: 25px;
-            font-size: clamp(1.5em, 3.5vw, 2em); /* Tamaño de fuente adaptable */
+            font-size: clamp(1.5em, 3.5vw, 2em);
             font-weight: 500;
         }
         table {
             width: 100%;
-            border-collapse: collapse; /* Cambio a collapse para mejor responsividad */
+            border-collapse: collapse;
             margin-top: 25px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.07);
             border-radius: 10px;
@@ -87,9 +88,9 @@
         }
         th, td {
             border: 1px solid var(--border-color);
-            padding: 0.8em 1em; /* Padding relativo */
+            padding: 0.8em 1em;
             text-align: left;
-            font-size: 0.95em; /* Tamaño de fuente relativo */
+            font-size: 0.95em;
         }
         th {
             background-color: var(--primary-color);
@@ -107,8 +108,6 @@
             position: relative;
             z-index: 1;
         }
-
-        /* Estilos específicos para las sub-tablas de detalles en el historial */
         .details-table {
             width: 100%;
             border-collapse: collapse;
@@ -119,7 +118,7 @@
             overflow: hidden;
         }
         .details-table th, .details-table td {
-            padding: 0.5em 0.8em; /* Padding relativo */
+            padding: 0.5em 0.8em;
             font-size: 0.85em;
             border: 1px dashed #e0e0e0;
         }
@@ -132,14 +131,13 @@
         .details-table tbody tr:hover {
             background-color: #f1f8fe;
         }
-
         input, select {
             width: 100%;
-            padding: 0.7em 0.8em; /* Padding relativo */
+            padding: 0.7em 0.8em;
             border: 1px solid #ced4da;
             border-radius: 6px;
             box-sizing: border-box;
-            font-size: 1em; /* Tamaño de fuente relativo */
+            font-size: 1em;
             transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
         }
         input:focus, select:focus {
@@ -147,8 +145,6 @@
             box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
             outline: none;
         }
-
-        /* Estilos para el control de cantidad */
         .quantity-control {
             display: flex;
             align-items: center;
@@ -168,30 +164,25 @@
             font-size: 1.2em;
             line-height: 1;
             transition: background-color 0.2s ease;
-            flex-shrink: 0; /* No se encoge */
+            flex-shrink: 0;
         }
-        .quantity-btn:hover {
-            background-color: #e2e6ea;
-        }
-        .quantity-btn:active {
-            background-color: #dae0e5;
-        }
+        .quantity-btn:hover { background-color: #e2e6ea; }
+        .quantity-btn:active { background-color: #dae0e5; }
         .quantity-display {
             padding: 0.5em 0.2em;
-            min-width: 30px; /* Asegura un ancho mínimo para el número */
+            min-width: 30px;
             text-align: center;
             font-size: 1em;
             color: var(--text-color);
-            flex-grow: 1; /* Permite que el número ocupe el espacio restante */
+            flex-grow: 1;
             font-weight: 500;
         }
-
         .action-button {
             cursor: pointer;
             background-color: var(--danger-color);
             color: white;
             border: none;
-            padding: 0.6em 1em; /* Padding relativo */
+            padding: 0.6em 1em;
             border-radius: 5px;
             font-weight: bold;
             font-size: 0.88em;
@@ -205,24 +196,24 @@
             margin-top: 40px;
             display: flex;
             justify-content: flex-end;
-            gap: 1em; /* Espacio relativo */
+            gap: 1em;
             align-items: center;
             padding-top: 25px;
             border-top: 1px solid var(--border-color);
-            flex-wrap: wrap; /* Envuelve los elementos */
+            flex-wrap: wrap;
         }
         .controls .left-buttons {
             margin-right: auto;
             display: flex;
-            gap: 1em; /* Espacio relativo */
-            flex-wrap: wrap; /* Envuelve los elementos */
+            gap: 1em;
+            flex-wrap: wrap;
         }
         .btn {
-            padding: 0.8em 1.5em; /* Padding relativo */
+            padding: 0.8em 1.5em;
             border: none;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 1em; /* Tamaño de fuente relativo */
+            font-size: 1em;
             font-weight: 600;
             letter-spacing: 0.5px;
             transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
@@ -233,60 +224,33 @@
             transform: translateY(-2px);
             box-shadow: var(--hover-shadow);
         }
-        .btn-add {
-            background-color: var(--success-color);
-            color: white;
-        }
-        .btn-add:hover {
-            background-color: #229954;
-        }
-        .btn-send {
-            background-color: var(--primary-color);
-            color: white;
-        }
-        .btn-send:hover {
-            background-color: #003a7a;
-        }
-        .btn-clear-history {
-            background-color: #f39c12;
-            color: white;
-        }
-        .btn-clear-history:hover {
-            background-color: #e67e22;
-        }
-        .btn-clear-all-history {
-            background-color: #c0392b;
-            color: white;
-        }
-        .btn-clear-all-history:hover {
-            background-color: #a52a22;
-        }
-        .btn-pdf {
-            background-color: #34495e;
-            color: white;
-        }
-        .btn-pdf:hover {
-            background-color: #2c3e50;
-        }
+        .btn-add { background-color: var(--success-color); color: white; }
+        .btn-add:hover { background-color: #229954; }
+        .btn-send { background-color: var(--primary-color); color: white; }
+        .btn-send:hover { background-color: #003a7a; }
+        .btn-clear-history { background-color: #f39c12; color: white; }
+        .btn-clear-history:hover { background-color: #e67e22; }
+        .btn-clear-all-history { background-color: #c0392b; color: white; }
+        .btn-clear-all-history:hover { background-color: #a52a22; }
+        .btn-pdf { background-color: #34495e; color: white; }
+        .btn-pdf:hover { background-color: #2c3e50; }
         .info-section {
             display: flex;
-            gap: 2em; /* Espacio relativo */
-            margin-bottom: 2em; /* Margen relativo */
-            flex-wrap: wrap; /* Envuelve los elementos en pantallas pequeñas */
+            gap: 2em;
+            margin-bottom: 2em;
+            flex-wrap: wrap;
         }
         .info-section div {
             flex: 1;
-            min-width: 280px; /* Asegura que los campos no sean demasiado pequeños */
+            min-width: 280px;
         }
         .info-section label {
             display: block;
-            margin-bottom: 0.5em; /* Margen relativo */
+            margin-bottom: 0.5em;
             font-weight: 500;
             color: var(--light-text-color);
             font-size: 1em;
         }
-
-        /* Estilos para el modal (previsualización) */
         .modal {
             display: none;
             position: fixed;
@@ -299,14 +263,14 @@
             background-color: rgba(0,0,0,0.7);
             justify-content: center;
             align-items: center;
-            padding: 1em; /* Padding relativo */
+            padding: 1em;
         }
         .modal-content {
             background-color: var(--card-background);
-            padding: 2em; /* Padding relativo */
+            padding: 2em;
             border-radius: 12px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            width: 95%; /* Más adaptable */
+            width: 95%;
             max-width: 700px;
             position: relative;
             animation: fadeIn 0.3s ease-out;
@@ -316,125 +280,73 @@
             position: absolute;
             top: 0.8em;
             right: 1em;
-            font-size: 2.5em; /* Tamaño relativo */
+            font-size: 2.5em;
             font-weight: bold;
             cursor: pointer;
             transition: color 0.2s ease;
         }
-        .close-button:hover,
-        .close-button:focus {
-            color: var(--danger-color);
-        }
+        .close-button:hover, .close-button:focus { color: var(--danger-color); }
         .modal-header {
             padding-bottom: 1em;
             border-bottom: 1px solid var(--border-color);
             margin-bottom: 1.5em;
         }
-        .modal-header h2 {
-            margin: 0;
-            font-size: clamp(1.5em, 3vw, 2em); /* Tamaño de fuente adaptable */
-            font-weight: 700;
-        }
-        .modal-body p {
-            margin-bottom: 1em;
-            font-size: 1em;
-            color: var(--light-text-color);
-        }
-        .modal-body pre {
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            font-family: 'Roboto Mono', monospace;
-            background-color: #f2f5f7;
-            padding: 1em; /* Padding relativo */
+        .modal-header h2 { margin: 0; font-size: clamp(1.5em, 3vw, 2em); font-weight: 700; }
+        .modal-body p { margin-bottom: 1em; font-size: 1em; color: var(--light-text-color); }
+        #orderSummaryContent { /* Cambiado de 'pre' a 'div' */
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f9fa;
+            padding: 1em;
             border-radius: 10px;
             border: 1px solid #dee2e6;
-            max-height: 60vh; /* Altura relativa al viewport */
+            max-height: 60vh;
             overflow-y: auto;
-            font-size: 0.9em;
-            color: #495057;
         }
         .modal-actions {
             display: flex;
             justify-content: flex-end;
-            gap: 1em; /* Espacio relativo */
+            gap: 1em;
             margin-top: 1.5em;
-            flex-wrap: wrap; /* Envuelve los elementos */
+            flex-wrap: wrap;
         }
-        .modal-actions .btn {
-            padding: 0.8em 1.5em;
-            font-size: 1em;
-            width: auto;
-        }
-        .modal-actions .btn-confirm {
-            background-color: var(--success-color);
-            color: white;
-        }
-        .modal-actions .btn-confirm:hover {
-            background-color: #218838;
-        }
-        .modal-actions .btn-cancel {
-            background-color: var(--cancel-color);
-            color: white;
-        }
-        .modal-actions .btn-cancel:hover {
-            background-color: #5a6268;
-        }
+        .modal-actions .btn { padding: 0.8em 1.5em; font-size: 1em; width: auto; }
+        .btn-confirm { background-color: var(--success-color); color: white; }
+        .btn-confirm:hover { background-color: #218838; }
+        .btn-cancel { background-color: var(--cancel-color); color: white; }
+        .btn-cancel:hover { background-color: #5a6268; }
+        .btn-whatsapp { background-color: var(--whatsapp-color); color: white; }
+        .btn-whatsapp:hover { background-color: #1EBE57; }
         .menu-options {
             display: flex;
             justify-content: center;
-            gap: 2em; /* Espacio relativo */
+            gap: 2em;
             margin-top: 2em;
-            flex-wrap: wrap; /* Envuelve los elementos */
+            flex-wrap: wrap;
         }
         .menu-options .btn {
-            min-width: 180px; /* Ancho mínimo para mantener la forma */
-            padding: 1.2em 2em; /* Padding relativo */
+            min-width: 180px;
+            padding: 1.2em 2em;
             font-size: 1.1em;
-            flex-grow: 1; /* Permite que los botones crezcan para llenar el espacio */
-            max-width: 300px; /* Limita el crecimiento en pantallas grandes */
+            flex-grow: 1;
+            max-width: 300px;
         }
         .hidden { display: none; }
-
-        /* Animación para el modal */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-30px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* --- MEDIA QUERIES PARA RESPONSIVIDAD --- */
-
-        /* Para pantallas pequeñas (smartphones, hasta 768px) */
+        /* Responsive Styles... */
         @media screen and (max-width: 768px) {
-            body {
-                padding: 15px; /* Padding fijo para móviles */
-            }
-            .container {
-                padding: 20px;
-            }
-            .header-logo img {
-                max-width: 150px;
-            }
-            .header-logo h1 {
-                font-size: 1.8em;
-            }
-            .header-logo h2.subtitle {
-                font-size: 1.2em;
-            }
-            h2 {
-                font-size: 1.6em;
-            }
-
-            /* Habilidades de tabla para que los detalles se apilen */
-            table {
-                border: 0;
-            }
-            table thead {
-                display: none; /* Oculta los encabezados de la tabla principal */
-            }
-            table, tbody, tr, td {
-                display: block; /* Cada celda se comporta como un bloque */
-                width: 100%;
-            }
+            body { padding: 15px; }
+            .container { padding: 20px; }
+            .header-logo img { max-width: 150px; }
+            .header-logo h1 { font-size: 1.8em; }
+            .header-logo h2.subtitle { font-size: 1.2em; }
+            h2 { font-size: 1.6em; }
+            table { border: 0; }
+            table thead { display: none; }
+            table, tbody, tr, td { display: block; width: 100%; }
             table tr {
                 margin-bottom: 15px;
                 border: 1px solid var(--border-color);
@@ -443,182 +355,69 @@
                 box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             }
             table td {
-                /* Ajustes clave aquí: */
                 text-align: right;
-                padding-left: 50%; /* Espacio para la etiqueta */
+                padding-left: 50%;
                 position: relative;
-                border: none; /* Elimina bordes entre celdas apiladas */
+                border: none;
                 padding-top: 8px;
                 padding-bottom: 8px;
-                /* Añadido para asegurar que el contenido se ajuste y no se desborde */
-                box-sizing: border-box; /* Importante para el padding-left */
-                word-wrap: break-word; /* Rompe palabras largas */
+                box-sizing: border-box;
+                word-wrap: break-word;
             }
             table td::before {
-                content: attr(data-label); /* Usa el atributo data-label como etiqueta */
+                content: attr(data-label);
                 position: absolute;
                 left: 10px;
-                /* Ajuste de ancho de la etiqueta */
-                width: calc(50% - 20px); 
+                width: calc(50% - 20px);
                 padding-right: 10px;
-                white-space: nowrap; /* Evita que la etiqueta se rompa */
+                white-space: nowrap;
                 text-align: left;
                 font-weight: bold;
                 color: var(--primary-color);
                 font-size: 0.9em;
-                /* Ajuste para que la etiqueta ocupe el espacio */
-                top: 50%; 
+                top: 50%;
                 transform: translateY(-50%);
             }
-
-            /* Estilos específicos para la tabla de historial apilada */
             #historialTable td:nth-of-type(1)::before { content: "Fecha:"; }
             #historialTable td:nth-of-type(2)::before { content: "Solicitante:"; }
             #historialTable td:nth-of-type(3)::before { content: "Departamento:"; }
-            #historialTable td:nth-of-type(4)::before { content: "Artículos:"; } /* Este es el detalle del pedido */
-
-            /* Ajustes para la tabla de pedido (agregar/eliminar) */
+            #historialTable td:nth-of-type(4)::before { content: "Artículos:"; }
             #pedido-table td:nth-of-type(1)::before { content: "Artículo:"; }
             #pedido-table td:nth-of-type(2)::before { content: "Cantidad:"; }
             #pedido-table td:nth-of-type(3)::before { content: "Unidad:"; }
-            #pedido-table td:nth-of-type(4) { /* Celda de acción */
-                text-align: center;
-                padding-left: 10px; /* Elimina padding extra */
-            }
-            #pedido-table td:nth-of-type(4)::before { content: ""; } /* Elimina la etiqueta para el botón de acción */
-            .action-button {
-                width: 100%; /* Botón de eliminar más grande */
-                padding: 10px;
-            }
-
-            /* AJUSTE CLAVE: Control de cantidad en móvil */
-            .quantity-control {
-                width: 100%;
-                max-width: 120px; /* Ancho más compacto */
-                margin: 0 auto; /* Centra el control dentro de la celda */
-                justify-content: space-between; /* Distribuye los elementos */
-            }
-            .quantity-btn {
-                padding: 0.4em 0.6em; /* Padding más pequeño */
-                font-size: 1.0em; /* Fuente ligeramente más pequeña */
-            }
-            .quantity-display {
-                font-size: 0.95em; /* Fuente del número ligeramente más pequeña */
-                min-width: 25px; /* Asegura que el número no se vea cortado */
-            }
-           
-            /* Asegura que los selects en las tablas tengan un ancho adecuado */
-            table td select {
-                width: 100%;
-                max-width: 100%; /* Asegura que no se desborde */
-                box-sizing: border-box;
-            }
-
-            .info-section {
-                flex-direction: column; /* Apila los campos de info */
-                gap: 15px;
-            }
-            .info-section div {
-                min-width: unset; /* Elimina el min-width */
-            }
-
-            .controls {
-                flex-direction: column; /* Apila los botones de control */
-                gap: 10px;
-            }
-            .controls .btn {
-                width: 100%; /* Botones de control al 100% de ancho */
-                padding: 12px;
-                font-size: 1em;
-            }
-            .controls .left-buttons {
-                flex-direction: column;
-                margin-right: 0;
-                width: 100%;
-            }
-            .menu-options {
-                flex-direction: column;
-                gap: 15px;
-            }
-            .menu-options .btn {
-                width: 100%;
-                max-width: unset; /* Elimina max-width para ocupar todo el ancho */
-                padding: 15px;
-                font-size: 1.1em;
-            }
-            .modal-content {
-                width: 95%; /* Asegura que el modal no se desborde */
-                padding: 1.2em;
-            }
-            .modal-actions {
-                flex-direction: column;
-            }
-            .modal-actions .btn {
-                width: 100%;
-            }
-
-            /* Estilos para la tabla de detalles dentro del historial en móvil */
-            .details-table {
-                border: none;
-                margin-top: 5px;
-                background-color: transparent;
-                box-shadow: none;
-            }
-            .details-table thead {
-                display: none; /* Oculta los encabezados de la tabla de detalles */
-            }
-            .details-table tr {
-                margin-bottom: 0px; /* Reduce el margen entre filas de detalles */
-                border: none;
-                background-color: transparent;
-                box-shadow: none;
-            }
-            .details-table td {
-                padding: 4px 10px; /* Padding ajustado para detalles */
-                text-align: left; /* Alinea el texto a la izquierda */
-                padding-left: 40%; /* Espacio para la etiqueta */
-                font-size: 0.8em;
-                /* Asegura que el contenido interno de la celda se distribuya bien */
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
-            .details-table td::before {
-                font-weight: normal; /* Etiquetas de detalles un poco más suaves */
-                color: var(--light-text-color);
-                width: calc(40% - 15px); /* Ajusta ancho de etiqueta */
-                position: static; /* No flotar absolutamente */
-                transform: none; /* Sin transformación */
-                flex-shrink: 0; /* Evita que la etiqueta se encoja */
-            }
-            /* Etiquetas específicas para la tabla de detalles */
+            #pedido-table td:nth-of-type(4) { text-align: center; padding-left: 10px; }
+            #pedido-table td:nth-of-type(4)::before { content: ""; }
+            .action-button { width: 100%; padding: 10px; }
+            .quantity-control { width: 100%; max-width: 120px; margin: 0 auto; justify-content: space-between; }
+            .quantity-btn { padding: 0.4em 0.6em; font-size: 1.0em; }
+            .quantity-display { font-size: 0.95em; min-width: 25px; }
+            table td select { width: 100%; max-width: 100%; box-sizing: border-box; }
+            .info-section { flex-direction: column; gap: 15px; }
+            .info-section div { min-width: unset; }
+            .controls { flex-direction: column; gap: 10px; }
+            .controls .btn { width: 100%; padding: 12px; font-size: 1em; }
+            .controls .left-buttons { flex-direction: column; margin-right: 0; width: 100%; }
+            .menu-options { flex-direction: column; gap: 15px; }
+            .menu-options .btn { width: 100%; max-width: unset; padding: 15px; font-size: 1.1em; }
+            .modal-content { width: 95%; padding: 1.2em; }
+            .modal-actions { flex-direction: column; }
+            .modal-actions .btn { width: 100%; }
+            .details-table { border: none; margin-top: 5px; background-color: transparent; box-shadow: none; }
+            .details-table thead { display: none; }
+            .details-table tr { margin-bottom: 0px; border: none; background-color: transparent; box-shadow: none; }
+            .details-table td { padding: 4px 10px; text-align: left; padding-left: 40%; font-size: 0.8em; display: flex; justify-content: space-between; align-items: center; }
+            .details-table td::before { font-weight: normal; color: var(--light-text-color); width: calc(40% - 15px); position: static; transform: none; flex-shrink: 0; }
             .details-table td:nth-of-type(1)::before { content: "Artículo:"; }
             .details-table td:nth-of-type(2)::before { content: "Cantidad:"; }
             .details-table td:nth-of-type(3)::before { content: "Unidad:"; }
         }
-
-        /* Para tabletas y escritorios pequeños (769px a 1024px) */
         @media screen and (min-width: 769px) and (max-width: 1024px) {
-            .container {
-                padding: 2.5vw;
-            }
-            .header-logo h1 {
-                font-size: 2.2em;
-            }
-            .header-logo h2.subtitle {
-                font-size: 1.3em;
-            }
-            h2 {
-                font-size: 1.8em;
-            }
-            .menu-options .btn {
-                min-width: 160px;
-                padding: 1.1em 2em;
-                font-size: 1.1em;
-            }
-            .info-section {
-                gap: 20px;
-            }
+            .container { padding: 2.5vw; }
+            .header-logo h1 { font-size: 2.2em; }
+            .header-logo h2.subtitle { font-size: 1.3em; }
+            h2 { font-size: 1.8em; }
+            .menu-options .btn { min-width: 160px; padding: 1.1em 2em; font-size: 1.1em; }
+            .info-section { gap: 20px; }
         }
     </style>
 </head>
@@ -638,7 +437,7 @@
 
     <div class="container hidden" id="formContainer">
         <div class="header-logo" style="margin-bottom: 20px;">
-            <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTI4IDEyOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxyZWN0IHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiBmaWxsPSJ3aGl0ZSIvPgogICAgPHBhdGggZD0iTTM1IDYwTDIwIDQ1VjIySDQ3VjMwTDM1IDQyVjYwWk04MyA2MEw2OCA0NVYyMkg5NVYzMEw4MyA0MlY2MFpNNzMgNjBMODMgNzVWOTdINzNWNzVMMzMgNTlWMjJIMTU2VjU5WiIgc3Ryb2tlPSIjMDA1NmIzIiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSIxMDgiIGhlaWdodD0iNzUiIHg9IjEwIiB5PSI1MCIgc3Ryb2tlPSIjNjU2NTY1IiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSI4NiIgaGVpZ2h0PSI0NiIgeD0iMjEiIHk9IjY5IiBmaWxsPSIjRDBFN0YxIi8+CiAgICA8cGF0aCBkPSJNNTAgNzVWNzVINzRWNzVMMTAwIDc1VjEwMEgzMEw1MCA3NVpNMjUgODVMNTIgODVWOTdIMjVWODVaIiBzdHJva2U9IiMwMDVkYTMiIHN0cm9rZS13aWR0aGg9IjQiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSI1MCIgaGVpZ2h0PSIxMiIgeD0iMzkuNTUgeT0iNzMiIGZpbGw9IiMwMDVkYTMiLz4KICAgIDxjaXJjbGUgY3g9IjM1IiBjeT0iNDgiIHI9IjgiIGZpbGw9IiMwMDVkYTMiLz4KICAgIDxjaXJjbGUgY3g9IjM1IiBjeT0iNDgiIHI9IjgiIGZpbGw9IiM2NTY1NjUiLz4KICAgIDxwYXRoIGQ9Ik01NSA0MEwzOSAyOEg2OSBMNTUgMTRWNjZaIiBzdHJva2U9IiMwMDU2YjMiIHN0cm9rZS13aWR0aGg9IjMiIGZpbGw9Im5vbmUiLz4KPC9zdmc+" alt="Logo de Suministros Corporativos">
+            <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTI4IDEyOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxyZWN0IHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiBmaWxsPSJ3aGl0ZSIvPgogICAgPHBhdGggZD0iTTM1IDYwTDIwIDQ1VjIySDQ3VjMwTDM1IDQyVjYwWk04MyA2MEw2OCA0NVYyMkg5NVYzMEw4MyA0MlY2MFpNNzMgNjBMODMgNzVWOTdINzNWNzVMMzMgNTlWMjJIMTU2VjU5WiIgc3Ryb2tlPSIjMDA1NmIzIiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSIxMDgiIGhlaWdodD0iNzUiIHg9IjEwIiB5PSI1MCIgc3Ryb2tlPSIjNjU2NTY1IiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSI4NiIgaGVpZ2h0PSI0NiIgeD0iMjEiIHk9IjY5IiBmaWxsPSIjRDBFN0YxIi8+CiAgICA8cGF0aCBkPSJNNTAgNzVWNzVINzRWNzVMMTAwIDc1VjEwMEgzMEw1MCA3NVpNMjUgODVMNTIgODVWOTdIMjVWODVaIiBzdHJva2U9IiMwMDVkYTMiIHN0cm9rZS13aWR0aGg9IjQiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSI1MCIgaGVpZ2h0PSIxMiIgeD0iMzkuNTUgeT0iNzMiIGZpbGw9IiMwMDVkYTMiLz4KICAgIDxjaXJjbGUgY3g9IjM1IiBjeT0iNDgiIHI9IjgiIGZpbGw9IiMwMDVkYTMiLz4KICAgIDxjaXJjbGUgY3g9IjM1IiBjeT0iNDgiIHI9IjgiIGZpbGw9IiM2NTY1NjUiLz4KICAgIDxwYXRoIGQ9Ik01NSA0MEwzOSAyOEg2OSBMNTUgMTRWNjZaIiBzdHJva2U9IiMwMDU2YjMiIHN0cm9rZS13aWR0aGg9IjMiIGZpbGw9Im5vbmUiLz4KPC9zdmc=" alt="Logo de Suministros Corporativos">
             <h1>Tesoros Americanos Costa Rica</h1>
             <h2 class="subtitle">Formulario de Solicitud de Suministros</h2>
         </div>
@@ -653,7 +452,6 @@
                 <input type="text" id="departamento" placeholder="Ej: Contabilidad, TI, Recursos Humanos" required>
             </div>
         </div>
-
         <table id="pedido-table">
             <thead>
                 <tr>
@@ -663,10 +461,8 @@
                     <th>Acción</th>
                 </tr>
             </thead>
-            <tbody>
-                </tbody>
+            <tbody></tbody>
         </table>
-
         <div class="controls">
             <div class="left-buttons">
                 <button onclick="agregarFila()" class="btn btn-add">➕ Agregar Nuevo Artículo</button>
@@ -678,7 +474,7 @@
 
     <div class="container hidden" id="historyContainer">
         <div class="header-logo" style="margin-bottom: 20px;">
-            <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTI4IDEyOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxyZWN0IHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiBmaWxsPSJ3aGl0ZSIvPgogICAgPHBhdGggZD0iTTM1IDYwTDIwIDQ1VjIySDQ3VjMwTDM1IDQyVjYwWk04MyA2MEw2OCA0NVYyMkg5NVYzMEw4MyA0MlY2MFpNNzMgNjBMODMgNzVWOTdINzNWNzVMMzMgNTlWMjJIMTU2VjU5WiIgc3Ryb2tlPSIjMDA1NmIzIiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSIxMDgiIGhlaWdodD0iNzUiIHg9IjEwIiB5PSI1MCIgc3Ryb2tlPSIjNjU2NTY1IiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSI4NiIgaGVpZ2h0PSI0NiIgeD0iMjEiIHk9IjY5IiBmaWxsPSIjRDBFN0YxIi8+CiAgICA8cGF0aCBkPSJNNTAgNzVWNzVINzRWNzVMMTAwIDc1VjEwMEgzMEw1MCA3NVpNMjUgODVMNTIgODVWOTdIMjVWODVaIiBzdHJva2U9IiMwMDVkYTMiIHN0cm9rZS13aWR0aGg9IjQiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSI1MCIgaGVpZ2h0PSIxMiIgeD0iMzkuNTUgeT0iNzMiIGZpbGw9IiMwMDVkYTMiLz4KICAgIDxjaXJjbGUgY3g9IjM1IiBjeT0iNDgiIHI9IjgiIGZpbGw9IiMwMDVkYTMiLz4KICAgIDxjaXJjbGUgY3g9IjM1IiBjeT0iNDgiIHI9IjgiIGZpbGw9IiM2NTY1NjUiLz4KICAgIDxwYXRoIGQ9Ik01NSA0MEwzOSAyOEg2OSBMNTUgMTRWNjZaIiBzdHJva2U9IiMwMDU2YjMiIHN0cm9rZS13aWR0aGg9IjMiIGZpbGw9Im5vbmUiLz4KPC9zdmc+" alt="Logo de Suministros Corporativos">
+            <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTI4IDEyOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxyZWN0IHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiBmaWxsPSJ3aGl0ZSIvPgogICAgPHBhdGggZD0iTTM1IDYwTDIwIDQ1VjIySDQ3VjMwTDM1IDQyVjYwWk04MyA2MEw2OCA0NVYyMkg5NVYzMEw4MyA0MlY2MFpNNzMgNjBMODMgNzVWOTdINzNWNzVMMzMgNTlWMjJIMTU2VjU5WiIgc3Ryb2tlPSIjMDA1NmIzIiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSIxMDgiIGhlaWdodD0iNzUiIHg9IjEwIiB5PSI1MCIgc3Ryb2tlPSIjNjU2NTY1IiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSI4NiIgaGVpZ2h0PSI0NiIgeD0iMjEiIHk9IjY5IiBmaWxsPSIjRDBFN0YxIi8+CiAgICA8cGF0aCBkPSJNNTAgNzVWNzVINzRWNzVMMTAwIDc1VjEwMEgzMEw1MCA3NVpNMjUgODVMNTIgODVWOTdIMjVWODVaIiBzdHJva2U9IiMwMDVkYTMiIHN0cm9rZS13aWR0aGg9IjQiIGZpbGw9Im5vbmUiLz4KICAgIDxyZWN0IHdpZHRoPSI1MCIgaGVpZ2h0PSIxMiIgeD0iMzkuNTUgeT0iNzMiIGZpbGw9IiMwMDVkYTMiLz4KICAgIDxjaXJjbGUgY3g9IjM1IiBjeT0iNDgiIHI9IjgiIGZpbGw9IiMwMDVkYTMiLz4KICAgIDxjaXJjbGUgY3g9IjM1IiBjeT0iNDgiIHI9IjgiIGZpbGw9IiM2NTY1NjUiLz4KICAgIDxwYXRoIGQ9Ik01NSA0MEwzOSAyOEg2OSBMNTUgMTRWNjZaIiBzdHJva2U9IiMwMDU2YjMiIHN0cm9rZS13aWR0aGg9IjMiIGZpbGw9Im5vbmUiLz4KPC9zdmc=" alt="Logo de Suministros Corporativos">
             <h1>Tesoros Americanos Costa Rica</h1>
             <h2 class="subtitle">Historial de Solicitudes</h2>
         </div>
@@ -712,30 +508,23 @@
                 <span class="close-button" onclick="closeModal()">&times;</span>
             </div>
             <div class="modal-body">
-                <p>Por favor, revise detalladamente la siguiente información antes de confirmar el envío. Al hacer clic en <strong>"Confirmar y Enviar Solicitud"</strong>, se abrirá su cliente de correo electrónico predeterminado con el pedido listo para su despacho a <strong>soporteit@atcostarica.com</strong> y se descargará un archivo Excel con el detalle.</p>
-                <pre id="orderSummaryContent"></pre>
+                <p>Por favor, revise detalladamente la siguiente información antes de confirmar el envío.</p>
+                <div id="orderSummaryContent"></div>
                 <div class="modal-actions">
                     <button onclick="closeModal()" class="btn btn-cancel">Cancelar</button>
-                    <button onclick="confirmarYEnviar()" class="btn btn-confirm">Confirmar y Enviar Solicitud</button>
+                    <button onclick="enviarPorWhatsApp()" class="btn btn-whatsapp">📲 Enviar por WhatsApp</button>
+                    <button onclick="confirmarYEnviar()" class="btn btn-confirm">📧 Confirmar y Enviar por Correo</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Carga el historial desde localStorage al inicio
         let historial = JSON.parse(localStorage.getItem("historialPedidos")) || [];
-
-        // Referencia al modal y al contenido del resumen
         const summaryModal = document.getElementById('summaryModal');
         const orderSummaryContent = document.getElementById('orderSummaryContent');
-        let currentEmailData = {}; // Objeto para guardar los datos del correo y del Excel/historial
+        let currentEmailData = {};
 
-        // ==================================================================
-        // === INICIO DE CAMBIOS: ESTRUCTURA DE DATOS Y NUEVAS FUNCIONES ===
-        // ==================================================================
-        
-        // PASO 1: ESTRUCTURA DE DATOS ACTUALIZADA
         const listaArticulos = [
             { nombre: "Cloro", unidad: "Galón" },
             { nombre: "Desinfectante", unidad: "Galón" },
@@ -773,39 +562,37 @@
             { nombre: "Bolsas Nacional 12x25", unidad: "Kilo" },
             { nombre: "Bolsas Jumbo 15x37", unidad: "Kilo" },
             { nombre: "Bolsas Basura Transparentes 37x55", unidad: "Kilo" },
-    { nombre: "Camisa de mujer XS", unidad: "Uniforme" },
-    { nombre: "Camisa de mujer S", unidad: "Uniforme" },
-    { nombre: "Camisa de mujer M", unidad: "Uniforme" },
-    { nombre: "Camisa de mujer L", unidad: "Uniforme" },
-    { nombre: "Camisa de mujer XL", unidad: "Uniforme" },
-    { nombre: "Camisa de mujer 2XL", unidad: "Uniforme" },
-    { nombre: "Camisa de mujer 3XL", unidad: "Uniforme" },
-    { nombre: "Camisa de hombre XS", unidad: "Uniforme" },
-    { nombre: "Camisa de hombre S", unidad: "Uniforme" },
-    { nombre: "Camisa de hombre M", unidad: "Uniforme" },
-    { nombre: "Camisa de hombre L", unidad: "Uniforme" },
-    { nombre: "Camisa de hombre XL", unidad: "Uniforme" },
-    { nombre: "Camisa de hombre 2XL", unidad: "Uniforme" },
-    { nombre: "Camisa de hombre 3XL", unidad: "Uniforme" }
+            { nombre: "Camisa de mujer XS", unidad: "Uniforme" },
+            { nombre: "Camisa de mujer S", unidad: "Uniforme" },
+            { nombre: "Camisa de mujer M", unidad: "Uniforme" },
+            { nombre: "Camisa de mujer L", unidad: "Uniforme" },
+            { nombre: "Camisa de mujer XL", unidad: "Uniforme" },
+            { nombre: "Camisa de mujer 2XL", unidad: "Uniforme" },
+            { nombre: "Camisa de mujer 3XL", unidad: "Uniforme" },
+            { nombre: "Camisa de hombre XS", unidad: "Uniforme" },
+            { nombre: "Camisa de hombre S", unidad: "Uniforme" },
+            { nombre: "Camisa de hombre M", unidad: "Uniforme" },
+            { nombre: "Camisa de hombre L", unidad: "Uniforme" },
+            { nombre: "Camisa de hombre XL", unidad: "Uniforme" },
+            { nombre: "Camisa de hombre 2XL", unidad: "Uniforme" },
+            { nombre: "Camisa de hombre 3XL", unidad: "Uniforme" }
         ];
 
-        // --- Funciones de Navegación ---
         function showForm() {
             document.getElementById('mainMenu').classList.add('hidden');
             document.getElementById('historyContainer').classList.add('hidden');
             document.getElementById('formContainer').classList.remove('hidden');
-            // Limpia el formulario y añade una fila nueva cada vez que se muestra
             document.getElementById('solicitante').value = '';
             document.getElementById('departamento').value = '';
             document.querySelector('#pedido-table tbody').innerHTML = '';
-            agregarFila(); // Asegura al menos una fila al iniciar un nuevo pedido
+            agregarFila();
         }
 
         function showHistory() {
             document.getElementById('mainMenu').classList.add('hidden');
             document.getElementById('formContainer').classList.add('hidden');
             document.getElementById('historyContainer').classList.remove('hidden');
-            renderHistorial(); // Renderiza el historial cuando se muestra la sección
+            renderHistorial();
         }
 
         function goBack() {
@@ -814,17 +601,10 @@
             document.getElementById('mainMenu').classList.remove('hidden');
         }
 
-        // --- Funciones del Formulario de Pedido ---
-        
-        // PASO 2: FUNCIÓN agregarFila() MODIFICADA
         function agregarFila() {
             const tableBody = document.getElementById('pedido-table').getElementsByTagName('tbody')[0];
             const newRow = tableBody.insertRow();
-
-            // Celda para el Artículo (ahora inicia deshabilitada)
             newRow.insertCell(0).outerHTML = `<td data-label="Artículo:"><select class="articulo-select" required disabled><option value="" disabled selected>Seleccione una unidad primero</option></select></td>`;
-            
-            // Celda para la Cantidad (sin cambios)
             newRow.insertCell(1).outerHTML = `
                 <td data-label="Cantidad:">
                     <div class="quantity-control">
@@ -833,70 +613,44 @@
                         <button class="quantity-btn" onclick="cambiarCantidad(this, 1)">+</button>
                     </div>
                 </td>`;
-
-            // Celda para la Unidad de Medida (con el onchange)
             newRow.insertCell(2).outerHTML = `<td data-label="Unidad de Medida:">
                 <select required onchange="actualizarArticulos(this)">
                     <option value="" disabled selected>Seleccione unidad</option>
-                    <option value="Unidad">Unidad</option>
-                    <option value="Paquete">Paquete</option>
-                    <option value="Galón">Galón</option>
-                    <option value="Kilo">Kilo</option>
-                    <option value="Caja">Caja</option>
-                    <option value="Contenedor">Contenedor</option>
-                    <option value="Uniforme">Uniforme</option>
+                    <option value="Unidad">Unidad</option><option value="Paquete">Paquete</option><option value="Galón">Galón</option><option value="Kilo">Kilo</option><option value="Caja">Caja</option><option value="Contenedor">Contenedor</option><option value="Uniforme">Uniforme</option>
                 </select>
             </td>`;
-
-            // Celda de Acción (sin cambios)
             newRow.insertCell(3).outerHTML = `<td data-label="Acción:"><button class="action-button" onclick="eliminarFila(this)">Eliminar</button></td>`;
         }
-        
-        // PASO 3: NUEVA FUNCIÓN actualizarArticulos()
+
         function actualizarArticulos(selectUnidad) {
             const unidadSeleccionada = selectUnidad.value;
-            const fila = selectUnidad.closest('tr'); // Encuentra la fila actual
-            const selectArticulo = fila.querySelector('.articulo-select'); // Encuentra el select de artículo en esa fila
-
-            selectArticulo.innerHTML = ''; // Limpia las opciones anteriores
-
+            const fila = selectUnidad.closest('tr');
+            const selectArticulo = fila.querySelector('.articulo-select');
+            selectArticulo.innerHTML = '';
             if (!unidadSeleccionada) {
                 selectArticulo.disabled = true;
                 selectArticulo.innerHTML = '<option value="" disabled selected>Seleccione una unidad primero</option>';
                 return;
             }
-
-            // Filtra la lista de artículos global basándose en la unidad seleccionada
             const articulosFiltrados = listaArticulos.filter(item => item.unidad === unidadSeleccionada);
-
             selectArticulo.disabled = false;
-            selectArticulo.innerHTML = '<option value="" disabled selected>Seleccione un artículo</option>'; // Opción por defecto
-
-            // Rellena el select con los artículos filtrados
+            selectArticulo.innerHTML = '<option value="" disabled selected>Seleccione un artículo</option>';
             articulosFiltrados.forEach(item => {
                 const option = document.createElement('option');
                 option.value = item.nombre;
                 option.textContent = item.nombre;
                 selectArticulo.appendChild(option);
             });
-
             if (articulosFiltrados.length === 0) {
                 selectArticulo.innerHTML = '<option value="" disabled selected>No hay artículos para esta unidad</option>';
             }
         }
-
-        // ================================================================
-        // === FIN DE CAMBIOS: EL RESTO DEL CÓDIGO PERMANECE IGUAL ===
-        // ================================================================
-
+        
         function cambiarCantidad(button, delta) {
             const quantityDisplay = button.parentNode.querySelector('.quantity-display');
             let currentQuantity = parseInt(quantityDisplay.textContent);
             let newQuantity = currentQuantity + delta;
-
-            if (newQuantity < 1) {
-                newQuantity = 1; // La cantidad mínima es 1
-            }
+            if (newQuantity < 1) newQuantity = 1;
             quantityDisplay.textContent = newQuantity;
         }
 
@@ -905,118 +659,98 @@
             if (document.getElementById('pedido-table').getElementsByTagName('tbody')[0].rows.length > 1) {
                 row.parentNode.removeChild(row);
             } else {
-                alert('No es posible eliminar la última fila del pedido. Si desea cancelar, puede volver al menú principal.');
+                alert('No es posible eliminar la última fila del pedido.');
             }
         }
 
         function previsualizarPedido() {
             const solicitante = document.getElementById('solicitante').value.trim();
             const departamento = document.getElementById('departamento').value.trim();
-
             if (!solicitante || !departamento) {
-                alert('Por favor, complete los campos "Solicitado por" y "Departamento" para continuar.');
+                alert('Por favor, complete los campos "Solicitado por" y "Departamento".');
                 return;
             }
 
             const tableRows = document.getElementById('pedido-table').getElementsByTagName('tbody')[0].rows;
-            let emailBodyFormatted = `Estimado equipo de Soporte IT,\n\nSe ha generado una nueva solicitud de suministros con los siguientes detalles:\n\n`;
-            emailBodyFormatted += `  Solicitante: ${solicitante}\n`;
-            emailBodyFormatted += `  Departamento: ${departamento}\n\n`;
-           
-            const excelData = [['Artículo', 'Cantidad', 'Unidad de Medida']];
-            const pedidoDetallesForHistory = []; // Para guardar en el historial local
-            const addedArticles = new Set(); // Para una validación final de duplicados antes de enviar
-
-            emailBodyFormatted += `------------------------------------------------------------\n`;
-            emailBodyFormatted += `| ARTÍCULO                      | CANTIDAD | MEDIDA |\n`;
-            emailBodyFormatted += `------------------------------------------------------------\n`;
-
-            let hasItems = false;
-           
+            let pedidoItems = [];
+            const addedArticles = new Set();
+            
             for (let i = 0; i < tableRows.length; i++) {
                 const row = tableRows[i];
                 const articuloSelect = row.cells[0].getElementsByTagName('select')[0];
-                const quantityDisplay = row.cells[1].getElementsByClassName('quantity-display')[0]; // Obtener el span de cantidad
+                const quantityDisplay = row.cells[1].getElementsByClassName('quantity-display')[0];
                 const unidadSelect = row.cells[2].getElementsByTagName('select')[0];
-               
                 const articulo = articuloSelect.value.trim();
-                const cantidad = parseInt(quantityDisplay.textContent); // Leer del span
+                const cantidad = parseInt(quantityDisplay.textContent);
                 const unidad = unidadSelect.value;
 
                 if (articulo === "Seleccione un artículo" || articulo === "" || articuloSelect.disabled) {
                     alert(`Por favor, seleccione un artículo válido en la fila ${i + 1}.`);
-                    articuloSelect.focus();
                     return;
                 }
-                
-                if (cantidad <= 0) {
-                    alert(`Por favor, ingrese una cantidad válida (mayor a 0) para el artículo "${articulo}" en la fila ${i + 1}.`);
-                    return;
-                }
-
                 if (addedArticles.has(articulo.toLowerCase())) {
-                    alert(`¡Artículo duplicado! El artículo "${articulo}" ya ha sido añadido al pedido en otra fila. Por favor, ajuste la cantidad en la fila existente o elimine la fila duplicada.`);
-                    articuloSelect.focus();
+                    alert(`¡Artículo duplicado! El artículo "${articulo}" ya fue añadido. Por favor, ajuste la cantidad en la fila existente o elimine la duplicada.`);
                     return;
-                } else {
-                    addedArticles.add(articulo.toLowerCase());
                 }
-
-                hasItems = true;
-                const formattedArticulo = articulo.substring(0, 25).padEnd(25); 
-                const formattedCantidad = String(cantidad).padEnd(8);
-                const formattedUnidad = unidad.padEnd(16);
-                emailBodyFormatted += `| ${formattedArticulo} | ${formattedCantidad} | ${formattedUnidad} |\n`;
-
-                excelData.push([articulo, parseInt(cantidad), unidad]);
-                pedidoDetallesForHistory.push({articulo, cantidad: parseInt(cantidad), unidad});
+                addedArticles.add(articulo.toLowerCase());
+                pedidoItems.push({ articulo, cantidad, unidad });
             }
-           
-            if (!hasItems) {
-                alert('Debe agregar al menos un artículo válido al pedido antes de continuar.');
+
+            if (pedidoItems.length === 0) {
+                alert('Debe agregar al menos un artículo válido al pedido.');
                 return;
             }
-            emailBodyFormatted += `------------------------------------------------------------\n\n`;
 
-            emailBodyFormatted += `Favor procesar esta solicitud. Gracias.\n\nAtentamente,\n${solicitante}`;
+            // --- NUEVO: Generación de Tabla HTML y Texto Plano ---
+            let pedidoHTML = `
+                <p><strong>Solicitante:</strong> ${solicitante}</p>
+                <p><strong>Departamento:</strong> ${departamento}</p>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                    <thead style="background-color: #004d99; color: white;">
+                        <tr>
+                            <th style="padding: 8px; border: 1px solid #ddd;">Artículo</th>
+                            <th style="padding: 8px; border: 1px solid #ddd;">Cantidad</th>
+                            <th style="padding: 8px; border: 1px solid #ddd;">Unidad</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+            
+            let pedidoTextoPlano = `*Solicitud de Suministros*\n\n`;
+            pedidoTextoPlano += `*Solicitante:* ${solicitante}\n`;
+            pedidoTextoPlano += `*Departamento:* ${departamento}\n\n`;
+            pedidoTextoPlano += `*Pedido:*\n`;
 
-            const subject = `Solicitud de Suministros - ${solicitante} (${departamento})`;
-           
-            // Guardamos todos los datos necesarios para el envío, la descarga y el historial
+            pedidoItems.forEach(item => {
+                pedidoHTML += `
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ddd;">${item.articulo}</td>
+                        <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${item.cantidad}</td>
+                        <td style="padding: 8px; border: 1px solid #ddd;">${item.unidad}</td>
+                    </tr>`;
+                pedidoTextoPlano += `- ${item.articulo} (Cantidad: ${item.cantidad}, Unidad: ${item.unidad})\n`;
+            });
+
+            pedidoHTML += `</tbody></table>`;
+            
+            const excelData = [['Artículo', 'Cantidad', 'Unidad de Medida'], ...pedidoItems.map(p => [p.articulo, p.cantidad, p.unidad])];
+            
             currentEmailData = {
-                body: emailBodyFormatted,
-                subject: subject,
+                bodyHTML: pedidoHTML,
+                bodyTexto: pedidoTextoPlano,
+                subject: `Solicitud de Suministros - ${solicitante} (${departamento})`,
                 excel: excelData,
                 solicitante: solicitante,
                 departamento: departamento,
-                detalles: pedidoDetallesForHistory, // Guardamos los detalles estructurados
+                detalles: pedidoItems,
                 fecha: new Date().toISOString()
             };
 
-            orderSummaryContent.textContent = emailBodyFormatted;
+            orderSummaryContent.innerHTML = currentEmailData.bodyHTML;
             summaryModal.style.display = 'flex';
         }
 
-        function confirmarYEnviar() {
-            const emailDestino = 'soporteit@atcostarica.com';
-
-            const mailtoLink = `mailto:${emailDestino}?subject=${encodeURIComponent(currentEmailData.subject)}&body=${encodeURIComponent(currentEmailData.body)}`;
-            window.location.href = mailtoLink;
-
-            const ws = XLSX.utils.aoa_to_sheet(currentEmailData.excel);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Suministros");
-           
-            const today = new Date();
-            const day = String(today.getDate()).padStart(2, '0');
-            const month = String(today.getMonth() + 1).padStart(2, '0');
-            const year = today.getFullYear();
-            const formattedDate = `${day}-${month}-${year}`;
-
-            const fileName = `Pedido_Suministros_${currentEmailData.solicitante.replace(/ /g, '_')}_${formattedDate}.xlsx`;
-            XLSX.writeFile(wb, fileName);
-
-            historial.push({
+        function guardarPedidoEnHistorial() {
+             historial.push({
                 fecha: new Date(currentEmailData.fecha).toLocaleString('es-CR', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }),
                 fechaISO: currentEmailData.fecha,
                 solicitante: currentEmailData.solicitante,
@@ -1024,9 +758,52 @@
                 detalles: currentEmailData.detalles
             });
             localStorage.setItem("historialPedidos", JSON.stringify(historial));
-
+        }
+        
+        // --- NUEVA FUNCIÓN ---
+        function enviarPorWhatsApp() {
+            const link = `https://wa.me/?text=${encodeURIComponent(currentEmailData.bodyTexto)}`;
+            window.open(link, '_blank');
+            guardarPedidoEnHistorial();
             closeModal();
-            alert('Su solicitud ha sido enviada por correo y el archivo Excel ha sido descargado. Además, el pedido se ha guardado en el historial.');
+            alert('El pedido se ha guardado en el historial. Por favor, confirme el envío en la pestaña de WhatsApp.');
+        }
+
+        function confirmarYEnviar() {
+            const emailDestino = 'soporteit@atcostarica.com';
+            const mailtoBody = `
+                <html>
+                <head>
+                <style>
+                    body { font-family: sans-serif; }
+                    table { width: 100%; border-collapse: collapse; }
+                    th, td { padding: 8px; border: 1px solid #ddd; text-align: left; }
+                    th { background-color: #f2f2f2; }
+                </style>
+                </head>
+                <body>
+                <p>Estimado equipo de Soporte IT,</p>
+                <p>Se ha generado una nueva solicitud de suministros con los siguientes detalles:</p>
+                ${currentEmailData.bodyHTML}
+                <p>Favor procesar esta solicitud. Gracias.</p>
+                <p>Atentamente,<br>${currentEmailData.solicitante}</p>
+                </body>
+                </html>
+            `;
+            const mailtoLink = `mailto:${emailDestino}?subject=${encodeURIComponent(currentEmailData.subject)}&body=${encodeURIComponent(mailtoBody)}`;
+            window.location.href = mailtoLink;
+
+            const ws = XLSX.utils.aoa_to_sheet(currentEmailData.excel);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Suministros");
+            const today = new Date();
+            const formattedDate = `${String(today.getDate()).padStart(2, '0')}-${String(today.getMonth() + 1).padStart(2, '0')}-${today.getFullYear()}`;
+            const fileName = `Pedido_Suministros_${currentEmailData.solicitante.replace(/ /g, '_')}_${formattedDate}.xlsx`;
+            XLSX.writeFile(wb, fileName);
+            
+            guardarPedidoEnHistorial();
+            closeModal();
+            alert('Su solicitud ha sido enviada por correo y el archivo Excel ha sido descargado. El pedido también se guardó en el historial.');
         }
 
         function closeModal() {
@@ -1035,16 +812,13 @@
         }
 
         window.onclick = function(event) {
-            if (event.target == summaryModal) {
-                closeModal();
-            }
+            if (event.target == summaryModal) closeModal();
         }
 
-        // --- Funciones de Historial ---
+        // --- Funciones de Historial (sin cambios) ---
         function renderHistorial(){
             const tbody = document.querySelector('#historialTable tbody');
             tbody.innerHTML = '';
-
             if (historial.length === 0) {
                 const noDataRow = tbody.insertRow();
                 const noDataCell = noDataRow.insertCell(0);
@@ -1055,11 +829,9 @@
                 noDataCell.style.color = "var(--light-text-color)";
                 return;
             }
-
             historial.forEach(p => {
                 const row = document.createElement('tr');
                 const displayDate = p.fecha || new Date(p.fechaISO).toLocaleString('es-CR', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
-
                 row.innerHTML = `
                     <td data-label="Fecha:">${displayDate}</td>
                     <td data-label="Solicitante:">${p.solicitante}</td>
@@ -1067,11 +839,7 @@
                     <td data-label="Detalles del Pedido:">
                         <table class="details-table">
                             <thead>
-                                <tr>
-                                    <th>Artículo</th>
-                                    <th>Cant.</th>
-                                    <th>Unidad</th>
-                                </tr>
+                                <tr><th>Artículo</th><th>Cant.</th><th>Unidad</th></tr>
                             </thead>
                             <tbody>
                                 ${p.detalles.map(d => `
@@ -1083,137 +851,104 @@
                                 `).join('')}
                             </tbody>
                         </table>
-                    </td>
-                `;
+                    </td>`;
                 tbody.appendChild(row);
             });
         }
-
         function limpiarHistorialAntiguo() {
             const unMesAtras = new Date();
             unMesAtras.setMonth(unMesAtras.getMonth() - 1);
-
-            const historialFiltrado = historial.filter(p => {
-                if (!p.fechaISO) return true; 
-                const fechaPedido = new Date(p.fechaISO);
-                return fechaPedido >= unMesAtras;
-            });
-
+            const historialFiltrado = historial.filter(p => new Date(p.fechaISO) >= unMesAtras);
             if (historialFiltrado.length === historial.length) {
-                alert('No hay pedidos en el historial que tengan más de un mes de antigüedad para eliminar.');
+                alert('No hay pedidos con más de un mes de antigüedad.');
                 return;
             }
-
-            if (confirm('¿Está seguro de que desea eliminar los pedidos del historial que tengan más de un mes de antigüedad? Esta acción no se puede deshacer.')) {
+            if (confirm('¿Desea eliminar los pedidos con más de un mes de antigüedad?')) {
                 historial = historialFiltrado;
                 localStorage.setItem("historialPedidos", JSON.stringify(historial));
                 renderHistorial();
-                alert('Se han eliminado los pedidos antiguos del historial.');
+                alert('Se han eliminado los pedidos antiguos.');
             }
         }
-
         function limpiarTodoHistorial() {
             const now = new Date();
             const options = { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'America/Costa_Rica' };
             const parts = new Intl.DateTimeFormat('en-US', options).formatToParts(now);
-
             let year, month, day;
             for (const part of parts) {
                 if (part.type === 'year') year = part.value;
                 if (part.type === 'month') month = part.value;
                 if (part.type === 'day') day = part.value;
             }
-           
             const expectedKey = `${year}${month}${day}`;
-
-            const userInput = prompt(`ADVERTENCIA: Está a punto de limpiar TODO el historial de pedidos. Esta acción es IRREVERSIBLE.\n\nPara confirmar, por favor, introduzca la clave de seguridad:`);
-
+            const userInput = prompt(`ADVERTENCIA: Está a punto de limpiar TODO el historial de pedidos. Esta acción es IRREVERSIBLE.\n\nPara confirmar, introduzca la clave de seguridad:`);
             if (userInput === null) {
-                alert('Operación de limpieza de historial cancelada.');
+                alert('Operación cancelada.');
                 return;
             }
-
             if (userInput === expectedKey) {
                 historial = [];
                 localStorage.removeItem("historialPedidos");
                 renderHistorial();
-                alert('Todo el historial de pedidos ha sido limpiado exitosamente.');
+                alert('Todo el historial de pedidos ha sido limpiado.');
             } else {
-                alert('Clave de seguridad incorrecta. El historial NO ha sido limpiado.');
+                alert('Clave de seguridad incorrecta.');
             }
         }
-
         function exportarExcel(){
             if (historial.length === 0) {
-                alert('No hay datos en el historial para exportar a Excel.');
+                alert('No hay datos para exportar.');
                 return;
             }
             const datos = [['Fecha','Solicitante','Departamento','Artículo','Cantidad','Unidad de Medida']];
-
             historial.forEach(p => {
                 const displayDate = p.fecha || new Date(p.fechaISO).toLocaleString('es-CR', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
                 p.detalles.forEach(d => {
                     datos.push([displayDate, p.solicitante, p.departamento, d.articulo, d.cantidad, d.unidad]);
                 });
             });
-           
             const ws = XLSX.utils.aoa_to_sheet(datos);
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, "Historial");
-            
             const today = new Date();
-            const day = String(today.getDate()).padStart(2, '0');
-            const month = String(today.getMonth() + 1).padStart(2, '0');
-            const year = today.getFullYear();
-            const formattedDate = `${day}-${month}-${year}`;
-
+            const formattedDate = `${String(today.getDate()).padStart(2, '0')}-${String(today.getMonth() + 1).padStart(2, '0')}-${today.getFullYear()}`;
             XLSX.writeFile(wb, `Historial_Suministros_${formattedDate}.xlsx`);
         }
-
         async function exportarPDF(){
             if (historial.length === 0) {
-                alert('No hay datos en el historial para exportar a PDF.');
+                alert('No hay datos para exportar.');
                 return;
             }
-
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             doc.setFontSize(16);
-            doc.text("Historial de Solicitudes de Suministros - Tesoros Americanos Costa Rica", 14, 20);
-           
+            doc.text("Historial de Solicitudes de Suministros", 14, 20);
             let y = 35;
             const margin = 14;
             const lineHeight = 7;
             const maxPageHeight = doc.internal.pageSize.height - 20;
-
             historial.forEach((p, index) => {
                 const displayDate = p.fecha || new Date(p.fechaISO).toLocaleString('es-CR', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
-
                 const headerText = `--- Pedido #${index + 1} (${displayDate}) - ${p.solicitante} (${p.departamento}) ---`;
                 const headerLines = doc.splitTextToSize(headerText, doc.internal.pageSize.width - (margin * 2));
-
                 if (y + (headerLines.length * lineHeight) + (p.detalles.length * lineHeight * 1.5) > maxPageHeight) { 
                     doc.addPage();
                     y = 20; 
                     doc.setFontSize(16);
-                    doc.text("Historial de Solicitudes de Suministros (Continuación) - Tesoros Americanos Costa Rica", margin, y);
+                    doc.text("Historial de Solicitudes (Continuación)", margin, y);
                     y += 15;
                 }
-
                 doc.setFontSize(12);
                 doc.text(headerLines, margin, y);
                 y += (lineHeight * headerLines.length);
-
                 doc.setFontSize(9);
                 doc.text("Artículo", margin + 5, y);
                 doc.text("Cant.", margin + 80, y);
                 doc.text("Unidad", margin + 100, y);
                 y += lineHeight * 0.8;
-
                 p.detalles.forEach(d => {
                     const itemText = `${d.articulo}`;
                     const itemLines = doc.splitTextToSize(itemText, 60);
-                   
                     doc.text(itemLines, margin + 5, y);
                     doc.text(String(d.cantidad), margin + 80, y);
                     doc.text(d.unidad, margin + 100, y);
@@ -1221,13 +956,8 @@
                 });
                 y += lineHeight * 1.2;
             });
-            
             const today = new Date();
-            const day = String(today.getDate()).padStart(2, '0');
-            const month = String(today.getMonth() + 1).padStart(2, '0');
-            const year = today.getFullYear();
-            const formattedDate = `${day}-${month}-${year}`;
-
+            const formattedDate = `${String(today.getDate()).padStart(2, '0')}-${String(today.getMonth() + 1).padStart(2, '0')}-${today.getFullYear()}`;
             doc.save(`Historial_Suministros_${formattedDate}.pdf`);
         }
     </script>
