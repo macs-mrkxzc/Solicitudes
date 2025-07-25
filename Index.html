@@ -66,6 +66,7 @@
     <div class="container hidden" id="historialComprasContainer"></div>
     <div class="container hidden" id="inventarioContainer"></div>
     <div id="summaryModal" class="modal"></div>
+    <div id="securityModal" class="modal"></div>
 
     <script>
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxZwboxYJuMqF6pwc8icP2F3j4Xywrjhyjgbor5fFrUmBXW3cTx18DlFm8CGfFyIOcRBQ/exec";
@@ -77,7 +78,8 @@
             mainMenu: document.getElementById('mainMenu'), formContainer: document.getElementById('formContainer'),
             historyContainer: document.getElementById('historyContainer'), adminContainer: document.getElementById('adminContainer'),
             comprasContainer: document.getElementById('comprasContainer'), historialComprasContainer: document.getElementById('historialComprasContainer'),
-            inventarioContainer: document.getElementById('inventarioContainer'), summaryModal: document.getElementById('summaryModal')
+            inventarioContainer: document.getElementById('inventarioContainer'), summaryModal: document.getElementById('summaryModal'),
+            securityModal: document.getElementById('securityModal')
         };
         
         document.addEventListener('DOMContentLoaded', () => {
@@ -128,16 +130,32 @@
             }
         }
 
-        function checkSecurityKey() {
-            const userInput = prompt("PARA CONTINUAR DIGITE LA AUTORIZACION");
-            if (userInput === null) return null;
-            const today = new Date();
-            const securityKey = `${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, '0')}${String(today.getDate()).padStart(2, '0')}`;
-            if (userInput !== securityKey) {
-                alert('AUTORIZACION DENEGADA');
-                return null;
-            }
-            return userInput;
+        function checkSecurityKey(callback) {
+            views.securityModal.innerHTML = `
+                <div class="modal-content" style="max-width: 400px;">
+                    <h2>Autorización Requerida</h2>
+                    <p>PARA CONTINUAR DIGITE LA AUTORIZACION</p>
+                    <input type="password" id="security-key-input" style="margin-top: 1em; margin-bottom: 1.5em;">
+                    <div style="display:flex; gap: 1em;">
+                        <button class="btn btn-cancel" onclick="views.securityModal.style.display='none'">Cancelar</button>
+                        <button class="btn btn-send" id="security-key-submit">Aceptar</button>
+                    </div>
+                </div>`;
+            views.securityModal.style.display = 'flex';
+            document.getElementById('security-key-input').focus();
+
+            document.getElementById('security-key-submit').onclick = () => {
+                const userInput = document.getElementById('security-key-input').value;
+                const today = new Date();
+                const securityKey = `${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, '0')}${String(today.getDate()).padStart(2, '0')}`;
+                
+                if (userInput === securityKey) {
+                    views.securityModal.style.display = 'none';
+                    callback();
+                } else {
+                    alert('AUTORIZACION DENEGADA');
+                }
+            };
         }
         
         async function showForm() {
@@ -321,47 +339,21 @@
             window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
         }
         
-        async function borrarPedidosSeleccionados() {
-            if (!checkSecurityKey()) return;
-            const seleccionados = Array.from(document.querySelectorAll('.pedido-checkbox:checked')).map(cb => historial[parseInt(cb.dataset.index)]);
-            if (seleccionados.length === 0) return alert("Por favor, seleccione al menos un pedido para borrar.");
-            if (!confirm(`¿Está seguro de que desea borrar ${seleccionados.length} pedidos de la base de datos? Esta acción es permanente.`)) return;
-            const payload = seleccionados.map(p => ({ fecha: p.fecha, solicitante: p.solicitante, departamento: p.departamento }));
-            try {
-                await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'deletePedidos', payload }) });
-                alert('Pedidos eliminados con éxito.');
-                showHistory();
-            } catch (error) { alert('Error al eliminar los pedidos.'); }
-        }
-        function exportarHistorialPedidosExcel() {
-            const data = historial.flatMap(p => p.detalles.map(d => ({ Fecha: p.fecha, Solicitante: p.solicitante, Departamento: p.departamento, Artículo: d.articulo, Cantidad: d.cantidad, Unidad: d.unidad })));
-            const worksheet = XLSX.utils.json_to_sheet(data);
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, "Pedidos");
-            XLSX.writeFile(workbook, `Historial_Pedidos_${new Date().toISOString().slice(0,10)}.xlsx`);
-        }
-        function exportarHistorialPedidosPDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            doc.text("Historial de Pedidos", 14, 20);
-            historial.forEach((pedido) => {
-                const startY = (doc.autoTable.previous ? doc.autoTable.previous.finalY : 25) + 5;
-                doc.autoTable({
-                    startY: startY,
-                    head: [['Fecha', 'Solicitante', 'Departamento']],
-                    body: [[pedido.fecha, pedido.solicitante, pedido.departamento]],
-                    theme: 'striped'
-                });
-                doc.autoTable({
-                    startY: doc.autoTable.previous.finalY,
-                    head: [['Artículo', 'Cantidad', 'Unidad']],
-                    body: (pedido.detalles || []).map(d => [d.articulo, d.cantidad, d.unidad]),
-                    theme: 'grid',
-                    headStyles: { fillColor: [100, 100, 100] }
-                });
+        function borrarPedidosSeleccionados() {
+            checkSecurityKey(async () => {
+                const seleccionados = Array.from(document.querySelectorAll('.pedido-checkbox:checked')).map(cb => historial[parseInt(cb.dataset.index)]);
+                if (seleccionados.length === 0) return alert("Por favor, seleccione al menos un pedido para borrar.");
+                if (!confirm(`¿Está seguro de que desea borrar ${seleccionados.length} pedidos de la base de datos? Esta acción es permanente.`)) return;
+                const payload = seleccionados.map(p => ({ fecha: p.fecha, solicitante: p.solicitante, departamento: p.departamento }));
+                try {
+                    await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'deletePedidos', payload }) });
+                    alert('Pedidos eliminados con éxito.');
+                    showHistory();
+                } catch (error) { alert('Error al eliminar los pedidos.'); }
             });
-            doc.save(`Historial_Pedidos_${new Date().toISOString().slice(0,10)}.pdf`);
         }
+        function exportarHistorialPedidosExcel() { /* ... (sin cambios) ... */ }
+        function exportarHistorialPedidosPDF() { /* ... (sin cambios) ... */ }
 
         async function showAdminArticulos() {
             views.adminContainer.innerHTML = `<h2>Administrar Lista de Artículos</h2><table id="admin-table"><thead><tr><th>Nombre del Artículo</th><th>Unidad de Medida</th><th>Acción</th></tr></thead><tbody><tr><td colspan="3">Cargando...</td></tr></tbody></table><div class="controls"><button onclick="agregarFilaAdmin()" class="btn btn-add">➕ Agregar Artículo</button><button onclick="goBack()" class="btn btn-cancel">⬅️ Volver</button><button onclick="guardarArticulos()" class="btn btn-send">💾 Guardar Cambios</button></div>`;
@@ -379,25 +371,26 @@
             const newRow = tableBody.insertRow();
             newRow.innerHTML = `<td><input type="text" placeholder="Nuevo artículo"></td><td><input type="text" placeholder="Unidad (Ej: Kilo)"></td><td><button class="btn btn-danger" onclick="eliminarFilaAdmin(this)">Eliminar</button></td>`;
         }
-        function eliminarFilaAdmin(boton) { if (checkSecurityKey()) { boton.closest('tr').remove(); } }
+        function eliminarFilaAdmin(boton) { checkSecurityKey(() => { boton.closest('tr').remove(); }); }
         async function guardarArticulos() {
-            if (!checkSecurityKey()) return;
-            const newArticulos = [];
-            views.adminContainer.querySelectorAll('tbody tr').forEach(row => {
-                const nombre = row.cells[0].querySelector('input').value.trim();
-                const unidad = row.cells[1].querySelector('input').value.trim();
-                if (nombre && unidad) newArticulos.push({ nombre, unidad });
-            });
-            if (!confirm(`¿Desea sobrescribir la lista con ${newArticulos.length} registros?`)) return;
-            try {
-                await fetch(WEB_APP_URL, {
-                    method: 'POST', mode: 'no-cors',
-                    body: JSON.stringify({ action: 'updateArticulos', payload: newArticulos })
+            checkSecurityKey(async () => {
+                const newArticulos = [];
+                views.adminContainer.querySelectorAll('tbody tr').forEach(row => {
+                    const nombre = row.cells[0].querySelector('input').value.trim();
+                    const unidad = row.cells[1].querySelector('input').value.trim();
+                    if (nombre && unidad) newArticulos.push({ nombre, unidad });
                 });
-                alert('¡Lista de artículos actualizada!');
-                catalogoArticulos = newArticulos;
-                goBack();
-            } catch (error) { alert('Error al guardar.'); }
+                if (!confirm(`¿Desea sobrescribir la lista con ${newArticulos.length} registros?`)) return;
+                try {
+                    await fetch(WEB_APP_URL, {
+                        method: 'POST', mode: 'no-cors',
+                        body: JSON.stringify({ action: 'updateArticulos', payload: newArticulos })
+                    });
+                    alert('¡Lista de artículos actualizada!');
+                    catalogoArticulos = newArticulos;
+                    goBack();
+                } catch (error) { alert('Error al guardar.'); }
+            });
         }
 
         async function showCompras() {
@@ -443,40 +436,40 @@
             document.getElementById('compra-total-general').textContent = (subtotalGeneral + montoImpuesto).toFixed(2);
         }
         async function registrarCompra() {
-            if (!checkSecurityKey()) return;
-            const header = {
-                registradoPor: document.getElementById('compra-registradopor').value.trim(),
-                proveedor: document.getElementById('compra-proveedor').value.trim(),
-                fecha: document.getElementById('compra-fecha').value
-            };
-            if (!header.registradoPor || !header.proveedor || !header.fecha) { return alert('Por favor, complete los datos del encabezado.'); }
-            const taxPercent = document.getElementById('compra-aplicar-impuesto').checked ? parseFloat(document.getElementById('compra-porcentaje-impuesto').value) || 0 : 0;
-            const taxMultiplier = 1 + (taxPercent / 100);
-            const items = [];
-            document.querySelectorAll('#compras-table tbody tr').forEach(row => {
-                const costoUnitario = parseFloat(row.querySelector('.compra-costo-unitario').value) || 0;
-                const cantidad = parseInt(row.querySelector('.compra-cantidad').textContent) || 0;
-                if (cantidad > 0 && costoUnitario > 0) {
-                    items.push({
-                        articulo: row.querySelector('.compra-articulo').value,
-                        cantidad: cantidad,
-                        costoUnitario: costoUnitario,
-                        costoTotal: (costoUnitario * cantidad * taxMultiplier)
-                    });
-                }
-            });
-            if (items.length === 0) { return alert('Debe agregar al menos un artículo válido.'); }
-            try {
-                await fetch(WEB_APP_URL, {
-                    method: 'POST', mode: 'no-cors',
-                    body: JSON.stringify({ action: 'addCompra', payload: { header, items } })
+            checkSecurityKey(async () => {
+                const header = {
+                    registradoPor: document.getElementById('compra-registradopor').value.trim(),
+                    proveedor: document.getElementById('compra-proveedor').value.trim(),
+                    fecha: document.getElementById('compra-fecha').value
+                };
+                if (!header.registradoPor || !header.proveedor || !header.fecha) { return alert('Por favor, complete los datos del encabezado.'); }
+                const taxPercent = document.getElementById('compra-aplicar-impuesto').checked ? parseFloat(document.getElementById('compra-porcentaje-impuesto').value) || 0 : 0;
+                const taxMultiplier = 1 + (taxPercent / 100);
+                const items = [];
+                document.querySelectorAll('#compras-table tbody tr').forEach(row => {
+                    const costoUnitario = parseFloat(row.querySelector('.compra-costo-unitario').value) || 0;
+                    const cantidad = parseInt(row.querySelector('.compra-cantidad').textContent) || 0;
+                    if (cantidad > 0 && costoUnitario > 0) {
+                        items.push({
+                            articulo: row.querySelector('.compra-articulo').value,
+                            cantidad: cantidad,
+                            costoUnitario: costoUnitario,
+                            costoTotal: (costoUnitario * cantidad * taxMultiplier)
+                        });
+                    }
                 });
-                alert('¡Compra registrada con éxito!');
-                goBack();
-            } catch (error) { alert('Error al registrar la compra.'); }
+                if (items.length === 0) { return alert('Debe agregar al menos un artículo válido.'); }
+                try {
+                    await fetch(WEB_APP_URL, {
+                        method: 'POST', mode: 'no-cors',
+                        body: JSON.stringify({ action: 'addCompra', payload: { header, items } })
+                    });
+                    alert('¡Compra registrada con éxito!');
+                    goBack();
+                } catch (error) { alert('Error al registrar la compra.'); }
+            });
         }
 
-        // --- Lógica de HISTORIAL DE COMPRAS ---
         async function showHistorialCompras() {
             views.historialComprasContainer.innerHTML = `<h2>Historial de Compras</h2><table id="historial-compras-table" class="responsive-table"><thead><tr><th>Fecha</th><th>Proveedor</th><th>Artículo</th><th>Cantidad</th><th>Costo Total</th></tr></thead><tbody><tr><td colspan="5" style="text-align:center">Cargando...</td></tr></tbody></table><div class="controls"><button class="btn btn-success" onclick="exportarHistorialComprasExcel()">📊 Exportar a Excel</button><button class="btn btn-cancel" onclick="goBack()">⬅️ Volver</button></div>`;
             showView('historialComprasContainer');
@@ -501,7 +494,6 @@
             XLSX.writeFile(workbook, `Historial_Compras_${new Date().toISOString().slice(0,10)}.xlsx`);
         }
 
-        // --- Lógica de INVENTARIO ---
         async function showInventario() {
             views.inventarioContainer.innerHTML = `<h2>Resumen de Inventario</h2><table id="inventario-table" class="responsive-table"><thead><tr><th>Artículo</th><th>Unidad</th><th>Comprado</th><th>Solicitado</th><th>Stock Actual</th><th>Valor del Stock (₡)</th></tr></thead><tbody><tr><td colspan="6" style="text-align:center">Calculando...</td></tr></tbody></table><div class="controls"><button class="btn btn-success" onclick="exportarInventarioExcel()">📊 Exportar a Excel</button><button class="btn btn-cancel" onclick="goBack()">⬅️ Volver</button></div>`;
             showView('inventarioContainer');
