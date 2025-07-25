@@ -392,15 +392,17 @@
             const tableBody = views.adminContainer.querySelector('tbody');
             tableBody.innerHTML = '<tr><td colspan="5">Cargando...</td></tr>';
             await cargarDatosEsenciales();
-            if (historial.length === 0) {
-                const response = await fetch(WEB_APP_URL);
-                historial = await response.json();
+            if (!historial || historial.length === 0) {
+                try {
+                    const response = await fetch(WEB_APP_URL);
+                    historial = await response.json();
+                } catch (e) { console.error(e); }
             }
-            const pedidosAgrupados = historial.flatMap(p => p.detalles).reduce((acc, item) => {
+            const pedidosAgrupados = (historial || []).flatMap(p => p.detalles).reduce((acc, item) => {
                 acc[item.articulo] = (acc[item.articulo] || 0) + parseFloat(item.cantidad);
                 return acc;
             }, {});
-            const comprasAgrupadas = historialCompras.reduce((acc, compra) => {
+            const comprasAgrupadas = (historialCompras || []).reduce((acc, compra) => {
                 acc[compra.articulo] = (acc[compra.articulo] || 0) + parseFloat(compra.cantidad);
                 return acc;
             }, {});
