@@ -146,9 +146,11 @@
         }
         
         async function showForm() {
-            views.formContainer.innerHTML = `<h2>Nuevo Pedido</h2><div class="info-section"><div class="form-group"><label for="solicitante">Solicitado por:</label><input type="text" id="solicitante"></div><div class="form-group"><label for="departamento">Departamento:</label><select id="departamento"><option value="" disabled selected>Seleccione</option><option>Oficina</option><option>Centro Distribución</option><option>Barrio México</option><option>San Francisco</option><option>Alto Valor</option><option>Directtools SF</option><option>Directtools BM</option></select></div></div><table id="pedido-table" class="responsive-table"><thead><tr><th>Unidad</th><th>Artículo</th><th>Cantidad</th><th>Costo Total (₡)</th><th>Acción</th></tr></thead><tbody></tbody></table><h3 style="text-align:right; margin-top:20px;">Costo Total del Pedido: <span id="pedido-total-general">0.00</span> ₡</h3><div class="controls"><button onclick="agregarFila()" class="btn btn-add">➕ Agregar Artículo</button><button onclick="goBack()" class="btn btn-cancel">⬅️ Volver</button><button onclick="previsualizarPedido()" class="btn btn-send">📲 Previsualizar</button></div>`;
+            views.formContainer.innerHTML = `<h2>Nuevo Pedido</h2><div class="info-section"><div class="form-group"><label for="solicitante">Solicitado por:</label><input type="text" id="solicitante"></div><div class="form-group"><label for="departamento">Departamento:</label><select id="departamento"><option value="" disabled selected>Seleccione</option><option>Oficina</option><option>Centro Distribución</option><option>Barrio México</option><option>San Francisco</option><option>Alto Valor</option><option>Directtools SF</option><option>Directtools BM</option></select></div><div class="form-group"><label for="pedido-fecha">Fecha del Pedido:</label><input type="date" id="pedido-fecha"></div></div><table id="pedido-table" class="responsive-table"><thead><tr><th>Unidad</th><th>Artículo</th><th>Cantidad</th><th>Costo Total (₡)</th><th>Acción</th></tr></thead><tbody></tbody></table><h3 style="text-align:right; margin-top:20px;">Costo Total del Pedido: <span id="pedido-total-general">0.00</span> ₡</h3><div class="controls"><button onclick="agregarFila()" class="btn btn-add">➕ Agregar Artículo</button><button onclick="goBack()" class="btn btn-cancel">⬅️ Volver</button><button onclick="previsualizarPedido()" class="btn btn-send">📲 Previsualizar</button></div>`;
             showView('formContainer');
             await cargarDatosEsenciales();
+            // Establecer la fecha actual por defecto
+            document.getElementById('pedido-fecha').valueAsDate = new Date();
             agregarFila();
         }
         function agregarFila() {
@@ -192,7 +194,10 @@
         function previsualizarPedido() {
             const solicitante = document.getElementById("solicitante").value.trim();
             const departamento = document.getElementById("departamento").value.trim();
-            if (!solicitante || !departamento) return alert("Por favor, complete su nombre y departamento.");
+            const fechaPedido = document.getElementById("pedido-fecha").value; // Obtener la fecha seleccionada
+
+            if (!solicitante || !departamento || !fechaPedido) return alert("Por favor, complete su nombre, departamento y la fecha del pedido.");
+            
             const tableRows = document.getElementById("pedido-table").querySelector("tbody").rows;
             let pedidoItems = [];
             for (let i = 0; i < tableRows.length; i++) {
@@ -204,9 +209,14 @@
                 pedidoItems.push({ articulo, cantidad, unidad });
             }
             if (pedidoItems.length === 0) return alert("Debe agregar al menos un artículo.");
-            currentRequestData = { solicitante, departamento, detalles: pedidoItems };
-            const fechaActual = new Date().toLocaleString("es-CR", { dateStyle: "long", timeStyle: "short" });
-            let whatsappMsg = `*Solicitud de Suministros* 📄\n------------------------------------\n*Fecha:* ${fechaActual}\n*Solicitante:* _${solicitante}_\n*Departamento:* _${departamento}_\n------------------------------------\n\n*Detalle:*\n`;
+            
+            // Usar la fecha seleccionada en los datos del pedido
+            currentRequestData = { solicitante, departamento, fecha: fechaPedido, detalles: pedidoItems }; 
+            
+            const fechaActualParaWhatsapp = new Date().toLocaleString("es-CR", { dateStyle: "long", timeStyle: "short" });
+            const fechaPedidoFormateada = new Date(fechaPedido + 'T00:00:00').toLocaleDateString("es-CR", { dateStyle: "long" }); // Formatear para WhatsApp
+            
+            let whatsappMsg = `*Solicitud de Suministros* 📄\n------------------------------------\n*Fecha del Pedido:* ${fechaPedidoFormateada}\n*Fecha de Generación:* ${fechaActualParaWhatsapp}\n*Solicitante:* _${solicitante}_\n*Departamento:* _${departamento}_\n------------------------------------\n\n*Detalle:*\n`;
             let totalPedido = 0;
             pedidoItems.forEach(item => {
                 const costoProm = costosPromedio[item.articulo] || 0;
@@ -216,7 +226,8 @@
             });
             whatsappMsg += `\n*Costo Total Estimado: ₡${totalPedido.toFixed(2)}*`;
             currentRequestData.whatsappBody = whatsappMsg;
-            let summaryHTML = `<p><strong>Solicitante:</strong> ${solicitante}</p><p><strong>Departamento:</strong> ${departamento}</p><pre style="white-space: pre-wrap; word-wrap: break-word; font-family: 'Roboto', sans-serif;">${whatsappMsg}</pre>`;
+
+            let summaryHTML = `<p><strong>Fecha del Pedido:</strong> ${fechaPedidoFormateada}</p><p><strong>Solicitante:</strong> ${solicitante}</p><p><strong>Departamento:</strong> ${departamento}</p><pre style="white-space: pre-wrap; word-wrap: break-word; font-family: 'Roboto', sans-serif;">${whatsappMsg}</pre>`;
             views.summaryModal.innerHTML = `<div class="modal-content"><span onclick="views.summaryModal.style.display='none'" style="position:absolute; top:10px; right:20px; font-size:2em; cursor:pointer;">&times;</span><h2>Revisión del Pedido</h2><div style="max-height: 60vh; overflow-y: auto; padding: 1em; background-color: #f8f9fa; border-radius: 8px;">${summaryHTML}</div><div class="modal-actions" style="margin-top: 1.5em; display:flex; flex-direction:column; gap: 10px;"><button onclick="confirmarYGuardar(event)" class="btn btn-success">✅ Guardar Pedido</button><button onclick="guardarYEnviarPorWhatsApp(event)" class="btn btn-whatsapp">📲 Guardar y Enviar por WhatsApp</button><button onclick="views.summaryModal.style.display='none'" class="btn btn-cancel">Cancelar</button></div></div>`;
             views.summaryModal.style.display = "flex";
         }
@@ -301,7 +312,9 @@
             indices.forEach((idx, i) => {
                 const p = historial[idx];
                 let totalPedido = 0;
-                msg += `*Pedido ${i + 1} de ${indices.length}*\n*Fecha:* ${p.fecha}\n*Solicitante:* _${p.solicitante}_\n*Departamento:* _${p.departamento}_\n*Detalle:*\n`;
+                // Usar la fecha guardada en el historial
+                const fechaPedidoFormateada = new Date(p.fecha + 'T00:00:00').toLocaleDateString("es-CR", { dateStyle: "long" });
+                msg += `*Pedido ${i + 1} de ${indices.length}*\n*Fecha del Pedido:* ${fechaPedidoFormateada}\n*Solicitante:* _${p.solicitante}_\n*Departamento:* _${p.departamento}_\n*Detalle:*\n`;
                 (p.detalles || []).forEach(item => {
                     const costoProm = costosPromedio[item.articulo] || 0;
                     const costoTotalItem = item.cantidad * costoProm;
