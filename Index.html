@@ -387,22 +387,37 @@
         }
 
         async function showAdminArticulos() {
-            views.adminContainer.innerHTML = `<h2>Administrar Lista de Artículos</h2><table id="admin-table" class="responsive-table"><thead><tr><th>Nombre del Artículo</th><th>Unidad de Medida</th><th>Costo Promedio (₡)</th><th>Acción</th></tr></thead><tbody></tbody></table><div class="controls"><button onclick="agregarFilaAdmin()" class="btn btn-add">➕ Agregar Artículo</button><button onclick="goBack()" class="btn btn-cancel">⬅️ Volver</button><button onclick="guardarArticulos()" class="btn btn-send">💾 Guardar Cambios</button></div>`;
+            views.adminContainer.innerHTML = `<h2>Administrar Lista de Artículos</h2><table id="admin-table" class="responsive-table"><thead><tr><th>Nombre del Artículo</th><th>Unidad de Medida</th><th>Costo Promedio (₡)</th><th>Valor Total Stock (₡)</th><th>Acción</th></tr></thead><tbody></tbody></table><div class="controls"><button onclick="agregarFilaAdmin()" class="btn btn-add">➕ Agregar Artículo</button><button onclick="goBack()" class="btn btn-cancel">⬅️ Volver</button><button onclick="guardarArticulos()" class="btn btn-send">💾 Guardar Cambios</button></div>`;
             showView('adminContainer');
             const tableBody = views.adminContainer.querySelector('tbody');
-            tableBody.innerHTML = '<tr><td colspan="4">Cargando...</td></tr>';
+            tableBody.innerHTML = '<tr><td colspan="5">Cargando...</td></tr>';
             await cargarDatosEsenciales();
+            if (historial.length === 0) {
+                const response = await fetch(WEB_APP_URL);
+                historial = await response.json();
+            }
+            const pedidosAgrupados = historial.flatMap(p => p.detalles).reduce((acc, item) => {
+                acc[item.articulo] = (acc[item.articulo] || 0) + parseFloat(item.cantidad);
+                return acc;
+            }, {});
+            const comprasAgrupadas = historialCompras.reduce((acc, compra) => {
+                acc[compra.articulo] = (acc[compra.articulo] || 0) + parseFloat(compra.cantidad);
+                return acc;
+            }, {});
+
             tableBody.innerHTML = '';
             catalogoArticulos.forEach(item => {
                 const newRow = tableBody.insertRow();
                 const costo = costosPromedio[item.nombre] || 0;
-                newRow.innerHTML = `<td data-label="Artículo"><input type="text" value="${item.nombre}"></td><td data-label="Unidad"><input type="text" value="${item.unidad}"></td><td data-label="Costo Promedio" style="font-weight: bold; text-align: right;">${costo.toFixed(2)}</td><td data-label="Acción"><button class="btn btn-danger" onclick="eliminarFilaAdmin(this)">Eliminar</button></td>`;
+                const stock = (comprasAgrupadas[item.nombre] || 0) - (pedidosAgrupados[item.nombre] || 0);
+                const valorTotalStock = stock * costo;
+                newRow.innerHTML = `<td data-label="Artículo"><input type="text" value="${item.nombre}"></td><td data-label="Unidad"><input type="text" value="${item.unidad}"></td><td data-label="Costo Promedio" style="font-weight: bold; text-align: right;">${costo.toFixed(2)}</td><td data-label="Valor Total Stock" style="font-weight: bold; text-align: right;">${valorTotalStock.toFixed(2)}</td><td data-label="Acción"><button class="btn btn-danger" onclick="eliminarFilaAdmin(this)">Eliminar</button></td>`;
             });
         }
         function agregarFilaAdmin() {
             const tableBody = views.adminContainer.querySelector('tbody');
             const newRow = tableBody.insertRow();
-            newRow.innerHTML = `<td data-label="Artículo"><input type="text" placeholder="Nuevo artículo"></td><td data-label="Unidad"><input type="text" placeholder="Unidad (Ej: Kilo)"></td><td data-label="Costo Promedio" style="text-align: right;">-</td><td data-label="Acción"><button class="btn btn-danger" onclick="eliminarFilaAdmin(this)">Eliminar</button></td>`;
+            newRow.innerHTML = `<td data-label="Artículo"><input type="text" placeholder="Nuevo artículo"></td><td data-label="Unidad"><input type="text" placeholder="Unidad (Ej: Kilo)"></td><td data-label="Costo Promedio" style="text-align: right;">-</td><td data-label="Valor Total Stock" style="text-align: right;">-</td><td data-label="Acción"><button class="btn btn-danger" onclick="eliminarFilaAdmin(this)">Eliminar</button></td>`;
         }
         function eliminarFilaAdmin(boton) { checkSecurityKey(() => { boton.closest('tr').remove(); }); }
         async function guardarArticulos() {
