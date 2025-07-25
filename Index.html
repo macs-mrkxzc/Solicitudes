@@ -195,22 +195,18 @@
             if (!solicitante || !departamento) return alert("Por favor, complete su nombre y departamento.");
             const tableRows = document.getElementById("pedido-table").querySelector("tbody").rows;
             let pedidoItems = [];
-            const addedArticles = new Set();
             for (let i = 0; i < tableRows.length; i++) {
                 const row = tableRows[i];
                 const unidad = row.querySelector('select[onchange="actualizarArticulos(this)"]').value;
                 const articulo = row.querySelector(".articulo-select").value;
                 const cantidad = parseInt(row.querySelector("span").textContent);
                 if (!articulo || !unidad) return alert(`Por favor, complete todos los campos en la fila ${i + 1}.`);
-                if (addedArticles.has(articulo)) return alert(`Artículo duplicado: "${articulo}".`);
-                addedArticles.add(articulo);
                 pedidoItems.push({ articulo, cantidad, unidad });
             }
             if (pedidoItems.length === 0) return alert("Debe agregar al menos un artículo.");
             currentRequestData = { solicitante, departamento, detalles: pedidoItems };
             const fechaActual = new Date().toLocaleString("es-CR", { dateStyle: "long", timeStyle: "short" });
-            let whatsappMsg = `*Solicitud de Suministros* 📄\n------------------------------------\n`;
-            whatsappMsg += `*Fecha:* ${fechaActual}\n*Solicitante:* _${solicitante}_\n*Departamento:* _${departamento}_\n------------------------------------\n\n*Detalle:*\n`;
+            let whatsappMsg = `*Solicitud de Suministros* 📄\n------------------------------------\n*Fecha:* ${fechaActual}\n*Solicitante:* _${solicitante}_\n*Departamento:* _${departamento}_\n------------------------------------\n\n*Detalle:*\n`;
             let totalPedido = 0;
             pedidoItems.forEach(item => {
                 const costoProm = costosPromedio[item.articulo] || 0;
@@ -350,32 +346,42 @@
         function exportarHistorialPedidosPDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-            doc.text("Historial de Pedidos", 14, 20);
+            doc.setFontSize(18);
+            doc.text("Reporte de Historial de Pedidos", 14, 22);
+            doc.setFontSize(10);
+            doc.text(`Fecha de Emisión: ${new Date().toLocaleDateString('es-CR')}`, 14, 28);
+
             historial.forEach((pedido) => {
-                const startY = (doc.autoTable.previous ? doc.autoTable.previous.finalY : 25) + 8;
-                doc.autoTable({
-                    startY: startY,
-                    head: [['Fecha', 'Solicitante', 'Departamento']],
-                    body: [[pedido.fecha, pedido.solicitante, pedido.departamento]],
-                    theme: 'striped'
-                });
                 let totalPedido = 0;
                 const bodyData = (pedido.detalles || []).map(d => {
                     const costoProm = costosPromedio[d.articulo] || 0;
                     const costoTotalItem = d.cantidad * costoProm;
                     totalPedido += costoTotalItem;
-                    return [d.articulo, d.cantidad, d.unidad, costoTotalItem.toFixed(2)];
+                    return [d.articulo, d.unidad, d.cantidad, costoProm.toFixed(2), costoTotalItem.toFixed(2)];
                 });
-                doc.autoTable({
-                    startY: doc.autoTable.previous.finalY,
-                    head: [['Artículo', 'Cantidad', 'Unidad', 'Costo Total (₡)']],
-                    body: bodyData,
-                    theme: 'grid',
-                    headStyles: { fillColor: [100, 100, 100] }
-                });
-                doc.setFontSize(10);
+
+                const startY = (doc.autoTable.previous ? doc.autoTable.previous.finalY : 35) + 10;
+                
+                doc.setFontSize(12);
                 doc.setFont(undefined, 'bold');
-                doc.text(`Costo Total del Pedido: ₡${totalPedido.toFixed(2)}`, 14, doc.autoTable.previous.finalY + 10);
+                doc.text(`Pedido de: ${pedido.solicitante} (${pedido.departamento})`, 14, startY);
+                doc.setFontSize(10);
+                doc.setFont(undefined, 'normal');
+                doc.text(`Fecha del Pedido: ${pedido.fecha}`, 14, startY + 5);
+
+                doc.autoTable({
+                    startY: startY + 8,
+                    head: [['Artículo', 'Unidad', 'Cantidad', 'Costo Unit. (₡)', 'Costo Total (₡)']],
+                    body: bodyData,
+                    theme: 'striped',
+                    headStyles: { fillColor: '#004d99' },
+                    foot: [['Total del Pedido', '', '', '', `${totalPedido.toFixed(2)}`]],
+                    footStyles: { fillColor: '#ecf0f1', textColor: '#2c3e50', fontStyle: 'bold', halign: 'right' },
+                    didDrawPage: function(data) {
+                        doc.setFontSize(10);
+                        doc.text('Página ' + doc.internal.getNumberOfPages(), data.settings.margin.left, doc.internal.pageSize.height - 10);
+                    }
+                });
             });
             doc.save(`Historial_Pedidos_${new Date().toISOString().slice(0,10)}.pdf`);
         }
