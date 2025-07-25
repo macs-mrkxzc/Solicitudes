@@ -95,7 +95,6 @@
                     if (catalogoArticulos.length === 0) await cargarCatalogoArticulos();
                 })(),
                 (async () => {
-                    // Siempre recargamos las compras para tener el costo más actualizado
                     try {
                         const response = await fetch(`${WEB_APP_URL}?action=getCompras`);
                         historialCompras = await response.json();
@@ -146,6 +145,7 @@
             };
         }
         
+        // --- Lógica de PEDIDOS ---
         async function showForm() {
             views.formContainer.innerHTML = `<h2>Nuevo Pedido</h2><div class="info-section"><div class="form-group"><label for="solicitante">Solicitado por:</label><input type="text" id="solicitante"></div><div class="form-group"><label for="departamento">Departamento:</label><select id="departamento"><option value="" disabled selected>Seleccione</option><option>Oficina</option><option>Centro Distribución</option><option>Barrio México</option><option>San Francisco</option><option>Alto Valor</option><option>Directtools SF</option><option>Directtools BM</option></select></div></div><table id="pedido-table" class="responsive-table"><thead><tr><th>Unidad</th><th>Artículo</th><th>Cantidad</th><th>Costo Total (₡)</th><th>Acción</th></tr></thead><tbody></tbody></table><h3 style="text-align:right; margin-top:20px;">Costo Total del Pedido: <span id="pedido-total-general">0.00</span> ₡</h3><div class="controls"><button onclick="agregarFila()" class="btn btn-add">➕ Agregar Artículo</button><button onclick="goBack()" class="btn btn-cancel">⬅️ Volver</button><button onclick="previsualizarPedido()" class="btn btn-send">📲 Previsualizar</button></div>`;
             showView('formContainer');
@@ -196,18 +196,22 @@
             if (!solicitante || !departamento) return alert("Por favor, complete su nombre y departamento.");
             const tableRows = document.getElementById("pedido-table").querySelector("tbody").rows;
             let pedidoItems = [];
+            const addedArticles = new Set();
             for (let i = 0; i < tableRows.length; i++) {
                 const row = tableRows[i];
                 const unidad = row.querySelector('select[onchange="actualizarArticulos(this)"]').value;
                 const articulo = row.querySelector(".articulo-select").value;
                 const cantidad = parseInt(row.querySelector("span").textContent);
                 if (!articulo || !unidad) return alert(`Por favor, complete todos los campos en la fila ${i + 1}.`);
+                if (addedArticles.has(articulo)) return alert(`Artículo duplicado: "${articulo}".`);
+                addedArticles.add(articulo);
                 pedidoItems.push({ articulo, cantidad, unidad });
             }
             if (pedidoItems.length === 0) return alert("Debe agregar al menos un artículo.");
             currentRequestData = { solicitante, departamento, detalles: pedidoItems };
             const fechaActual = new Date().toLocaleString("es-CR", { dateStyle: "long", timeStyle: "short" });
-            let whatsappMsg = `*Solicitud de Suministros* 📄\n------------------------------------\n*Fecha:* ${fechaActual}\n*Solicitante:* _${solicitante}_\n*Departamento:* _${departamento}_\n------------------------------------\n\n*Detalle:*\n`;
+            let whatsappMsg = `*Solicitud de Suministros* 📄\n------------------------------------\n`;
+            whatsappMsg += `*Fecha:* ${fechaActual}\n*Solicitante:* _${solicitante}_\n*Departamento:* _${departamento}_\n------------------------------------\n\n*Detalle:*\n`;
             let totalPedido = 0;
             pedidoItems.forEach(item => {
                 const costoProm = costosPromedio[item.articulo] || 0;
@@ -264,6 +268,7 @@
             }
         }
         
+        // --- Lógica de HISTORIAL DE PEDIDOS ---
         async function showHistory() {
             views.historyContainer.innerHTML = `<h2>Historial de Pedidos</h2><table id="historialTable" class="responsive-table"><thead><tr><th style="width:5%"><input type="checkbox" onchange="toggleSeleccionarTodos(this)"></th><th>Fecha</th><th>Solicitante</th><th>Departamento</th><th>Costo Total (₡)</th><th>Detalles</th></tr></thead><tbody><tr><td colspan="6" style="text-align:center">Cargando...</td></tr></tbody></table><div class="controls"><div class="left-buttons"><button class="btn btn-danger" onclick="borrarPedidosSeleccionados()">🗑️ Borrar Seleccionados</button></div><button class="btn btn-whatsapp" onclick="reenviarPedidosSeleccionados()">📲 Reenviar</button><button class="btn btn-success" onclick="exportarHistorialPedidosExcel()">📊 Exportar Excel</button><button class="btn btn-pdf" onclick="exportarHistorialPedidosPDF()">📄 Exportar PDF</button><button class="btn btn-cancel" onclick="goBack()">⬅️ Volver</button></div>`;
             showView('historyContainer');
@@ -293,7 +298,6 @@
             }).join('');
         }
         function toggleSeleccionarTodos(source) { document.querySelectorAll('.pedido-checkbox').forEach(cb => { cb.checked = source.checked; }); }
-        
         function reenviarPedidosSeleccionados() {
             const indices = Array.from(document.querySelectorAll('.pedido-checkbox:checked')).map(cb => parseInt(cb.dataset.index));
             if (indices.length === 0) return alert("Por favor, seleccione al menos un pedido.");
@@ -312,7 +316,6 @@
             });
             window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
         }
-        
         function borrarPedidosSeleccionados() {
             checkSecurityKey(async () => {
                 const seleccionados = Array.from(document.querySelectorAll('.pedido-checkbox:checked')).map(cb => historial[parseInt(cb.dataset.index)]);
@@ -326,9 +329,37 @@
                 } catch (error) { alert('Error al eliminar los pedidos.'); }
             });
         }
-        function exportarHistorialPedidosExcel() { /* ... (sin cambios) ... */ }
-        function exportarHistorialPedidosPDF() { /* ... (sin cambios) ... */ }
+        function exportarHistorialPedidosExcel() {
+            const data = historial.flatMap(p => p.detalles.map(d => ({ Fecha: p.fecha, Solicitante: p.solicitante, Departamento: p.departamento, Artículo: d.articulo, Cantidad: d.cantidad, Unidad: d.unidad })));
+            const worksheet = XLSX.utils.json_to_sheet(data);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Pedidos");
+            XLSX.writeFile(workbook, `Historial_Pedidos_${new Date().toISOString().slice(0,10)}.xlsx`);
+        }
+        function exportarHistorialPedidosPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.text("Historial de Pedidos", 14, 20);
+            historial.forEach((pedido) => {
+                const startY = (doc.autoTable.previous ? doc.autoTable.previous.finalY : 25) + 5;
+                doc.autoTable({
+                    startY: startY,
+                    head: [['Fecha', 'Solicitante', 'Departamento']],
+                    body: [[pedido.fecha, pedido.solicitante, pedido.departamento]],
+                    theme: 'striped'
+                });
+                doc.autoTable({
+                    startY: doc.autoTable.previous.finalY,
+                    head: [['Artículo', 'Cantidad', 'Unidad']],
+                    body: (pedido.detalles || []).map(d => [d.articulo, d.cantidad, d.unidad]),
+                    theme: 'grid',
+                    headStyles: { fillColor: [100, 100, 100] }
+                });
+            });
+            doc.save(`Historial_Pedidos_${new Date().toISOString().slice(0,10)}.pdf`);
+        }
 
+        // --- Lógica de ADMIN ARTÍCULOS ---
         async function showAdminArticulos() {
             views.adminContainer.innerHTML = `<h2>Administrar Lista de Artículos</h2><table id="admin-table" class="responsive-table"><thead><tr><th>Nombre del Artículo</th><th>Unidad de Medida</th><th>Costo Promedio (₡)</th><th>Acción</th></tr></thead><tbody></tbody></table><div class="controls"><button onclick="agregarFilaAdmin()" class="btn btn-add">➕ Agregar Artículo</button><button onclick="goBack()" class="btn btn-cancel">⬅️ Volver</button><button onclick="guardarArticulos()" class="btn btn-send">💾 Guardar Cambios</button></div>`;
             showView('adminContainer');
@@ -369,6 +400,7 @@
             });
         }
 
+        // --- Lógica de COMPRAS ---
         async function showCompras() {
             views.comprasContainer.innerHTML = `<h2>Registrar Compra a Proveedor</h2><div class="info-section"><div class="form-group"><label for="compra-registradopor">Registrado por:</label><input type="text" id="compra-registradopor"></div><div class="form-group"><label for="compra-proveedor">Proveedor:</label><input type="text" id="compra-proveedor"></div><div class="form-group"><label for="compra-fecha">Fecha de Compra:</label><input type="date" id="compra-fecha"></div></div><table id="compras-table" class="responsive-table"><thead><tr><th>Artículo</th><th>Costo Unitario (₡)</th><th>Cantidad</th><th>Total (₡)</th><th>Acción</th></tr></thead><tbody></tbody></table><div style="text-align:right; margin-top:20px; font-size: 1.1em;"><p>Subtotal: <span id="compra-subtotal">0.00</span> ₡</p><div style="display:flex; justify-content:flex-end; align-items:center; gap:10px;"><label for="compra-aplicar-impuesto"><input type="checkbox" id="compra-aplicar-impuesto" onchange="actualizarTotalesCompra()"> Aplicar Impuesto (%):</label><input type="number" id="compra-porcentaje-impuesto" value="13" style="width: 80px;" oninput="actualizarTotalesCompra()" disabled></div><p>Impuesto: <span id="compra-impuesto-monto">0.00</span> ₡</p><h3 style="margin-top:10px;">Total General: <span id="compra-total-general">0.00</span> ₡</h3></div><div class="controls"><button onclick="agregarFilaCompra()" class="btn btn-add">➕ Agregar Artículo</button><button onclick="goBack()" class="btn btn-cancel">⬅️ Volver</button><button onclick="registrarCompra()" class="btn btn-send">✅ Registrar Compra</button></div>`;
             showView('comprasContainer');
@@ -446,12 +478,68 @@
             });
         }
 
-        async function showHistorialCompras() { /* ... (código anterior) ... */ }
-        function renderHistorialCompras() { /* ... (código anterior) ... */ }
-        function exportarHistorialComprasExcel() { /* ... (código anterior) ... */ }
-        async function showInventario() { /* ... (código anterior) ... */ }
-        function renderInventario() { /* ... (código anterior) ... */ }
-        function exportarInventarioExcel() { /* ... (código anterior) ... */ }
+        async function showHistorialCompras() {
+            views.historialComprasContainer.innerHTML = `<h2>Historial de Compras</h2><table id="historial-compras-table" class="responsive-table"><thead><tr><th>Fecha</th><th>Proveedor</th><th>Artículo</th><th>Cantidad</th><th>Costo Total</th></tr></thead><tbody><tr><td colspan="5" style="text-align:center">Cargando...</td></tr></tbody></table><div class="controls"><button class="btn btn-success" onclick="exportarHistorialComprasExcel()">📊 Exportar a Excel</button><button class="btn btn-cancel" onclick="goBack()">⬅️ Volver</button></div>`;
+            showView('historialComprasContainer');
+            try {
+                const response = await fetch(`${WEB_APP_URL}?action=getCompras`);
+                historialCompras = await response.json();
+                renderHistorialCompras();
+            } catch (e) {
+                console.error(e);
+                views.historialComprasContainer.querySelector("tbody").innerHTML = `<tr><td colspan="5" style="text-align:center; color:red;">Error al cargar el historial.</td></tr>`;
+            }
+        }
+        function renderHistorialCompras() {
+            const tableBody = views.historialComprasContainer.querySelector("tbody");
+            if (historialCompras.length === 0) { tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No hay compras registradas.</td></tr>'; return; }
+            tableBody.innerHTML = historialCompras.map(c => `<tr_><td data-label="Fecha">${c.fecha}</td><td data-label="Proveedor">${c.proveedor}</td><td data-label="Artículo">${c.articulo}</td><td data-label="Cantidad">${c.cantidad}</td><td data-label="Costo Total">${parseFloat(c.costoTotal).toFixed(2)} ₡</td></tr_>`.replace(/_>/g, '>')).join('');
+        }
+        function exportarHistorialComprasExcel() {
+            const worksheet = XLSX.utils.json_to_sheet(historialCompras);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Compras");
+            XLSX.writeFile(workbook, `Historial_Compras_${new Date().toISOString().slice(0,10)}.xlsx`);
+        }
+
+        async function showInventario() {
+            views.inventarioContainer.innerHTML = `<h2>Resumen de Inventario</h2><table id="inventario-table" class="responsive-table"><thead><tr><th>Artículo</th><th>Unidad</th><th>Comprado</th><th>Solicitado</th><th>Stock Actual</th><th>Valor del Stock (₡)</th></tr></thead><tbody><tr><td colspan="6" style="text-align:center">Calculando...</td></tr></tbody></table><div class="controls"><button class="btn btn-success" onclick="exportarInventarioExcel()">📊 Exportar a Excel</button><button class="btn btn-cancel" onclick="goBack()">⬅️ Volver</button></div>`;
+            showView('inventarioContainer');
+            try {
+                await cargarDatosEsenciales();
+                if (historial.length === 0) {
+                     const response = await fetch(WEB_APP_URL);
+                     historial = await response.json();
+                }
+                const comprasAgrupadas = historialCompras.reduce((acc, compra) => {
+                    acc[compra.articulo] = (acc[compra.articulo] || 0) + parseFloat(compra.cantidad);
+                    return acc;
+                }, {});
+                const pedidosAgrupados = historial.flatMap(p => p.detalles).reduce((acc, item) => {
+                    acc[item.articulo] = (acc[item.articulo] || 0) + parseFloat(item.cantidad);
+                    return acc;
+                }, {});
+                inventario = catalogoArticulos.map(articulo => {
+                    const totalComprado = comprasAgrupadas[articulo.nombre] || 0;
+                    const totalPedido = pedidosAgrupados[articulo.nombre] || 0;
+                    const stock = totalComprado - totalPedido;
+                    const costoProm = costosPromedio[articulo.nombre] || 0;
+                    return { nombre: articulo.nombre, unidad: articulo.unidad, comprado: totalComprado, solicitado: totalPedido, stock: stock, valorStock: stock * costoProm };
+                });
+                renderInventario();
+            } catch (e) { console.error(e); }
+        }
+        function renderInventario() {
+            const tableBody = views.inventarioContainer.querySelector("tbody");
+            tableBody.innerHTML = inventario.map(item => `<tr><td data-label="Artículo">${item.nombre}</td><td data-label="Unidad">${item.unidad}</td><td data-label="Comprado">${item.comprado}</td><td data-label="Solicitado">${item.solicitado}</td><td data-label="Stock" style="font-weight:bold;">${item.stock}</td><td data-label="Valor Stock" style="font-weight:bold;">${item.valorStock.toFixed(2)} ₡</td></tr>`).join('');
+        }
+        function exportarInventarioExcel() {
+            const data = inventario.map(i => ({ Artículo: i.nombre, Unidad: i.unidad, Comprado: i.comprado, Solicitado: i.solicitado, "Stock Actual": i.stock, "Valor del Stock (₡)": i.valorStock.toFixed(2) }));
+            const worksheet = XLSX.utils.json_to_sheet(data);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Inventario");
+            XLSX.writeFile(workbook, `Resumen_Inventario_${new Date().toISOString().slice(0,10)}.xlsx`);
+        }
     </script>
 </body>
 </html>
