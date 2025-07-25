@@ -1,400 +1,587 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Gestión Pedidos e Inventario</title>
-<style>
-    body {
-        font-family: 'Segoe UI', sans-serif;
-        background: #f7f9fc;
-        margin: 0;
-        padding: 0;
-    }
-    header {
-        background: #1e3c72;
-        color: white;
-        padding: 15px;
-        text-align: center;
-        font-size: 1.4em;
-        font-weight: bold;
-    }
-    nav {
-        display: flex;
-        background: #2a5298;
-    }
-    nav button {
-        flex: 1;
-        padding: 12px;
-        background: #2a5298;
-        color: white;
-        border: none;
-        cursor: pointer;
-        font-size: 1em;
-        transition: background 0.3s;
-    }
-    nav button.active,
-    nav button:hover {
-        background: #1e3c72;
-        font-weight: bold;
-    }
-    .tab-content {
-        padding: 20px;
-        display: none;
-        animation: fadeIn 0.5s;
-    }
-    .tab-content.active {
-        display: block;
-    }
-    @keyframes fadeIn {
-        from {opacity: 0;}
-        to {opacity: 1;}
-    }
-    .section {
-        margin-top: 20px;
-        background: #fff;
-        padding: 15px;
-        border-radius: 10px;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-    h2, h3, h4 {
-        color: #1e3c72;
-    }
-    select, input, button {
-        padding: 8px;
-        margin: 5px 5px 5px 0;
-        border-radius: 5px;
-        border: 1px solid #ccc;
-        font-size: 1em;
-    }
-    button {
-        background: #1e3c72;
-        color: white;
-        cursor: pointer;
-        transition: background 0.3s;
-    }
-    button:hover {
-        background: #16345d;
-    }
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 15px;
-    }
-    th, td {
-        padding: 8px;
-        border: 1px solid #ddd;
-        text-align: left;
-        vertical-align: middle;
-    }
-    th {
-        background: #2a5298;
-        color: white;
-    }
-    tr:nth-child(even) {
-        background: #f2f2f2;
-    }
-    .flex {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-        align-items: center;
-    }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestión - Tesoros Americanos Costa Rica</title>
+    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #004d99; --secondary-color: #007bff; --text-color: #2c3e50; --light-text-color: #7f8c8d;
+            --background-color: #ecf0f1; --card-background: #ffffff; --border-color: #dde1e5; --success-color: #27ae60;
+            --danger-color: #e74c3c; --cancel-color: #95a5a6; --whatsapp-color: #25D366; --hover-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            --pdf-color: #c0392b;
+        }
+        body { font-family: 'Roboto', sans-serif; margin: 0; padding: 2.5vw; background-color: var(--background-color); color: var(--text-color); }
+        .container { max-width: 1200px; margin: auto; background: var(--card-background); padding: 3vw; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); border: 1px solid var(--border-color); margin-bottom: 30px; }
+        .header-logo { text-align: center; margin-bottom: 30px; }
+        .header-logo img { max-width: 180px; }
+        .header-logo h1 { margin: 0; padding-top: 15px; border-top: 2px solid var(--border-color); font-size: clamp(1.8em, 4vw, 2.5em); font-weight: 700; color: var(--primary-color); }
+        .header-logo h2.subtitle { margin: 5px 0 0; font-size: clamp(1em, 2.5vw, 1.5em); font-weight: 500; color: var(--secondary-color); }
+        h2 { text-align: center; color: var(--primary-color); margin-bottom: 25px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.07); border-radius: 10px; overflow: hidden; }
+        th, td { border: 1px solid var(--border-color); padding: 0.8em 1em; text-align: left; vertical-align: middle; }
+        th { background-color: var(--primary-color); color: white; font-weight: 600; text-transform: uppercase; }
+        input, select, textarea { width: 100%; padding: 0.7em 0.8em; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box; font-size: 1em; }
+        .btn { padding: 0.8em 1.5em; border: none; border-radius: 8px; cursor: pointer; font-size: 1em; font-weight: 600; transition: all 0.2s ease; white-space: nowrap; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .btn:hover { transform: translateY(-2px); box-shadow: var(--hover-shadow); }
+        .btn-add { background-color: var(--success-color); color: white; }
+        .btn-send { background-color: var(--primary-color); color: white; }
+        .btn-success { background-color: var(--success-color); color: white; }
+        .btn-whatsapp { background-color: var(--whatsapp-color); color: white; }
+        .btn-cancel { background-color: var(--cancel-color); color: white; }
+        .btn-danger { background-color: var(--danger-color); color: white; }
+        .btn-pdf { background-color: var(--pdf-color); color: white; }
+        .info-section { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5em; margin-bottom: 2em; }
+        .form-group label { display: block; margin-bottom: 0.5em; font-weight: 500; color: var(--light-text-color); }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.7); justify-content: center; align-items: center; padding: 1em; }
+        .modal-content { background-color: var(--card-background); padding: 2em; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); width: 95%; max-width: 700px; position: relative; }
+        .menu-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5em; margin-top: 2em; }
+        .hidden { display: none; }
+        .controls { margin-top: 40px; display: flex; justify-content: flex-end; gap: 1em; align-items: center; padding-top: 25px; border-top: 1px solid var(--border-color); flex-wrap: wrap; }
+        .controls .left-buttons { margin-right: auto; display: flex; gap: 1em; }
+        @media screen and (max-width: 768px) {
+            body { padding: 15px; } .container { padding: 20px; } .menu-options, .info-section { grid-template-columns: 1fr; }
+            .responsive-table thead { display: none; }
+            .responsive-table, .responsive-table tbody, .responsive-table tr { display: block; width: 100%; }
+            .responsive-table tr { margin-bottom: 20px; border: 1px solid var(--border-color); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,.05); overflow: hidden; }
+            .responsive-table > tbody > tr > td { display: flex; justify-content: space-between; align-items: center; text-align: right; padding: 12px 15px; border: none; word-break: break-word; min-height: 44px; border-bottom: 1px dotted var(--border-color); }
+            .responsive-table > tbody > tr > td:last-child { border-bottom: none; }
+            .responsive-table > tbody > tr > td::before { content: attr(data-label); font-weight: 700; color: var(--primary-color); text-align: left; padding-right: 15px; flex-shrink: 0; }
+            .controls { flex-direction: column; gap: 10px; } .controls .btn { width: 100%; }
+            .controls .left-buttons { flex-direction: column; width: 100%; margin: 0 0 10px 0; }
+        }
+    </style>
 </head>
 <body>
-<header>Gestión de Pedidos e Inventario</header>
 
-<nav>
-    <button class="tab-btn active" data-tab="pedidos">Pedidos</button>
-    <button class="tab-btn" data-tab="inventario">Inventario</button>
-</nav>
+    <div class="container" id="mainMenu"></div>
+    <div class="container hidden" id="formContainer"></div>
+    <div class="container hidden" id="historyContainer"></div>
+    <div class="container hidden" id="adminContainer"></div>
+    <div class="container hidden" id="comprasContainer"></div>
+    <div class="container hidden" id="historialComprasContainer"></div>
+    <div class="container hidden" id="inventarioContainer"></div>
+    <div id="summaryModal" class="modal"></div>
+    <div id="securityModal" class="modal"></div>
 
-<!-- CONTENIDO PEDIDOS -->
-<div id="pedidos" class="tab-content active">
-    <div class="section">
-        <h2>Pedidos</h2>
-        <p><i>Funcionalidad original de pedidos aquí (puedes integrar tu código actual en este bloque)</i></p>
-    </div>
-</div>
+    <script>
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxZwboxYJuMqF6pwc8icP2F3j4Xywrjhyjgbor5fFrUmBXW3cTx18DlFm8CGfFyIOcRBQ/exec";
+        let catalogoArticulos = [], historial = [], historialCompras = [], inventario = [];
+        let costosPromedio = {};
+        let currentRequestData = {};
 
-<!-- CONTENIDO INVENTARIO -->
-<div id="inventario" class="tab-content">
-    <div class="section">
-        <h2>Inventario</h2>
-        <div class="flex">
-            <button onclick="mostrarSubseccion('entrada')">Ajuste Entrada</button>
-            <button onclick="mostrarSubseccion('salida')">Ajuste Salida</button>
-        </div>
+        const views = {
+            mainMenu: document.getElementById('mainMenu'), formContainer: document.getElementById('formContainer'),
+            historyContainer: document.getElementById('historyContainer'), adminContainer: document.getElementById('adminContainer'),
+            comprasContainer: document.getElementById('comprasContainer'), historialComprasContainer: document.getElementById('historialComprasContainer'),
+            inventarioContainer: document.getElementById('inventarioContainer'), summaryModal: document.getElementById('summaryModal'),
+            securityModal: document.getElementById('securityModal')
+        };
         
-        <!-- FORMULARIO AJUSTE ENTRADA -->
-        <div id="entrada" class="sub-section" style="display:none;">
-            <h3>Ajuste de Entrada</h3>
-            <label for="tipoEntrada">Tipo de Movimiento:</label>
-            <select id="tipoEntrada">
-                <option>Inventario Inicial</option>
-                <option>Compra</option>
-                <option>Corrección</option>
-                <option>Donación</option>
-            </select>
-            <input type="text" id="detalleEntrada" placeholder="Detalle del movimiento" />
-            
-            <h4>Agregar Artículos</h4>
-            <div class="flex">
-                <select id="productoEntrada"></select>
-                <input type="number" id="cantidadEntrada" placeholder="Cantidad" min="1" />
-                <input type="number" id="costoEntrada" placeholder="Costo unitario" min="0" step="0.01" />
-                <button onclick="agregarArticulo('entrada')">Agregar</button>
-            </div>
-            <table id="tablaEntrada">
-                <thead>
-                    <tr>
-                        <th>Producto</th><th>Cantidad</th><th>Costo</th><th>Acción</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-            <button onclick="confirmarAjuste('entrada')">Confirmar Ajuste</button>
-        </div>
-        
-        <!-- FORMULARIO AJUSTE SALIDA -->
-        <div id="salida" class="sub-section" style="display:none;">
-            <h3>Ajuste de Salida</h3>
-            <label for="tipoSalida">Tipo de Movimiento:</label>
-            <select id="tipoSalida">
-                <option>Corrección</option>
-                <option>Daño</option>
-                <option>Donación</option>
-            </select>
-            <input type="text" id="detalleSalida" placeholder="Detalle del movimiento" />
-            
-            <h4>Agregar Artículos</h4>
-            <div class="flex">
-                <select id="productoSalida"></select>
-                <input type="number" id="cantidadSalida" placeholder="Cantidad" min="1" />
-                <button onclick="agregarArticulo('salida')">Agregar</button>
-            </div>
-            <table id="tablaSalida">
-                <thead>
-                    <tr>
-                        <th>Producto</th><th>Cantidad</th><th>Acción</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-            <button onclick="confirmarAjuste('salida')">Confirmar Ajuste</button>
-        </div>
-    </div>
-    
-    <div class="section">
-        <h3>Historial de Ajustes</h3>
-        <table id="historial">
-            <thead>
-                <tr><th>Fecha</th><th>Tipo</th><th>Detalle</th><th>Movimiento</th></tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-        <button onclick="exportarExcel()">Exportar Excel</button>
-        <button onclick="exportarPDF()">Exportar PDF</button>
-    </div>
-</div>
-
-<!-- Librerías para exportar -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
-
-<script>
-(() => {
-    // Variables globales
-    const productos = [
-        {nombre: 'Producto A', stock: 10, costo: 100},
-        {nombre: 'Producto B', stock: 20, costo: 50},
-        {nombre: 'Producto C', stock: 15, costo: 80}
-    ];
-    const ajustes = [];
-
-    // Inicializar selects productos
-    const selects = [document.getElementById('productoEntrada'), document.getElementById('productoSalida')];
-    selects.forEach(sel => {
-        productos.forEach(p => {
-            const opt = document.createElement('option');
-            opt.value = p.nombre;
-            opt.textContent = p.nombre;
-            sel.appendChild(opt);
+        document.addEventListener('DOMContentLoaded', () => {
+            views.mainMenu.innerHTML = `<div class="header-logo"><img src="data:image/svg+xml;base64," alt="Logo"><h1>Tesoros Americanos Costa Rica</h1><h2 class="subtitle">Sistema de Gestión de Suministros</h2></div><div class="menu-options"><button class="btn" onclick="showForm()">📦 Nuevo Pedido</button><button class="btn" onclick="showHistory()">📜 Ver Pedidos</button><button class="btn" onclick="showAdminArticulos()">✏️ Administrar Artículos</button><button class="btn" onclick="showCompras()">🛒 Registrar Compra</button><button class="btn" onclick="showHistorialCompras()">📊 Consultar Compras</button><button class="btn" onclick="showInventario()">📈 Ver Inventario</button></div>`;
         });
-    });
 
-    // Control pestañas principales
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
-            document.getElementById(btn.dataset.tab).classList.add('active');
-        });
-    });
+        function showView(viewId) { Object.values(views).forEach(v => v.classList.add('hidden')); views[viewId].classList.remove('hidden'); }
+        function goBack() { showView('mainMenu'); }
 
-    window.mostrarSubseccion = function(tipo) {
-        document.querySelectorAll('.sub-section').forEach(s => s.style.display = 'none');
-        document.getElementById(tipo).style.display = 'block';
-    }
-
-    window.agregarArticulo = function(tipo) {
-        let producto = (tipo === 'entrada') ? document.getElementById('productoEntrada').value : document.getElementById('productoSalida').value;
-        let cantidad = parseInt((tipo === 'entrada') ? document.getElementById('cantidadEntrada').value : document.getElementById('cantidadSalida').value);
-        if (!producto) return alert('Seleccione un producto');
-        if (!cantidad || cantidad <= 0) return alert('Cantidad debe ser mayor a cero');
-        let costo = (tipo === 'entrada') ? parseFloat(document.getElementById('costoEntrada').value) : null;
-        if (tipo === 'entrada' && (isNaN(costo) || costo < 0)) return alert('Ingrese un costo válido');
-
-        const tabla = document.getElementById('tabla' + (tipo === 'entrada' ? 'Entrada' : 'Salida')).querySelector('tbody');
-        // Validar si ya existe el producto agregado, sumar cantidades y promediar costo (entrada)
-        let filaExistente = [...tabla.rows].find(row => row.cells[0].innerText === producto);
-        if (filaExistente) {
-            let cantActual = parseInt(filaExistente.cells[1].innerText);
-            let nuevaCant = cantActual + cantidad;
-            filaExistente.cells[1].innerText = nuevaCant;
-            if (tipo === 'entrada') {
-                let costoActual = parseFloat(filaExistente.cells[2].innerText);
-                let nuevoCosto = ((costoActual * cantActual) + (costo * cantidad)) / nuevaCant;
-                filaExistente.cells[2].innerText = nuevoCosto.toFixed(2);
-            }
-        } else {
-            let fila = document.createElement('tr');
-            fila.innerHTML = `<td>${producto}</td><td>${cantidad}</td>${tipo === 'entrada' ? `<td>${costo.toFixed(2)}</td>` : ''}<td><button onclick="this.parentNode.parentNode.remove()">Eliminar</button></td>`;
-            tabla.appendChild(fila);
+        async function cargarDatosEsenciales() {
+            await Promise.all([
+                (async () => {
+                    if (catalogoArticulos.length === 0) await cargarCatalogoArticulos();
+                })(),
+                (async () => {
+                    try {
+                        const response = await fetch(`${WEB_APP_URL}?action=getCompras`);
+                        historialCompras = await response.json();
+                    } catch (e) { console.error("Error cargando compras"); }
+                })()
+            ]);
+            calcularCostosPromedio();
         }
 
-        // Limpiar inputs
-        if(tipo === 'entrada'){
-            document.getElementById('cantidadEntrada').value = '';
-            document.getElementById('costoEntrada').value = '';
-        } else {
-            document.getElementById('cantidadSalida').value = '';
-        }
-    }
-
-    window.confirmarAjuste = function(tipo) {
-        const tbody = document.querySelector(`#tabla${tipo === 'entrada' ? 'Entrada' : 'Salida'} tbody`);
-        if (tbody.rows.length === 0) return alert('Agregue artículos antes de confirmar');
-
-        const tipoMov = document.getElementById(`tipo${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`).value;
-        const detalle = document.getElementById(`detalle${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`).value;
-
-        const movimiento = [];
-        for(let fila of tbody.rows){
-            const nombre = fila.cells[0].innerText;
-            const cantidad = parseInt(fila.cells[1].innerText);
-            const costo = (tipo === 'entrada') ? parseFloat(fila.cells[2].innerText) : null;
-            const prod = productos.find(p => p.nombre === nombre);
-            if(tipo === 'entrada'){
-                // Calcular nuevo costo promedio
-                const totalValor = (prod.stock * prod.costo) + (cantidad * costo);
-                prod.stock += cantidad;
-                prod.costo = totalValor / prod.stock;
-            } else {
-                prod.stock -= cantidad;
-                if(prod.stock < 0) prod.stock = 0;
-            }
-            movimiento.push({nombre, cantidad, costo});
+        async function cargarCatalogoArticulos() {
+            try {
+                const response = await fetch(`${WEB_APP_URL}?action=getArticulos`);
+                catalogoArticulos = await response.json();
+            } catch (e) { alert("No se pudo cargar la lista de artículos."); }
         }
 
-        ajustes.push({fecha: new Date().toLocaleString(), tipo: tipoMov, detalle, movimiento});
-        actualizarHistorial();
-
-        alert('Ajuste registrado y stock actualizado');
-
-        tbody.innerHTML = '';
-        document.getElementById(`detalle${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`).value = '';
-    }
-
-    function actualizarHistorial() {
-        const tbody = document.querySelector('#historial tbody');
-        tbody.innerHTML = '';
-        ajustes.forEach(a => {
-            const mov = a.movimiento.map(m => `${m.nombre} (${m.cantidad})`).join(', ');
-            const fila = document.createElement('tr');
-            fila.innerHTML = `<td>${a.fecha}</td><td>${a.tipo}</td><td>${a.detalle}</td><td>${mov}</td>`;
-            tbody.appendChild(fila);
-        });
-    }
-
-    window.exportarExcel = function() {
-        if(ajustes.length === 0) return alert('No hay datos para exportar');
-
-        // Crear libro de Excel
-        const wb = XLSX.utils.book_new();
-
-        // Preparar datos
-        const data = [['Fecha', 'Tipo', 'Detalle', 'Producto', 'Cantidad', 'Costo']];
-        ajustes.forEach(a => {
-            a.movimiento.forEach(m => {
-                data.push([
-                    a.fecha,
-                    a.tipo,
-                    a.detalle,
-                    m.nombre,
-                    m.cantidad,
-                    m.costo !== null ? m.costo : ''
-                ]);
+        function calcularCostosPromedio() {
+            const calculos = {};
+            (historialCompras || []).forEach(compra => {
+                if (!calculos[compra.articulo]) {
+                    calculos[compra.articulo] = { totalCosto: 0, totalCantidad: 0 };
+                }
+                calculos[compra.articulo].totalCosto += parseFloat(compra.costoTotal);
+                calculos[compra.articulo].totalCantidad += parseFloat(compra.cantidad);
             });
-        });
+            costosPromedio = {};
+            for (const articulo in calculos) {
+                if (calculos[articulo].totalCantidad > 0) {
+                    costosPromedio[articulo] = calculos[articulo].totalCosto / calculos[articulo].totalCantidad;
+                }
+            }
+        }
 
-        // Crear hoja y agregar datos
-        const ws = XLSX.utils.aoa_to_sheet(data);
-        XLSX.utils.book_append_sheet(wb, ws, 'Historial Ajustes');
+        function checkSecurityKey(callback) {
+            views.securityModal.innerHTML = `<div class="modal-content" style="max-width: 400px;"><h2>Autorización Requerida</h2><p>PARA CONTINUAR DIGITE LA AUTORIZACION</p><input type="password" id="security-key-input" style="margin-top: 1em; margin-bottom: 1.5em;"><div style="display:flex; gap: 1em;"><button class="btn btn-cancel" onclick="views.securityModal.style.display='none'">Cancelar</button><button class="btn btn-send" id="security-key-submit">Aceptar</button></div></div>`;
+            views.securityModal.style.display = 'flex';
+            document.getElementById('security-key-input').focus();
+            document.getElementById('security-key-submit').onclick = () => {
+                const userInput = document.getElementById('security-key-input').value;
+                const today = new Date();
+                const securityKey = `${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, '0')}${String(today.getDate()).padStart(2, '0')}`;
+                if (userInput === securityKey) {
+                    views.securityModal.style.display = 'none';
+                    callback();
+                } else {
+                    alert('AUTORIZACION DENEGADA');
+                }
+            };
+        }
+        
+        async function showForm() {
+            views.formContainer.innerHTML = `<h2>Nuevo Pedido</h2><div class="info-section"><div class="form-group"><label for="solicitante">Solicitado por:</label><input type="text" id="solicitante"></div><div class="form-group"><label for="departamento">Departamento:</label><select id="departamento"><option value="" disabled selected>Seleccione</option><option>Oficina</option><option>Centro Distribución</option><option>Barrio México</option><option>San Francisco</option><option>Alto Valor</option><option>Directtools SF</option><option>Directtools BM</option></select></div></div><table id="pedido-table" class="responsive-table"><thead><tr><th>Unidad</th><th>Artículo</th><th>Cantidad</th><th>Costo Total (₡)</th><th>Acción</th></tr></thead><tbody></tbody></table><h3 style="text-align:right; margin-top:20px;">Costo Total del Pedido: <span id="pedido-total-general">0.00</span> ₡</h3><div class="controls"><button onclick="agregarFila()" class="btn btn-add">➕ Agregar Artículo</button><button onclick="goBack()" class="btn btn-cancel">⬅️ Volver</button><button onclick="previsualizarPedido()" class="btn btn-send">📲 Previsualizar</button></div>`;
+            showView('formContainer');
+            await cargarDatosEsenciales();
+            agregarFila();
+        }
+        function agregarFila() {
+            const tableBody = document.getElementById('pedido-table').querySelector('tbody');
+            const newRow = tableBody.insertRow();
+            const unidades = [...new Set(catalogoArticulos.map(item => item.unidad))];
+            let opcionesUnidad = unidades.map(u => `<option value="${u}">${u}</option>`).join('');
+            newRow.innerHTML = `<td data-label="Unidad"><select required onchange="actualizarArticulos(this)"><option value="" disabled selected>Seleccione</option>${opcionesUnidad}</select></td><td data-label="Artículo"><select class="articulo-select" required disabled onchange="actualizarTotalesPedido()"><option value="" disabled selected>Seleccione unidad</option></select></td><td data-label="Cantidad"><div style="display:flex;align-items:center;justify-content:flex-end;"><button class="btn" onclick="cambiarCantidad(this,-1)">-</button><span class="pedido-cantidad" style="padding:0 10px;font-weight:bold;">1</span><button class="btn" onclick="cambiarCantidad(this,1)">+</button></div></td><td data-label="Costo Total" class="pedido-costo-total" style="font-weight:bold;">0.00</td><td data-label="Acción"><button class="btn btn-danger" onclick="this.closest('tr').remove(); actualizarTotalesPedido();">Eliminar</button></td>`;
+        }
+        function actualizarArticulos(selectUnidad) {
+            const unidadSeleccionada = selectUnidad.value;
+            const fila = selectUnidad.closest('tr');
+            const selectArticulo = fila.querySelector('.articulo-select');
+            selectArticulo.innerHTML = '';
+            if (!unidadSeleccionada) { selectArticulo.disabled = true; return; }
+            const articulosFiltrados = catalogoArticulos.filter(item => item.unidad === unidadSeleccionada);
+            selectArticulo.disabled = false;
+            selectArticulo.innerHTML = '<option value="" disabled selected>Seleccione artículo</option>';
+            articulosFiltrados.forEach(item => { selectArticulo.innerHTML += `<option value="${item.nombre}">${item.nombre}</option>`; });
+            actualizarTotalesPedido();
+        }
+        function cambiarCantidad(btn,delta){
+            const display=btn.parentElement.querySelector('span');
+            let val=parseInt(display.textContent)+delta;
+            if(val<1)val=1;
+            display.textContent=val;
+            actualizarTotalesPedido();
+        }
+        function actualizarTotalesPedido() {
+            let totalGeneral = 0;
+            document.querySelectorAll('#pedido-table tbody tr').forEach(row => {
+                const articulo = row.querySelector('.articulo-select').value;
+                const cantidad = parseInt(row.querySelector('.pedido-cantidad').textContent) || 0;
+                const costoProm = costosPromedio[articulo] || 0;
+                const costoTotalItem = cantidad * costoProm;
+                row.querySelector('.pedido-costo-total').textContent = costoTotalItem.toFixed(2);
+                totalGeneral += costoTotalItem;
+            });
+            document.getElementById('pedido-total-general').textContent = totalGeneral.toFixed(2);
+        }
+        function previsualizarPedido() {
+            const solicitante = document.getElementById("solicitante").value.trim();
+            const departamento = document.getElementById("departamento").value.trim();
+            if (!solicitante || !departamento) return alert("Por favor, complete su nombre y departamento.");
+            const tableRows = document.getElementById("pedido-table").querySelector("tbody").rows;
+            let pedidoItems = [];
+            for (let i = 0; i < tableRows.length; i++) {
+                const row = tableRows[i];
+                const unidad = row.querySelector('select[onchange="actualizarArticulos(this)"]').value;
+                const articulo = row.querySelector(".articulo-select").value;
+                const cantidad = parseInt(row.querySelector("span").textContent);
+                if (!articulo || !unidad) return alert(`Por favor, complete todos los campos en la fila ${i + 1}.`);
+                pedidoItems.push({ articulo, cantidad, unidad });
+            }
+            if (pedidoItems.length === 0) return alert("Debe agregar al menos un artículo.");
+            currentRequestData = { solicitante, departamento, detalles: pedidoItems };
+            const fechaActual = new Date().toLocaleString("es-CR", { dateStyle: "long", timeStyle: "short" });
+            let whatsappMsg = `*Solicitud de Suministros* 📄\n------------------------------------\n*Fecha:* ${fechaActual}\n*Solicitante:* _${solicitante}_\n*Departamento:* _${departamento}_\n------------------------------------\n\n*Detalle:*\n`;
+            let totalPedido = 0;
+            pedidoItems.forEach(item => {
+                const costoProm = costosPromedio[item.articulo] || 0;
+                const costoTotalItem = item.cantidad * costoProm;
+                whatsappMsg += `• ${item.articulo} (${item.cantidad} ${item.unidad}) - ₡${costoTotalItem.toFixed(2)}\n`;
+                totalPedido += costoTotalItem;
+            });
+            whatsappMsg += `\n*Costo Total Estimado: ₡${totalPedido.toFixed(2)}*`;
+            currentRequestData.whatsappBody = whatsappMsg;
+            let summaryHTML = `<p><strong>Solicitante:</strong> ${solicitante}</p><p><strong>Departamento:</strong> ${departamento}</p><pre style="white-space: pre-wrap; word-wrap: break-word; font-family: 'Roboto', sans-serif;">${whatsappMsg}</pre>`;
+            views.summaryModal.innerHTML = `<div class="modal-content"><span onclick="views.summaryModal.style.display='none'" style="position:absolute; top:10px; right:20px; font-size:2em; cursor:pointer;">&times;</span><h2>Revisión del Pedido</h2><div style="max-height: 60vh; overflow-y: auto; padding: 1em; background-color: #f8f9fa; border-radius: 8px;">${summaryHTML}</div><div class="modal-actions" style="margin-top: 1.5em; display:flex; flex-direction:column; gap: 10px;"><button onclick="confirmarYGuardar(event)" class="btn btn-success">✅ Guardar Pedido</button><button onclick="guardarYEnviarPorWhatsApp(event)" class="btn btn-whatsapp">📲 Guardar y Enviar por WhatsApp</button><button onclick="views.summaryModal.style.display='none'" class="btn btn-cancel">Cancelar</button></div></div>`;
+            views.summaryModal.style.display = "flex";
+        }
+        async function guardarPedidoEnAPI(pedido) {
+            try {
+                await fetch(WEB_APP_URL, {
+                    method: 'POST', mode: 'no-cors',
+                    body: JSON.stringify({ action: 'addPedido', payload: pedido })
+                });
+            } catch (error) {
+                console.error("Error al enviar el pedido a la API:", error);
+                alert("Hubo un error al guardar el pedido en la base de datos central.");
+                throw error;
+            }
+        }
+        async function confirmarYGuardar(event) {
+            const boton = event.target;
+            boton.textContent = 'Guardando...';
+            boton.disabled = true;
+            try {
+                await guardarPedidoEnAPI(currentRequestData);
+                alert('¡Pedido guardado con éxito!');
+                views.summaryModal.style.display = 'none';
+                goBack();
+            } catch (e) {
+                boton.textContent = '✅ Guardar Pedido';
+                boton.disabled = false;
+            }
+        }
+        async function guardarYEnviarPorWhatsApp(event) {
+            const boton = event.target;
+            boton.textContent = 'Guardando y Abriendo...';
+            boton.disabled = true;
+            try {
+                await guardarPedidoEnAPI(currentRequestData);
+                const link = `https://wa.me/?text=${encodeURIComponent(currentRequestData.whatsappBody)}`;
+                window.open(link, '_blank');
+                alert('¡Pedido guardado! Ahora puedes confirmar el envío en WhatsApp.');
+                views.summaryModal.style.display = 'none';
+                goBack();
+            } catch (e) {
+                boton.textContent = '📲 Guardar y Enviar por WhatsApp';
+                boton.disabled = false;
+            }
+        }
+        
+        async function showHistory() {
+            views.historyContainer.innerHTML = `<h2>Historial de Pedidos</h2><table id="historialTable" class="responsive-table"><thead><tr><th style="width:5%"><input type="checkbox" onchange="toggleSeleccionarTodos(this)"></th><th>Fecha</th><th>Solicitante</th><th>Departamento</th><th>Costo Total (₡)</th><th>Detalles</th></tr></thead><tbody><tr><td colspan="6" style="text-align:center">Cargando...</td></tr></tbody></table><div class="controls"><div class="left-buttons"><button class="btn btn-danger" onclick="borrarPedidosSeleccionados()">🗑️ Borrar Seleccionados</button></div><button class="btn btn-whatsapp" onclick="reenviarPedidosSeleccionados()">📲 Reenviar</button><button class="btn btn-success" onclick="exportarHistorialPedidosExcel()">📊 Exportar Excel</button><button class="btn btn-pdf" onclick="exportarHistorialPedidosPDF()">📄 Exportar PDF</button><button class="btn btn-cancel" onclick="goBack()">⬅️ Volver</button></div>`;
+            showView('historyContainer');
+             try {
+                await cargarDatosEsenciales();
+                const response = await fetch(WEB_APP_URL);
+                historial = await response.json();
+                renderHistorial();
+             } catch (e) { console.error(e); }
+        }
+        function renderHistorial() {
+            const tableBody = views.historyContainer.querySelector("tbody");
+            if (!historial || historial.length === 0) { tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No hay pedidos.</td></tr>'; return; }
+            tableBody.innerHTML = historial.map((pedido, index) => {
+                let costoTotalPedido = 0;
+                (pedido.detalles || []).forEach(item => {
+                    costoTotalPedido += (costosPromedio[item.articulo] || 0) * item.cantidad;
+                });
+                return `<tr>
+                    <td data-label="Seleccionar:" style="text-align:center;"><input type="checkbox" class="pedido-checkbox" data-index="${index}"></td>
+                    <td data-label="Fecha:">${pedido.fecha}</td>
+                    <td data-label="Solicitante:">${pedido.solicitante}</td>
+                    <td data-label="Departamento:">${pedido.departamento}</td>
+                    <td data-label="Costo Total:" style="font-weight:bold;">${costoTotalPedido.toFixed(2)} ₡</td>
+                    <td data-label="Detalles:"><table class="details-table"><tbody>${(pedido.detalles || []).map(item => `<tr><td>${item.articulo}</td><td>${item.cantidad} ${item.unidad}</td></tr>`).join('')}</tbody></table></td>
+                </tr>`;
+            }).join('');
+        }
+        function toggleSeleccionarTodos(source) { document.querySelectorAll('.pedido-checkbox').forEach(cb => { cb.checked = source.checked; }); }
+        
+        function reenviarPedidosSeleccionados() {
+            const indices = Array.from(document.querySelectorAll('.pedido-checkbox:checked')).map(cb => parseInt(cb.dataset.index));
+            if (indices.length === 0) return alert("Por favor, seleccione al menos un pedido.");
+            
+            let msg = "*Reenvío de Solicitudes* 📦\n====================\n\n";
+            indices.forEach((idx, i) => {
+                const p = historial[idx];
+                let totalPedido = 0;
+                msg += `*Pedido ${i + 1} de ${indices.length}*\n*Fecha:* ${p.fecha}\n*Solicitante:* _${p.solicitante}_\n*Departamento:* _${p.departamento}_\n*Detalle:*\n`;
+                (p.detalles || []).forEach(item => {
+                    const costoProm = costosPromedio[item.articulo] || 0;
+                    const costoTotalItem = item.cantidad * costoProm;
+                    msg += `• ${item.articulo} (${item.cantidad} ${item.unidad}) - ₡${costoTotalItem.toFixed(2)}\n`;
+                    totalPedido += costoTotalItem;
+                });
+                msg += `\n*Costo Total Estimado: ₡${totalPedido.toFixed(2)}*\n--------------------\n\n`;
+            });
+            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+        }
+        
+        function borrarPedidosSeleccionados() {
+            checkSecurityKey(async () => {
+                const seleccionados = Array.from(document.querySelectorAll('.pedido-checkbox:checked')).map(cb => historial[parseInt(cb.dataset.index)]);
+                if (seleccionados.length === 0) return alert("Por favor, seleccione al menos un pedido para borrar.");
+                if (!confirm(`¿Está seguro de que desea borrar ${seleccionados.length} pedidos de la base de datos? Esta acción es permanente.`)) return;
+                const payload = seleccionados.map(p => ({ fecha: p.fecha, solicitante: p.solicitante, departamento: p.departamento }));
+                try {
+                    await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'deletePedidos', payload }) });
+                    alert('Pedidos eliminados con éxito.');
+                    showHistory();
+                } catch (error) { alert('Error al eliminar los pedidos.'); }
+            });
+        }
+        function exportarHistorialPedidosExcel() {
+            const data = historial.flatMap(p => 
+                p.detalles.map(d => {
+                    const costoProm = costosPromedio[d.articulo] || 0;
+                    const costoTotal = d.cantidad * costoProm;
+                    return {
+                        Fecha: p.fecha, Solicitante: p.solicitante, Departamento: p.departamento,
+                        Artículo: d.articulo, Cantidad: d.cantidad, Unidad: d.unidad,
+                        "Costo Promedio (₡)": costoProm.toFixed(2), "Costo Total (₡)": costoTotal.toFixed(2)
+                    };
+                })
+            );
+            const worksheet = XLSX.utils.json_to_sheet(data);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Pedidos");
+            XLSX.writeFile(workbook, `Historial_Pedidos_${new Date().toISOString().slice(0,10)}.xlsx`);
+        }
+        function exportarHistorialPedidosPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.setFontSize(18);
+            doc.text("Reporte de Historial de Pedidos", 14, 22);
+            doc.setFontSize(10);
+            doc.text(`Fecha de Emisión: ${new Date().toLocaleDateString('es-CR')}`, 14, 28);
 
-        // Descargar archivo
-        XLSX.writeFile(wb, 'Historial_Ajustes_Inventario.xlsx');
-    }
+            historial.forEach((pedido) => {
+                let totalPedido = 0;
+                const bodyData = (pedido.detalles || []).map(d => {
+                    const costoProm = costosPromedio[d.articulo] || 0;
+                    const costoTotalItem = d.cantidad * costoProm;
+                    totalPedido += costoTotalItem;
+                    return [d.articulo, d.unidad, d.cantidad, costoProm.toFixed(2), costoTotalItem.toFixed(2)];
+                });
 
-    window.exportarPDF = function() {
-        if(ajustes.length === 0) return alert('No hay datos para exportar');
+                const startY = (doc.autoTable.previous ? doc.autoTable.previous.finalY : 35) + 10;
+                
+                doc.setFontSize(12);
+                doc.setFont(undefined, 'bold');
+                doc.text(`Pedido de: ${pedido.solicitante} (${pedido.departamento})`, 14, startY);
+                doc.setFontSize(10);
+                doc.setFont(undefined, 'normal');
+                doc.text(`Fecha del Pedido: ${pedido.fecha}`, 14, startY + 5);
 
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        doc.setFontSize(18);
-        doc.text("Historial de Ajustes de Inventario", 14, 22);
-        doc.setFontSize(11);
-        doc.setTextColor(100);
-
-        // Preparar columnas y filas para autoTable
-        const columns = [
-            { header: 'Fecha', dataKey: 'fecha' },
-            { header: 'Tipo', dataKey: 'tipo' },
-            { header: 'Detalle', dataKey: 'detalle' },
-            { header: 'Producto', dataKey: 'producto' },
-            { header: 'Cantidad', dataKey: 'cantidad' },
-            { header: 'Costo', dataKey: 'costo' },
-        ];
-
-        const rows = [];
-        ajustes.forEach(a => {
-            a.movimiento.forEach(m => {
-                rows.push({
-                    fecha: a.fecha,
-                    tipo: a.tipo,
-                    detalle: a.detalle,
-                    producto: m.nombre,
-                    cantidad: m.cantidad,
-                    costo: m.costo !== null ? m.costo.toFixed(2) : '',
+                doc.autoTable({
+                    startY: startY + 8,
+                    head: [['Artículo', 'Unidad', 'Cantidad', 'Costo Unit. (₡)', 'Costo Total (₡)']],
+                    body: bodyData,
+                    theme: 'striped',
+                    headStyles: { fillColor: '#004d99' },
+                    foot: [['Total del Pedido', '', '', '', `${totalPedido.toFixed(2)}`]],
+                    footStyles: { fillColor: '#ecf0f1', textColor: '#2c3e50', fontStyle: 'bold', halign: 'right' },
+                    didDrawPage: function(data) {
+                        doc.setFontSize(10);
+                        doc.text('Página ' + doc.internal.getNumberOfPages(), data.settings.margin.left, doc.internal.pageSize.height - 10);
+                    }
                 });
             });
-        });
+            doc.save(`Historial_Pedidos_${new Date().toISOString().slice(0,10)}.pdf`);
+        }
 
-        doc.autoTable({
-            startY: 30,
-            columns: columns,
-            body: rows,
-            styles: { fontSize: 9 },
-            headStyles: { fillColor: [42, 82, 152] },
-            alternateRowStyles: { fillColor: [240, 240, 240] }
-        });
+        async function showAdminArticulos() {
+            views.adminContainer.innerHTML = `<h2>Administrar Lista de Artículos</h2><table id="admin-table" class="responsive-table"><thead><tr><th>Nombre del Artículo</th><th>Unidad de Medida</th><th>Costo Promedio (₡)</th><th>Valor Total Stock (₡)</th><th>Acción</th></tr></thead><tbody></tbody></table><div class="controls"><button onclick="agregarFilaAdmin()" class="btn btn-add">➕ Agregar Artículo</button><button onclick="goBack()" class="btn btn-cancel">⬅️ Volver</button><button onclick="guardarArticulos()" class="btn btn-send">💾 Guardar Cambios</button></div>`;
+            showView('adminContainer');
+            const tableBody = views.adminContainer.querySelector('tbody');
+            tableBody.innerHTML = '<tr><td colspan="5">Cargando...</td></tr>';
+            await cargarDatosEsenciales();
+            if (!historial || historial.length === 0) {
+                try {
+                    const response = await fetch(WEB_APP_URL);
+                    historial = await response.json();
+                } catch (e) { console.error(e); }
+            }
+            const pedidosAgrupados = (historial || []).flatMap(p => p.detalles).reduce((acc, item) => {
+                acc[item.articulo] = (acc[item.articulo] || 0) + parseFloat(item.cantidad);
+                return acc;
+            }, {});
+            const comprasAgrupadas = (historialCompras || []).reduce((acc, compra) => {
+                acc[compra.articulo] = (acc[compra.articulo] || 0) + parseFloat(compra.cantidad);
+                return acc;
+            }, {});
 
-        doc.save('Historial_Ajustes_Inventario.pdf');
-    }
-})();
-</script>
+            tableBody.innerHTML = '';
+            catalogoArticulos.forEach(item => {
+                const newRow = tableBody.insertRow();
+                const costo = costosPromedio[item.nombre] || 0;
+                const stock = (comprasAgrupadas[item.nombre] || 0) - (pedidosAgrupados[item.nombre] || 0);
+                const valorTotalStock = stock * costo;
+                newRow.innerHTML = `<td data-label="Artículo"><input type="text" value="${item.nombre}"></td><td data-label="Unidad"><input type="text" value="${item.unidad}"></td><td data-label="Costo Promedio" style="font-weight: bold; text-align: right;">${costo.toFixed(2)}</td><td data-label="Valor Total Stock" style="font-weight: bold; text-align: right;">${valorTotalStock.toFixed(2)}</td><td data-label="Acción"><button class="btn btn-danger" onclick="eliminarFilaAdmin(this)">Eliminar</button></td>`;
+            });
+        }
+        function agregarFilaAdmin() {
+            const tableBody = views.adminContainer.querySelector('tbody');
+            const newRow = tableBody.insertRow();
+            newRow.innerHTML = `<td data-label="Artículo"><input type="text" placeholder="Nuevo artículo"></td><td data-label="Unidad"><input type="text" placeholder="Unidad (Ej: Kilo)"></td><td data-label="Costo Promedio" style="text-align: right;">-</td><td data-label="Valor Total Stock" style="text-align: right;">-</td><td data-label="Acción"><button class="btn btn-danger" onclick="eliminarFilaAdmin(this)">Eliminar</button></td>`;
+        }
+        function eliminarFilaAdmin(boton) { checkSecurityKey(() => { boton.closest('tr').remove(); }); }
+        async function guardarArticulos() {
+            checkSecurityKey(async () => {
+                const newArticulos = [];
+                views.adminContainer.querySelectorAll('tbody tr').forEach(row => {
+                    const nombre = row.cells[0].querySelector('input').value.trim();
+                    const unidad = row.cells[1].querySelector('input').value.trim();
+                    if (nombre && unidad) newArticulos.push({ nombre, unidad });
+                });
+                if (!confirm(`¿Desea sobrescribir la lista con ${newArticulos.length} registros?`)) return;
+                try {
+                    await fetch(WEB_APP_URL, {
+                        method: 'POST', mode: 'no-cors',
+                        body: JSON.stringify({ action: 'updateArticulos', payload: newArticulos })
+                    });
+                    alert('¡Lista de artículos actualizada!');
+                    catalogoArticulos = newArticulos;
+                    goBack();
+                } catch (error) { alert('Error al guardar.'); }
+            });
+        }
+
+        async function showCompras() {
+            views.comprasContainer.innerHTML = `<h2>Registrar Compra a Proveedor</h2><div class="info-section"><div class="form-group"><label for="compra-registradopor">Registrado por:</label><input type="text" id="compra-registradopor"></div><div class="form-group"><label for="compra-proveedor">Proveedor:</label><input type="text" id="compra-proveedor"></div><div class="form-group"><label for="compra-fecha">Fecha de Compra:</label><input type="date" id="compra-fecha"></div></div><table id="compras-table" class="responsive-table"><thead><tr><th>Artículo</th><th>Costo Unitario (₡)</th><th>Cantidad</th><th>Total (₡)</th><th>Acción</th></tr></thead><tbody></tbody></table><div style="text-align:right; margin-top:20px; font-size: 1.1em;"><p>Subtotal: <span id="compra-subtotal">0.00</span> ₡</p><div style="display:flex; justify-content:flex-end; align-items:center; gap:10px;"><label for="compra-aplicar-impuesto"><input type="checkbox" id="compra-aplicar-impuesto" onchange="actualizarTotalesCompra()"> Aplicar Impuesto (%):</label><input type="number" id="compra-porcentaje-impuesto" value="13" style="width: 80px;" oninput="actualizarTotalesCompra()" disabled></div><p>Impuesto: <span id="compra-impuesto-monto">0.00</span> ₡</p><h3 style="margin-top:10px;">Total General: <span id="compra-total-general">0.00</span> ₡</h3></div><div class="controls"><button onclick="agregarFilaCompra()" class="btn btn-add">➕ Agregar Artículo</button><button onclick="goBack()" class="btn btn-cancel">⬅️ Volver</button><button onclick="registrarCompra()" class="btn btn-send">✅ Registrar Compra</button></div>`;
+            showView('comprasContainer');
+            await cargarCatalogoArticulos();
+            document.getElementById('compra-fecha').valueAsDate = new Date();
+            agregarFilaCompra();
+        }
+        function agregarFilaCompra() {
+            const tableBody = document.getElementById('compras-table').querySelector('tbody');
+            const newRow = tableBody.insertRow();
+            let opcionesArticulo = catalogoArticulos.map(a => `<option value="${a.nombre}">${a.nombre}</option>`).join('');
+            newRow.innerHTML = `<td data-label="Artículo"><select class="compra-articulo">${opcionesArticulo}</select></td><td data-label="Costo Unitario"><input type="number" class="compra-costo-unitario" value="0" min="0" step="100" oninput="actualizarTotalesCompra()"></td><td data-label="Cantidad"><div style="display:flex; align-items:center; justify-content:flex-end;"><button class="btn" onclick="cambiarCantidadCompra(this, -1)">-</button><span class="compra-cantidad" style="padding:0 10px; font-weight:bold;">1</span><button class="btn" onclick="cambiarCantidadCompra(this, 1)">+</button></div></td><td data-label="Total" class="compra-costo-total" style="font-weight:bold;">0.00</td><td data-label="Acción"><button class="btn btn-danger" onclick="this.closest('tr').remove(); actualizarTotalesCompra();">X</button></td>`;
+            actualizarTotalesCompra();
+        }
+        function cambiarCantidadCompra(btn, delta) {
+            const display = btn.parentElement.querySelector('span');
+            let val = parseInt(display.textContent) + delta;
+            if (val < 1) val = 1;
+            display.textContent = val;
+            actualizarTotalesCompra();
+        }
+        function actualizarTotalesCompra() {
+            let subtotalGeneral = 0;
+            document.querySelectorAll('#compras-table tbody tr').forEach(row => {
+                const cantidad = parseInt(row.querySelector('.compra-cantidad').textContent) || 0;
+                const costoUnitario = parseFloat(row.querySelector('.compra-costo-unitario').value) || 0;
+                const costoTotal = cantidad * costoUnitario;
+                row.querySelector('.compra-costo-total').textContent = costoTotal.toFixed(2);
+                subtotalGeneral += costoTotal;
+            });
+            document.getElementById('compra-subtotal').textContent = subtotalGeneral.toFixed(2);
+            const aplicarImpuestoCheckbox = document.getElementById('compra-aplicar-impuesto');
+            const porcentajeInput = document.getElementById('compra-porcentaje-impuesto');
+            porcentajeInput.disabled = !aplicarImpuestoCheckbox.checked;
+            let montoImpuesto = 0;
+            if (aplicarImpuestoCheckbox.checked) {
+                const porcentaje = parseFloat(porcentajeInput.value) || 0;
+                montoImpuesto = subtotalGeneral * (porcentaje / 100);
+            }
+            document.getElementById('compra-impuesto-monto').textContent = montoImpuesto.toFixed(2);
+            document.getElementById('compra-total-general').textContent = (subtotalGeneral + montoImpuesto).toFixed(2);
+        }
+        async function registrarCompra() {
+            checkSecurityKey(async () => {
+                const header = {
+                    registradoPor: document.getElementById('compra-registradopor').value.trim(),
+                    proveedor: document.getElementById('compra-proveedor').value.trim(),
+                    fecha: document.getElementById('compra-fecha').value
+                };
+                if (!header.registradoPor || !header.proveedor || !header.fecha) { return alert('Por favor, complete los datos del encabezado.'); }
+                const taxPercent = document.getElementById('compra-aplicar-impuesto').checked ? parseFloat(document.getElementById('compra-porcentaje-impuesto').value) || 0 : 0;
+                const taxMultiplier = 1 + (taxPercent / 100);
+                const items = [];
+                document.querySelectorAll('#compras-table tbody tr').forEach(row => {
+                    const costoUnitario = parseFloat(row.querySelector('.compra-costo-unitario').value) || 0;
+                    const cantidad = parseInt(row.querySelector('.compra-cantidad').textContent) || 0;
+                    if (cantidad > 0 && costoUnitario > 0) {
+                        items.push({
+                            articulo: row.querySelector('.compra-articulo').value,
+                            cantidad: cantidad,
+                            costoUnitario: costoUnitario,
+                            costoTotal: (costoUnitario * cantidad * taxMultiplier)
+                        });
+                    }
+                });
+                if (items.length === 0) { return alert('Debe agregar al menos un artículo válido.'); }
+                try {
+                    await fetch(WEB_APP_URL, {
+                        method: 'POST', mode: 'no-cors',
+                        body: JSON.stringify({ action: 'addCompra', payload: { header, items } })
+                    });
+                    alert('¡Compra registrada con éxito!');
+                    goBack();
+                } catch (error) { alert('Error al registrar la compra.'); }
+            });
+        }
+
+        async function showHistorialCompras() {
+            views.historialComprasContainer.innerHTML = `<h2>Historial de Compras</h2><table id="historial-compras-table" class="responsive-table"><thead><tr><th>Fecha</th><th>Proveedor</th><th>Artículo</th><th>Cantidad</th><th>Costo Total</th></tr></thead><tbody><tr><td colspan="5" style="text-align:center">Cargando...</td></tr></tbody></table><div class="controls"><button class="btn btn-success" onclick="exportarHistorialComprasExcel()">📊 Exportar a Excel</button><button class="btn btn-cancel" onclick="goBack()">⬅️ Volver</button></div>`;
+            showView('historialComprasContainer');
+            try {
+                const response = await fetch(`${WEB_APP_URL}?action=getCompras`);
+                historialCompras = await response.json();
+                renderHistorialCompras();
+            } catch (e) {
+                console.error(e);
+                views.historialComprasContainer.querySelector("tbody").innerHTML = `<tr><td colspan="5" style="text-align:center; color:red;">Error al cargar el historial.</td></tr>`;
+            }
+        }
+        function renderHistorialCompras() {
+            const tableBody = views.historialComprasContainer.querySelector("tbody");
+            if (historialCompras.length === 0) { tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No hay compras registradas.</td></tr>'; return; }
+            tableBody.innerHTML = historialCompras.map(c => `<tr_><td data-label="Fecha">${c.fecha}</td><td data-label="Proveedor">${c.proveedor}</td><td data-label="Artículo">${c.articulo}</td><td data-label="Cantidad">${c.cantidad}</td><td data-label="Costo Total">${parseFloat(c.costoTotal).toFixed(2)} ₡</td></tr_>`.replace(/_>/g, '>')).join('');
+        }
+        function exportarHistorialComprasExcel() {
+            const worksheet = XLSX.utils.json_to_sheet(historialCompras);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Compras");
+            XLSX.writeFile(workbook, `Historial_Compras_${new Date().toISOString().slice(0,10)}.xlsx`);
+        }
+
+        async function showInventario() {
+            views.inventarioContainer.innerHTML = `<h2>Resumen de Inventario</h2><table id="inventario-table" class="responsive-table"><thead><tr><th>Artículo</th><th>Unidad</th><th>Comprado</th><th>Solicitado</th><th>Stock Actual</th><th>Valor del Stock (₡)</th></tr></thead><tbody><tr><td colspan="6" style="text-align:center">Calculando...</td></tr></tbody></table><div class="controls"><button class="btn btn-success" onclick="exportarInventarioExcel()">📊 Exportar a Excel</button><button class="btn btn-cancel" onclick="goBack()">⬅️ Volver</button></div>`;
+            showView('inventarioContainer');
+            try {
+                await cargarDatosEsenciales();
+                if (historial.length === 0) {
+                     const response = await fetch(WEB_APP_URL);
+                     historial = await response.json();
+                }
+                const comprasAgrupadas = historialCompras.reduce((acc, compra) => {
+                    acc[compra.articulo] = (acc[compra.articulo] || 0) + parseFloat(compra.cantidad);
+                    return acc;
+                }, {});
+                const pedidosAgrupados = historial.flatMap(p => p.detalles).reduce((acc, item) => {
+                    acc[item.articulo] = (acc[item.articulo] || 0) + parseFloat(item.cantidad);
+                    return acc;
+                }, {});
+                inventario = catalogoArticulos.map(articulo => {
+                    const totalComprado = comprasAgrupadas[articulo.nombre] || 0;
+                    const totalPedido = pedidosAgrupados[articulo.nombre] || 0;
+                    const stock = totalComprado - totalPedido;
+                    const costoProm = costosPromedio[articulo.nombre] || 0;
+                    return { nombre: articulo.nombre, unidad: articulo.unidad, comprado: totalComprado, solicitado: totalPedido, stock: stock, valorStock: stock * costoProm };
+                });
+                renderInventario();
+            } catch (e) { console.error(e); }
+        }
+        function renderInventario() {
+            const tableBody = views.inventarioContainer.querySelector("tbody");
+            tableBody.innerHTML = inventario.map(item => `<tr><td data-label="Artículo">${item.nombre}</td><td data-label="Unidad">${item.unidad}</td><td data-label="Comprado">${item.comprado}</td><td data-label="Solicitado">${item.solicitado}</td><td data-label="Stock" style="font-weight:bold;">${item.stock}</td><td data-label="Valor Stock" style="font-weight:bold;">${item.valorStock.toFixed(2)} ₡</td></tr>`).join('');
+        }
+        function exportarInventarioExcel() {
+            const data = inventario.map(i => ({ Artículo: i.nombre, Unidad: i.unidad, Comprado: i.comprado, Solicitado: i.solicitado, "Stock Actual": i.stock, "Valor del Stock (₡)": i.valorStock.toFixed(2) }));
+            const worksheet = XLSX.utils.json_to_sheet(data);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Inventario");
+            XLSX.writeFile(workbook, `Resumen_Inventario_${new Date().toISOString().slice(0,10)}.xlsx`);
+        }
+    </script>
 </body>
 </html>
