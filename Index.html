@@ -81,7 +81,7 @@
             comprasContainer: document.getElementById('comprasContainer'), historialComprasContainer: document.getElementById('historialComprasContainer'),
             inventarioContainer: document.getElementById('inventarioContainer'), summaryModal: document.getElementById('summaryModal')
         };
-
+        
         document.addEventListener('DOMContentLoaded', () => {
             views.mainMenu.innerHTML = `
                 <div class="header-logo">
@@ -155,14 +155,12 @@
             return userInput;
         }
         
-        // --- Lógica de PEDIDOS ---
         async function showForm() {
             views.formContainer.innerHTML = `<h2>Nuevo Pedido</h2><div class="info-section"><div class="form-group"><label for="solicitante">Solicitado por:</label><input type="text" id="solicitante"></div><div class="form-group"><label for="departamento">Departamento:</label><select id="departamento"><option value="" disabled selected>Seleccione</option><option>Oficina</option><option>Centro Distribución</option><option>Barrio México</option><option>San Francisco</option><option>Alto Valor</option><option>Directtools SF</option><option>Directtools BM</option></select></div></div><table id="pedido-table" class="responsive-table"><thead><tr><th>Unidad</th><th>Artículo</th><th>Cantidad</th><th>Costo Total (₡)</th><th>Acción</th></tr></thead><tbody></tbody></table><h3 style="text-align:right; margin-top:20px;">Costo Total del Pedido: <span id="pedido-total-general">0.00</span> ₡</h3><div class="controls"><button onclick="agregarFila()" class="btn btn-add">➕ Agregar Artículo</button><button onclick="goBack()" class="btn btn-cancel">⬅️ Volver</button><button onclick="previsualizarPedido()" class="btn btn-send">📲 Previsualizar</button></div>`;
             showView('formContainer');
             await cargarDatosEsenciales();
             agregarFila();
         }
-
         function agregarFila() {
             const tableBody = document.getElementById('pedido-table').querySelector('tbody');
             const newRow = tableBody.insertRow();
@@ -170,7 +168,6 @@
             let opcionesUnidad = unidades.map(u => `<option value="${u}">${u}</option>`).join('');
             newRow.innerHTML = `<td data-label="Unidad"><select required onchange="actualizarArticulos(this)"><option value="" disabled selected>Seleccione</option>${opcionesUnidad}</select></td><td data-label="Artículo"><select class="articulo-select" required disabled onchange="actualizarTotalesPedido()"><option value="" disabled selected>Seleccione unidad</option></select></td><td data-label="Cantidad"><div style="display:flex;align-items:center;justify-content:flex-end;"><button class="btn" onclick="cambiarCantidad(this,-1)">-</button><span class="pedido-cantidad" style="padding:0 10px;font-weight:bold;">1</span><button class="btn" onclick="cambiarCantidad(this,1)">+</button></div></td><td data-label="Costo Total" class="pedido-costo-total" style="font-weight:bold;">0.00</td><td data-label="Acción"><button class="btn btn-danger" onclick="this.closest('tr').remove(); actualizarTotalesPedido();">Eliminar</button></td>`;
         }
-        
         function actualizarArticulos(selectUnidad) {
             const unidadSeleccionada = selectUnidad.value;
             const fila = selectUnidad.closest('tr');
@@ -183,7 +180,6 @@
             articulosFiltrados.forEach(item => { selectArticulo.innerHTML += `<option value="${item.nombre}">${item.nombre}</option>`; });
             actualizarTotalesPedido();
         }
-
         function cambiarCantidad(btn,delta){
             const display=btn.parentElement.querySelector('span');
             let val=parseInt(display.textContent)+delta;
@@ -191,7 +187,6 @@
             display.textContent=val;
             actualizarTotalesPedido();
         }
-
         function actualizarTotalesPedido() {
             let totalGeneral = 0;
             document.querySelectorAll('#pedido-table tbody tr').forEach(row => {
@@ -204,12 +199,10 @@
             });
             document.getElementById('pedido-total-general').textContent = totalGeneral.toFixed(2);
         }
-
         function previsualizarPedido() {
             const solicitante = document.getElementById("solicitante").value.trim();
             const departamento = document.getElementById("departamento").value.trim();
             if (!solicitante || !departamento) return alert("Por favor, complete su nombre y departamento.");
-            
             const tableRows = document.getElementById("pedido-table").querySelector("tbody").rows;
             let pedidoItems = [];
             const addedArticles = new Set();
@@ -224,10 +217,8 @@
                 pedidoItems.push({ articulo, cantidad, unidad });
             }
             if (pedidoItems.length === 0) return alert("Debe agregar al menos un artículo.");
-
             currentRequestData = { solicitante, departamento, detalles: pedidoItems };
             const fechaActual = new Date().toLocaleString("es-CR", { dateStyle: "long", timeStyle: "short" });
-            
             let whatsappMsg = `*Solicitud de Suministros* 📄\n------------------------------------\n`;
             whatsappMsg += `*Fecha:* ${fechaActual}\n*Solicitante:* _${solicitante}_\n*Departamento:* _${departamento}_\n------------------------------------\n\n*Detalle:*\n`;
             let totalPedido = 0;
@@ -239,7 +230,6 @@
             });
             whatsappMsg += `\n*Costo Total Estimado: ₡${totalPedido.toFixed(2)}*`;
             currentRequestData.whatsappBody = whatsappMsg;
-
             let summaryHTML = `<p><strong>Solicitante:</strong> ${solicitante}</p><p><strong>Departamento:</strong> ${departamento}</p><pre style="white-space: pre-wrap; word-wrap: break-word; font-family: 'Roboto', sans-serif;">${whatsappMsg}</pre>`;
             views.summaryModal.innerHTML = `<div class="modal-content"><span onclick="views.summaryModal.style.display='none'" style="position:absolute; top:10px; right:20px; font-size:2em; cursor:pointer;">&times;</span><h2>Revisión del Pedido</h2><div style="max-height: 60vh; overflow-y: auto; padding: 1em; background-color: #f8f9fa; border-radius: 8px;">${summaryHTML}</div><div class="modal-actions" style="margin-top: 1.5em; display:flex; flex-direction:column; gap: 10px;"><button onclick="confirmarYGuardar(event)" class="btn btn-success">✅ Guardar Pedido</button><button onclick="guardarYEnviarPorWhatsApp(event)" class="btn btn-whatsapp">📲 Guardar y Enviar por WhatsApp</button><button onclick="views.summaryModal.style.display='none'" class="btn btn-cancel">Cancelar</button></div></div>`;
             views.summaryModal.style.display = "flex";
@@ -300,10 +290,10 @@
         }
         function renderHistorial() {
             const tableBody = views.historyContainer.querySelector("tbody");
-            if (historial.length === 0) { tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No hay pedidos.</td></tr>'; return; }
+            if (!historial || historial.length === 0) { tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No hay pedidos.</td></tr>'; return; }
             tableBody.innerHTML = historial.map((pedido, index) => {
                 let costoTotalPedido = 0;
-                pedido.detalles.forEach(item => {
+                (pedido.detalles || []).forEach(item => {
                     costoTotalPedido += (costosPromedio[item.articulo] || 0) * item.cantidad;
                 });
                 return `<tr>
@@ -312,7 +302,7 @@
                     <td data-label="Solicitante:">${pedido.solicitante}</td>
                     <td data-label="Departamento:">${pedido.departamento}</td>
                     <td data-label="Costo Total:" style="font-weight:bold;">${costoTotalPedido.toFixed(2)} ₡</td>
-                    <td data-label="Detalles:"><table class="details-table"><tbody>${pedido.detalles.map(item => `<tr><td>${item.articulo}</td><td>${item.cantidad} ${item.unidad}</td></tr>`).join('')}</tbody></table></td>
+                    <td data-label="Detalles:"><table class="details-table"><tbody>${(pedido.detalles || []).map(item => `<tr><td>${item.articulo}</td><td>${item.cantidad} ${item.unidad}</td></tr>`).join('')}</tbody></table></td>
                 </tr>`;
             }).join('');
         }
@@ -327,7 +317,7 @@
                 const p = historial[idx];
                 let totalPedido = 0;
                 msg += `*Pedido ${i + 1} de ${indices.length}*\n*Fecha:* ${p.fecha}\n*Solicitante:* _${p.solicitante}_\n*Departamento:* _${p.departamento}_\n*Detalle:*\n`;
-                p.detalles.forEach(item => {
+                (p.detalles || []).forEach(item => {
                     const costoProm = costosPromedio[item.articulo] || 0;
                     const costoTotalItem = item.cantidad * costoProm;
                     msg += `• ${item.articulo} (${item.cantidad} ${item.unidad}) - ₡${costoTotalItem.toFixed(2)}\n`;
@@ -372,7 +362,7 @@
                 doc.autoTable({
                     startY: doc.autoTable.previous.finalY,
                     head: [['Artículo', 'Cantidad', 'Unidad']],
-                    body: pedido.detalles.map(d => [d.articulo, d.cantidad, d.unidad]),
+                    body: (pedido.detalles || []).map(d => [d.articulo, d.cantidad, d.unidad]),
                     theme: 'grid',
                     headStyles: { fillColor: [100, 100, 100] }
                 });
@@ -382,10 +372,10 @@
 
         // --- Lógica de ADMIN ARTÍCULOS ---
         async function showAdminArticulos() {
+            views.adminContainer.innerHTML = `<h2>Administrar Lista de Artículos</h2><table id="admin-table"><thead><tr><th>Nombre del Artículo</th><th>Unidad de Medida</th><th>Acción</th></tr></thead><tbody><tr><td colspan="3">Cargando...</td></tr></tbody></table><div class="controls"><button onclick="agregarFilaAdmin()" class="btn btn-add">➕ Agregar Artículo</button><button onclick="goBack()" class="btn btn-cancel">⬅️ Volver</button><button onclick="guardarArticulos()" class="btn btn-send">💾 Guardar Cambios</button></div>`;
             showView('adminContainer');
-            const tableBody = views.adminContainer.querySelector('tbody');
-            tableBody.innerHTML = '<tr><td colspan="3">Cargando artículos...</td></tr>';
             await cargarCatalogoArticulos();
+            const tableBody = views.adminContainer.querySelector('tbody');
             tableBody.innerHTML = '';
             catalogoArticulos.forEach(item => {
                 const newRow = tableBody.insertRow();
@@ -526,14 +516,14 @@
             showView('inventarioContainer');
             try {
                 await cargarDatosEsenciales();
-                const comprasAgrupadas = historialCompras.reduce((acc, compra) => {
-                    acc[compra.articulo] = (acc[compra.articulo] || 0) + parseFloat(compra.cantidad);
-                    return acc;
-                }, {});
                 if (historial.length === 0) {
                      const response = await fetch(WEB_APP_URL);
                      historial = await response.json();
                 }
+                const comprasAgrupadas = historialCompras.reduce((acc, compra) => {
+                    acc[compra.articulo] = (acc[compra.articulo] || 0) + parseFloat(compra.cantidad);
+                    return acc;
+                }, {});
                 const pedidosAgrupados = historial.flatMap(p => p.detalles).reduce((acc, item) => {
                     acc[item.articulo] = (acc[item.articulo] || 0) + parseFloat(item.cantidad);
                     return acc;
