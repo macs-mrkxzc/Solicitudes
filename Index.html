@@ -96,19 +96,19 @@
         function showView(viewId) { Object.values(views).forEach(v => v.classList.add('hidden')); views[viewId].classList.remove('hidden'); }
         function goBack() { showView('mainMenu'); }
 
-        // --- INICIO DE FUNCIONES PARA HERRAMIENTAS ---
+        // --- INICIO DE FUNCIONES PARA HERRAMIENTAS (ACTUALIZADO) ---
 
         function showHerramientas() {
             views.herramientasContainer.innerHTML = `
                 <h2>🛠️ Herramientas</h2>
                 <div class="info-section">
                     <div class="tool-card">
-                        <h3>Calcular Rango de Fecha Juliana (Formato YYDDD)</h3>
+                        <h3>Convertir fecha a Juliana (YYDDD)</h3>
                         <div class="form-group">
-                            <label for="julian-month-input">Seleccione año y mes:</label>
-                            <input type="month" id="julian-month-input" onchange="calcularRangoJulianoPorMes()">
+                            <label for="gregorian-date-input">Seleccione una fecha:</label>
+                            <input type="date" id="gregorian-date-input" onchange="calcularFechaJulianaYYDDD()">
                         </div>
-                        <p id="julian-result">---</p>
+                        <p>Fecha Juliana: <strong id="julian-result">---</strong></p>
                     </div>
                     <div class="tool-card">
                         <h3>Convertir Fecha Juliana a Gregoriana</h3>
@@ -130,49 +130,35 @@
             `;
             showView('herramientasContainer');
             
-            const now = new Date();
-            const year = now.getFullYear();
-            const month = String(now.getMonth() + 1).padStart(2, '0');
-            document.getElementById('julian-month-input').value = `${year}-${month}`;
-            calcularRangoJulianoPorMes();
+            // Establecer la fecha actual por defecto en el selector
+            document.getElementById('gregorian-date-input').valueAsDate = new Date();
+            calcularFechaJulianaYYDDD(); // Calcular al mostrar
         }
 
-        function calcularRangoJulianoPorMes() {
-            const monthInput = document.getElementById('julian-month-input').value;
-            if (!monthInput) {
+        function calcularFechaJulianaYYDDD() {
+            const dateInput = document.getElementById('gregorian-date-input').value;
+            if (!dateInput) {
                 document.getElementById('julian-result').textContent = '---';
                 return;
             }
 
-            const [year, month] = monthInput.split('-').map(Number);
+            // Crear objeto de fecha asegurando que se interprete como hora local
+            const date = new Date(dateInput + 'T00:00:00');
 
-            const getDayOfYear = (date) => {
-                const startOfYear = new Date(date.getFullYear(), 0, 0);
-                const diff = date - startOfYear;
-                return Math.floor(diff / (1000 * 60 * 60 * 24));
-            };
+            // Calcular el día del año
+            const startOfYear = new Date(date.getFullYear(), 0, 0);
+            const diff = date - startOfYear;
+            const dayOfYear = Math.floor(diff / (1000 * 60 * 60 * 24));
 
-            const firstDayOfMonth = new Date(year, month - 1, 1);
-            const lastDayOfMonth = new Date(year, month, 0);
+            // Obtener los últimos 2 dígitos del año
+            const twoDigitYear = String(date.getFullYear()).slice(-2);
 
-            const startDayOfYear = getDayOfYear(firstDayOfMonth);
-            const endDayOfYear = getDayOfYear(lastDayOfMonth);
-            
-            const monthName = firstDayOfMonth.toLocaleString('es-CR', { month: 'long' });
-            
-            // --- MODIFICACIÓN CLAVE AQUÍ ---
-            const twoDigitYear = String(year).slice(-2); // Tomar los últimos 2 dígitos del año
-            
-            const startJulian = `${twoDigitYear}${String(startDayOfYear).padStart(3, '0')}`;
-            const endJulian = `${twoDigitYear}${String(endDayOfYear).padStart(3, '0')}`;
-            // --- FIN DE LA MODIFICACIÓN ---
-            
-            document.getElementById('julian-result').innerHTML = `
-                Rango para <strong>${monthName.charAt(0).toUpperCase() + monthName.slice(1)} ${year}</strong>:<br>
-                ${startJulian} (día ${startDayOfYear}) al ${endJulian} (día ${endDayOfYear})
-            `;
+            // Formatear a YYDDD
+            const julianDate = `${twoDigitYear}${String(dayOfYear).padStart(3, '0')}`;
+
+            // Mostrar el resultado
+            document.getElementById('julian-result').textContent = julianDate;
         }
-
 
         function convertirAFechaGregoriana() {
             const year = parseInt(document.getElementById('julian-year-input').value);
