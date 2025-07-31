@@ -103,7 +103,7 @@
                 <h2>🛠️ Herramientas</h2>
                 <div class="info-section">
                     <div class="tool-card">
-                        <h3>Calcular Rango de Fecha Juliana</h3>
+                        <h3>Calcular Rango de Fecha Juliana (Formato YYDDD)</h3>
                         <div class="form-group">
                             <label for="julian-month-input">Seleccione año y mes:</label>
                             <input type="month" id="julian-month-input" onchange="calcularRangoJulianoPorMes()">
@@ -130,12 +130,11 @@
             `;
             showView('herramientasContainer');
             
-            // Establecer el mes actual por defecto
             const now = new Date();
             const year = now.getFullYear();
             const month = String(now.getMonth() + 1).padStart(2, '0');
             document.getElementById('julian-month-input').value = `${year}-${month}`;
-            calcularRangoJulianoPorMes(); // Calcular al mostrar
+            calcularRangoJulianoPorMes();
         }
 
         function calcularRangoJulianoPorMes() {
@@ -154,15 +153,19 @@
             };
 
             const firstDayOfMonth = new Date(year, month - 1, 1);
-            const lastDayOfMonth = new Date(year, month, 0); // El día 0 del mes siguiente es el último día del mes actual
+            const lastDayOfMonth = new Date(year, month, 0);
 
             const startDayOfYear = getDayOfYear(firstDayOfMonth);
             const endDayOfYear = getDayOfYear(lastDayOfMonth);
             
             const monthName = firstDayOfMonth.toLocaleString('es-CR', { month: 'long' });
             
-            const startJulian = `${year}${String(startDayOfYear).padStart(3, '0')}`;
-            const endJulian = `${year}${String(endDayOfYear).padStart(3, '0')}`;
+            // --- MODIFICACIÓN CLAVE AQUÍ ---
+            const twoDigitYear = String(year).slice(-2); // Tomar los últimos 2 dígitos del año
+            
+            const startJulian = `${twoDigitYear}${String(startDayOfYear).padStart(3, '0')}`;
+            const endJulian = `${twoDigitYear}${String(endDayOfYear).padStart(3, '0')}`;
+            // --- FIN DE LA MODIFICACIÓN ---
             
             document.getElementById('julian-result').innerHTML = `
                 Rango para <strong>${monthName.charAt(0).toUpperCase() + monthName.slice(1)} ${year}</strong>:<br>
@@ -180,7 +183,6 @@
                 return;
             }
 
-            // Validar si el año es bisiesto para el día 366
             const isLeap = new Date(year, 1, 29).getMonth() === 1;
             if (day === 366 && !isLeap) {
                  alert(`El año ${year} no es bisiesto, el día no puede ser 366.`);
