@@ -13,7 +13,7 @@
             --primary-color: #004d99; --secondary-color: #007bff; --text-color: #2c3e50; --light-text-color: #7f8c8d;
             --background-color: #ecf0f1; --card-background: #ffffff; --border-color: #dde1e5; --success-color: #27ae60;
             --danger-color: #e74c3c; --cancel-color: #95a5a6; --whatsapp-color: #25D366; --hover-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            --pdf-color: #c0392b;
+            --pdf-color: #c0392b; --tools-color: #f39c12;
         }
         body { font-family: 'Roboto', sans-serif; margin: 0; padding: 2.5vw; background-color: var(--background-color); color: var(--text-color); }
         .container { max-width: 1200px; margin: auto; background: var(--card-background); padding: 3vw; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); border: 1px solid var(--border-color); margin-bottom: 30px; }
@@ -35,6 +35,7 @@
         .btn-cancel { background-color: var(--cancel-color); color: white; }
         .btn-danger { background-color: var(--danger-color); color: white; }
         .btn-pdf { background-color: var(--pdf-color); color: white; }
+        .btn-tools { background-color: var(--tools-color); color: white; }
         .info-section { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5em; margin-bottom: 2em; }
         .form-group label { display: block; margin-bottom: 0.5em; font-weight: 500; color: var(--light-text-color); }
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.7); justify-content: center; align-items: center; padding: 1em; }
@@ -43,6 +44,9 @@
         .hidden { display: none; }
         .controls { margin-top: 40px; display: flex; justify-content: flex-end; gap: 1em; align-items: center; padding-top: 25px; border-top: 1px solid var(--border-color); flex-wrap: wrap; }
         .controls .left-buttons { margin-right: auto; display: flex; gap: 1em; }
+        .tool-card { background-color: #f8f9fa; padding: 1.5em; border-radius: 8px; border: 1px solid var(--border-color); }
+        .tool-card h3 { margin-top: 0; color: var(--secondary-color); }
+        .tool-card p { font-family: 'Roboto Mono', monospace; font-size: 1.1em; }
         @media screen and (max-width: 768px) {
             body { padding: 15px; } .container { padding: 20px; } .menu-options, .info-section { grid-template-columns: 1fr; }
             .responsive-table thead { display: none; }
@@ -65,7 +69,7 @@
     <div class="container hidden" id="comprasContainer"></div>
     <div class="container hidden" id="historialComprasContainer"></div>
     <div class="container hidden" id="inventarioContainer"></div>
-    <div id="summaryModal" class="modal"></div>
+    <div class="container hidden" id="herramientasContainer"></div> <div id="summaryModal" class="modal"></div>
     <div id="securityModal" class="modal"></div>
 
     <script>
@@ -78,16 +82,86 @@
             mainMenu: document.getElementById('mainMenu'), formContainer: document.getElementById('formContainer'),
             historyContainer: document.getElementById('historyContainer'), adminContainer: document.getElementById('adminContainer'),
             comprasContainer: document.getElementById('comprasContainer'), historialComprasContainer: document.getElementById('historialComprasContainer'),
-            inventarioContainer: document.getElementById('inventarioContainer'), summaryModal: document.getElementById('summaryModal'),
+            inventarioContainer: document.getElementById('inventarioContainer'), 
+            herramientasContainer: document.getElementById('herramientasContainer'), // NUEVA VISTA
+            summaryModal: document.getElementById('summaryModal'),
             securityModal: document.getElementById('securityModal')
         };
         
         document.addEventListener('DOMContentLoaded', () => {
-            views.mainMenu.innerHTML = `<div class="header-logo"><img src="data:image/svg+xml;base64," alt="Logo"><h1>Tesoros Americanos Costa Rica</h1><h2 class="subtitle">Sistema de Gestión de Suministros</h2></div><div class="menu-options"><button class="btn" onclick="showForm()">📦 Nuevo Pedido</button><button class="btn" onclick="showHistory()">📜 Ver Pedidos</button><button class="btn" onclick="showAdminArticulos()">✏️ Administrar Artículos</button><button class="btn" onclick="showCompras()">🛒 Registrar Compra</button><button class="btn" onclick="showHistorialCompras()">📊 Consultar Compras</button><button class="btn" onclick="showInventario()">📈 Ver Inventario</button></div>`;
+            views.mainMenu.innerHTML = `<div class="header-logo"><img src="data:image/svg+xml;base64," alt="Logo"><h1>Tesoros Americanos Costa Rica</h1><h2 class="subtitle">Sistema de Gestión de Suministros</h2></div><div class="menu-options"><button class="btn" onclick="showForm()">📦 Nuevo Pedido</button><button class="btn" onclick="showHistory()">📜 Ver Pedidos</button><button class="btn" onclick="showAdminArticulos()">✏️ Administrar Artículos</button><button class="btn" onclick="showCompras()">🛒 Registrar Compra</button><button class="btn" onclick="showHistorialCompras()">📊 Consultar Compras</button><button class="btn" onclick="showInventario()">📈 Ver Inventario</button><button class="btn btn-tools" onclick="showHerramientas()">🛠️ Herramientas</button></div>`; // BOTÓN AÑADIDO
         });
 
         function showView(viewId) { Object.values(views).forEach(v => v.classList.add('hidden')); views[viewId].classList.remove('hidden'); }
         function goBack() { showView('mainMenu'); }
+
+        // --- INICIO DE NUEVAS FUNCIONES PARA HERRAMIENTAS ---
+
+        function showHerramientas() {
+            views.herramientasContainer.innerHTML = `
+                <h2>🛠️ Herramientas</h2>
+                <div class="info-section">
+                    <div class="tool-card">
+                        <h3>Calcular Fecha Juliana</h3>
+                        <div class="form-group">
+                            <label for="gregorian-date-input">Seleccione una fecha:</label>
+                            <input type="date" id="gregorian-date-input" onchange="calcularFechaJuliana()">
+                        </div>
+                        <p>Fecha Juliana: <strong id="julian-result">---</strong></p>
+                    </div>
+                    <div class="tool-card">
+                        <h3>Convertir Fecha Juliana a Gregoriana</h3>
+                        <div class="form-group">
+                            <label for="julian-year-input">Año (4 dígitos):</label>
+                            <input type="number" id="julian-year-input" placeholder="Ej: 2025" min="1900" max="2100">
+                        </div>
+                        <div class="form-group">
+                            <label for="julian-day-input">Día del año (1-366):</label>
+                            <input type="number" id="julian-day-input" placeholder="Ej: 212" min="1" max="366">
+                        </div>
+                        <button class="btn btn-tools" onclick="convertirAFechaGregoriana()">Convertir</button>
+                        <p style="margin-top: 1em;">Fecha Gregoriana: <strong id="gregorian-result">---</strong></p>
+                    </div>
+                </div>
+                <div class="controls">
+                    <button class="btn btn-cancel" onclick="goBack()">⬅️ Volver</button>
+                </div>
+            `;
+            showView('herramientasContainer');
+            document.getElementById('gregorian-date-input').valueAsDate = new Date();
+            calcularFechaJuliana();
+        }
+
+        function calcularFechaJuliana() {
+            const dateInput = document.getElementById('gregorian-date-input').value;
+            if (!dateInput) {
+                document.getElementById('julian-result').textContent = '---';
+                return;
+            }
+            const date = new Date(dateInput + 'T00:00:00'); // Evita problemas de zona horaria
+            const year = date.getFullYear();
+            const startOfYear = new Date(year, 0, 0);
+            const diff = date - startOfYear;
+            const dayOfYear = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const julianDate = `${year}${String(dayOfYear).padStart(3, '0')}`;
+            document.getElementById('julian-result').textContent = julianDate;
+        }
+
+        function convertirAFechaGregoriana() {
+            const year = parseInt(document.getElementById('julian-year-input').value);
+            const day = parseInt(document.getElementById('julian-day-input').value);
+
+            if (!year || !day || day < 1 || day > 366) {
+                alert("Por favor, ingrese un año y un día del año válidos (1-366).");
+                return;
+            }
+
+            const date = new Date(year, 0, day);
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('gregorian-result').textContent = date.toLocaleDateString('es-CR', options);
+        }
+
+        // --- FIN DE NUEVAS FUNCIONES PARA HERRAMIENTAS ---
 
         async function cargarDatosEsenciales() {
             await Promise.all([
@@ -570,8 +644,8 @@
             try {
                 await cargarDatosEsenciales();
                 if (historial.length === 0) {
-                       const response = await fetch(WEB_APP_URL);
-                       historial = await response.json();
+                     const response = await fetch(WEB_APP_URL);
+                     historial = await response.json();
                 }
                 const comprasAgrupadas = historialCompras.reduce((acc, compra) => {
                     acc[compra.articulo] = (acc[compra.articulo] || 0) + parseFloat(compra.cantidad);
