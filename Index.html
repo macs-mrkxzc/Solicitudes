@@ -47,8 +47,10 @@
         .tool-card { background-color: #f8f9fa; padding: 1.5em; border-radius: 8px; border: 1px solid var(--border-color); }
         .tool-card h3 { margin-top: 0; color: var(--secondary-color); }
         .tool-card p { font-family: 'Roboto Mono', monospace; font-size: 1.1em; }
+        .converter-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1em; align-items: flex-end; }
         @media screen and (max-width: 768px) {
             body { padding: 15px; } .container { padding: 20px; } .menu-options, .info-section { grid-template-columns: 1fr; }
+            .converter-grid { grid-template-columns: 1fr; }
             .responsive-table thead { display: none; }
             .responsive-table, .responsive-table tbody, .responsive-table tr { display: block; width: 100%; }
             .responsive-table tr { margin-bottom: 20px; border: 1px solid var(--border-color); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,.05); overflow: hidden; }
@@ -70,7 +72,8 @@
     <div class="container hidden" id="historialComprasContainer"></div>
     <div class="container hidden" id="inventarioContainer"></div>
     <div class="container hidden" id="herramientasContainer"></div>
-    <div class="container hidden" id="conversorFechasContainer"></div> <div id="summaryModal" class="modal"></div>
+    <div class="container hidden" id="conversorFechasContainer"></div>
+    <div class="container hidden" id="conversorUnidadesContainer"></div> <div id="summaryModal" class="modal"></div>
     <div id="securityModal" class="modal"></div>
 
     <script>
@@ -88,7 +91,8 @@
             historialComprasContainer: document.getElementById('historialComprasContainer'),
             inventarioContainer: document.getElementById('inventarioContainer'), 
             herramientasContainer: document.getElementById('herramientasContainer'),
-            conversorFechasContainer: document.getElementById('conversorFechasContainer'), // NUEVA VISTA
+            conversorFechasContainer: document.getElementById('conversorFechasContainer'),
+            conversorUnidadesContainer: document.getElementById('conversorUnidadesContainer'), // NUEVA VISTA
             summaryModal: document.getElementById('summaryModal'),
             securityModal: document.getElementById('securityModal')
         };
@@ -107,7 +111,8 @@
                 <h2>🛠️ Menú de Herramientas</h2>
                 <div class="menu-options">
                     <button class="btn btn-tools" onclick="showConversorFechas()">📅 Conversor de Fechas</button>
-                    </div>
+                    <button class="btn btn-tools" onclick="showConversorUnidades()">📏 Conversor de Unidades</button>
+                </div>
                 <div class="controls">
                     <button class="btn btn-cancel" onclick="goBack()">⬅️ Volver al Menú Principal</button>
                 </div>
@@ -149,6 +154,97 @@
             
             document.getElementById('gregorian-date-input').valueAsDate = new Date();
             calcularFechaJulianaYYDDD();
+        }
+
+        function showConversorUnidades() {
+            const unitOptionsHTML = Object.entries(conversionFactors).map(([group, units]) => {
+                const options = Object.entries(units).map(([key, data]) => `<option value="${key}">${data.name}</option>`).join('');
+                return `<optgroup label="${group.charAt(0).toUpperCase() + group.slice(1)}">${options}</optgroup>`;
+            }).join('');
+
+            views.conversorUnidadesContainer.innerHTML = `
+                <h2>Conversor de Unidades de Medida</h2>
+                <div class="tool-card">
+                    <div class="converter-grid">
+                        <div class="form-group">
+                            <label for="unit-input-value">Valor</label>
+                            <input type="number" id="unit-input-value" value="1" oninput="convertirUnidad()">
+                        </div>
+                        <div class="form-group">
+                            <label for="unit-from-select">De</label>
+                            <select id="unit-from-select" onchange="convertirUnidad()">${unitOptionsHTML}</select>
+                        </div>
+                        <div class="form-group">
+                            <label for="unit-to-select">A</label>
+                            <select id="unit-to-select" onchange="convertirUnidad()">${unitOptionsHTML}</select>
+                        </div>
+                    </div>
+                    <p style="margin-top: 2em; text-align: center; font-size: 1.5em;">Resultado: <strong id="unit-result">---</strong></p>
+                </div>
+                <div class="controls">
+                    <button class="btn btn-cancel" onclick="showHerramientas()">⬅️ Volver a Herramientas</button>
+                </div>
+            `;
+            showView('conversorUnidadesContainer');
+            document.getElementById('unit-to-select').value = 'centimeter'; // Valor por defecto
+            convertirUnidad();
+        }
+
+        const conversionFactors = {
+            longitud: {
+                meter: { name: 'Metro', factor: 1 },
+                kilometer: { name: 'Kilómetro', factor: 1000 },
+                centimeter: { name: 'Centímetro', factor: 0.01 },
+                millimeter: { name: 'Milímetro', factor: 0.001 },
+                inch: { name: 'Pulgada', factor: 0.0254 },
+                foot: { name: 'Pie', factor: 0.3048 },
+                yard: { name: 'Yarda', factor: 0.9144 },
+                mile: { name: 'Milla', factor: 1609.34 }
+            },
+            masa: {
+                kilogram: { name: 'Kilogramo', factor: 1 },
+                gram: { name: 'Gramo', factor: 0.001 },
+                milligram: { name: 'Miligramo', factor: 0.000001 },
+                pound: { name: 'Libra', factor: 0.453592 },
+                ounce: { name: 'Onza', factor: 0.0283495 }
+            },
+            volumen: {
+                liter: { name: 'Litro', factor: 1 },
+                milliliter: { name: 'Mililitro', factor: 0.001 },
+                gallon: { name: 'Galón (EE.UU.)', factor: 3.78541 }
+            }
+        };
+
+        function findUnitData(unitKey) {
+            for (const group in conversionFactors) {
+                if (conversionFactors[group][unitKey]) {
+                    return { group, factor: conversionFactors[group][unitKey].factor };
+                }
+            }
+            return null;
+        }
+
+        function convertirUnidad() {
+            const inputValue = parseFloat(document.getElementById('unit-input-value').value);
+            const fromUnitKey = document.getElementById('unit-from-select').value;
+            const toUnitKey = document.getElementById('unit-to-select').value;
+            const resultEl = document.getElementById('unit-result');
+
+            if (isNaN(inputValue)) {
+                resultEl.textContent = '---';
+                return;
+            }
+
+            const fromData = findUnitData(fromUnitKey);
+            const toData = findUnitData(toUnitKey);
+
+            if (fromData && toData && fromData.group === toData.group) {
+                const valueInBase = inputValue * fromData.factor;
+                const result = valueInBase / toData.factor;
+                resultEl.textContent = result.toLocaleString('es-CR', { maximumFractionDigits: 6 });
+            } else {
+                resultEl.textContent = 'Inválido';
+            }
         }
 
         function calcularFechaJulianaYYDDD() {
