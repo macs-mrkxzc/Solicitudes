@@ -69,7 +69,8 @@
     <div class="container hidden" id="comprasContainer"></div>
     <div class="container hidden" id="historialComprasContainer"></div>
     <div class="container hidden" id="inventarioContainer"></div>
-    <div class="container hidden" id="herramientasContainer"></div> <div id="summaryModal" class="modal"></div>
+    <div class="container hidden" id="herramientasContainer"></div>
+    <div id="summaryModal" class="modal"></div>
     <div id="securityModal" class="modal"></div>
 
     <script>
@@ -83,31 +84,31 @@
             historyContainer: document.getElementById('historyContainer'), adminContainer: document.getElementById('adminContainer'),
             comprasContainer: document.getElementById('comprasContainer'), historialComprasContainer: document.getElementById('historialComprasContainer'),
             inventarioContainer: document.getElementById('inventarioContainer'), 
-            herramientasContainer: document.getElementById('herramientasContainer'), // NUEVA VISTA
+            herramientasContainer: document.getElementById('herramientasContainer'),
             summaryModal: document.getElementById('summaryModal'),
             securityModal: document.getElementById('securityModal')
         };
         
         document.addEventListener('DOMContentLoaded', () => {
-            views.mainMenu.innerHTML = `<div class="header-logo"><img src="data:image/svg+xml;base64," alt="Logo"><h1>Tesoros Americanos Costa Rica</h1><h2 class="subtitle">Sistema de Gestión de Suministros</h2></div><div class="menu-options"><button class="btn" onclick="showForm()">📦 Nuevo Pedido</button><button class="btn" onclick="showHistory()">📜 Ver Pedidos</button><button class="btn" onclick="showAdminArticulos()">✏️ Administrar Artículos</button><button class="btn" onclick="showCompras()">🛒 Registrar Compra</button><button class="btn" onclick="showHistorialCompras()">📊 Consultar Compras</button><button class="btn" onclick="showInventario()">📈 Ver Inventario</button><button class="btn btn-tools" onclick="showHerramientas()">🛠️ Herramientas</button></div>`; // BOTÓN AÑADIDO
+            views.mainMenu.innerHTML = `<div class="header-logo"><img src="data:image/svg+xml;base64," alt="Logo"><h1>Tesoros Americanos Costa Rica</h1><h2 class="subtitle">Sistema de Gestión de Suministros</h2></div><div class="menu-options"><button class="btn" onclick="showForm()">📦 Nuevo Pedido</button><button class="btn" onclick="showHistory()">📜 Ver Pedidos</button><button class="btn" onclick="showAdminArticulos()">✏️ Administrar Artículos</button><button class="btn" onclick="showCompras()">🛒 Registrar Compra</button><button class="btn" onclick="showHistorialCompras()">📊 Consultar Compras</button><button class="btn" onclick="showInventario()">📈 Ver Inventario</button><button class="btn btn-tools" onclick="showHerramientas()">🛠️ Herramientas</button></div>`;
         });
 
         function showView(viewId) { Object.values(views).forEach(v => v.classList.add('hidden')); views[viewId].classList.remove('hidden'); }
         function goBack() { showView('mainMenu'); }
 
-        // --- INICIO DE NUEVAS FUNCIONES PARA HERRAMIENTAS ---
+        // --- INICIO DE FUNCIONES PARA HERRAMIENTAS ---
 
         function showHerramientas() {
             views.herramientasContainer.innerHTML = `
                 <h2>🛠️ Herramientas</h2>
                 <div class="info-section">
                     <div class="tool-card">
-                        <h3>Calcular Fecha Juliana</h3>
+                        <h3>Calcular Rango de Fecha Juliana</h3>
                         <div class="form-group">
-                            <label for="gregorian-date-input">Seleccione una fecha:</label>
-                            <input type="date" id="gregorian-date-input" onchange="calcularFechaJuliana()">
+                            <label for="julian-month-input">Seleccione año y mes:</label>
+                            <input type="month" id="julian-month-input" onchange="calcularRangoJulianoPorMes()">
                         </div>
-                        <p>Fecha Juliana: <strong id="julian-result">---</strong></p>
+                        <p id="julian-result">---</p>
                     </div>
                     <div class="tool-card">
                         <h3>Convertir Fecha Juliana a Gregoriana</h3>
@@ -128,24 +129,47 @@
                 </div>
             `;
             showView('herramientasContainer');
-            document.getElementById('gregorian-date-input').valueAsDate = new Date();
-            calcularFechaJuliana();
+            
+            // Establecer el mes actual por defecto
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            document.getElementById('julian-month-input').value = `${year}-${month}`;
+            calcularRangoJulianoPorMes(); // Calcular al mostrar
         }
 
-        function calcularFechaJuliana() {
-            const dateInput = document.getElementById('gregorian-date-input').value;
-            if (!dateInput) {
+        function calcularRangoJulianoPorMes() {
+            const monthInput = document.getElementById('julian-month-input').value;
+            if (!monthInput) {
                 document.getElementById('julian-result').textContent = '---';
                 return;
             }
-            const date = new Date(dateInput + 'T00:00:00'); // Evita problemas de zona horaria
-            const year = date.getFullYear();
-            const startOfYear = new Date(year, 0, 0);
-            const diff = date - startOfYear;
-            const dayOfYear = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const julianDate = `${year}${String(dayOfYear).padStart(3, '0')}`;
-            document.getElementById('julian-result').textContent = julianDate;
+
+            const [year, month] = monthInput.split('-').map(Number);
+
+            const getDayOfYear = (date) => {
+                const startOfYear = new Date(date.getFullYear(), 0, 0);
+                const diff = date - startOfYear;
+                return Math.floor(diff / (1000 * 60 * 60 * 24));
+            };
+
+            const firstDayOfMonth = new Date(year, month - 1, 1);
+            const lastDayOfMonth = new Date(year, month, 0); // El día 0 del mes siguiente es el último día del mes actual
+
+            const startDayOfYear = getDayOfYear(firstDayOfMonth);
+            const endDayOfYear = getDayOfYear(lastDayOfMonth);
+            
+            const monthName = firstDayOfMonth.toLocaleString('es-CR', { month: 'long' });
+            
+            const startJulian = `${year}${String(startDayOfYear).padStart(3, '0')}`;
+            const endJulian = `${year}${String(endDayOfYear).padStart(3, '0')}`;
+            
+            document.getElementById('julian-result').innerHTML = `
+                Rango para <strong>${monthName.charAt(0).toUpperCase() + monthName.slice(1)} ${year}</strong>:<br>
+                ${startJulian} (día ${startDayOfYear}) al ${endJulian} (día ${endDayOfYear})
+            `;
         }
+
 
         function convertirAFechaGregoriana() {
             const year = parseInt(document.getElementById('julian-year-input').value);
@@ -156,12 +180,19 @@
                 return;
             }
 
+            // Validar si el año es bisiesto para el día 366
+            const isLeap = new Date(year, 1, 29).getMonth() === 1;
+            if (day === 366 && !isLeap) {
+                 alert(`El año ${year} no es bisiesto, el día no puede ser 366.`);
+                return;
+            }
+
             const date = new Date(year, 0, day);
             const options = { year: 'numeric', month: 'long', day: 'numeric' };
             document.getElementById('gregorian-result').textContent = date.toLocaleDateString('es-CR', options);
         }
 
-        // --- FIN DE NUEVAS FUNCIONES PARA HERRAMIENTAS ---
+        // --- FIN DE FUNCIONES PARA HERRAMIENTAS ---
 
         async function cargarDatosEsenciales() {
             await Promise.all([
