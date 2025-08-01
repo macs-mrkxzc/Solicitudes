@@ -73,7 +73,8 @@
     <div class="container hidden" id="inventarioContainer"></div>
     <div class="container hidden" id="herramientasContainer"></div>
     <div class="container hidden" id="conversorFechasContainer"></div>
-    <div class="container hidden" id="conversorUnidadesContainer"></div> <div id="summaryModal" class="modal"></div>
+    <div class="container hidden" id="conversorUnidadesContainer"></div>
+    <div class="container hidden" id="conversorMonedasContainer"></div> <div id="summaryModal" class="modal"></div>
     <div id="securityModal" class="modal"></div>
 
     <script>
@@ -81,6 +82,7 @@
         let catalogoArticulos = [], historial = [], historialCompras = [], inventario = [];
         let costosPromedio = {};
         let currentRequestData = {};
+        let exchangeRates = {}; // Para guardar las tasas de cambio
 
         const views = {
             mainMenu: document.getElementById('mainMenu'),
@@ -92,7 +94,8 @@
             inventarioContainer: document.getElementById('inventarioContainer'), 
             herramientasContainer: document.getElementById('herramientasContainer'),
             conversorFechasContainer: document.getElementById('conversorFechasContainer'),
-            conversorUnidadesContainer: document.getElementById('conversorUnidadesContainer'), // NUEVA VISTA
+            conversorUnidadesContainer: document.getElementById('conversorUnidadesContainer'),
+            conversorMonedasContainer: document.getElementById('conversorMonedasContainer'), // NUEVA VISTA
             summaryModal: document.getElementById('summaryModal'),
             securityModal: document.getElementById('securityModal')
         };
@@ -104,7 +107,7 @@
         function showView(viewId) { Object.values(views).forEach(v => v.classList.add('hidden')); views[viewId].classList.remove('hidden'); }
         function goBack() { showView('mainMenu'); }
 
-        // --- INICIO DE FUNCIONES PARA HERRAMIENTAS (REESTRUCTURADO) ---
+        // --- INICIO DE FUNCIONES PARA HERRAMIENTAS ---
 
         function showHerramientas() {
             views.herramientasContainer.innerHTML = `
@@ -112,6 +115,7 @@
                 <div class="menu-options">
                     <button class="btn btn-tools" onclick="showConversorFechas()">📅 Conversor de Fechas</button>
                     <button class="btn btn-tools" onclick="showConversorUnidades()">📏 Conversor de Unidades</button>
+                    <button class="btn btn-tools" onclick="showConversorMonedas()">💰 Conversor de Monedas</button>
                 </div>
                 <div class="controls">
                     <button class="btn btn-cancel" onclick="goBack()">⬅️ Volver al Menú Principal</button>
@@ -120,6 +124,95 @@
             showView('herramientasContainer');
         }
 
+        // --- Conversor de Monedas ---
+        async function showConversorMonedas() {
+            showView('conversorMonedasContainer');
+            const container = views.conversorMonedasContainer;
+            container.innerHTML = `<h2>💰 Conversor de Monedas</h2><p style="text-align:center;">Cargando tasas de cambio...</p><div class="controls"><button class="btn btn-cancel" onclick="showHerramientas()">⬅️ Volver a Herramientas</button></div>`;
+
+            // IMPORTANTE: Reemplaza esta clave con la tuya obtenida de exchangerate-api.com
+            const CURRENCY_API_KEY = "bbc2cb2c1ea6610149fc7ba9"; 
+            const API_URL = `https://v6.exchangerate-api.com/v6/${CURRENCY_API_KEY}/latest/USD`;
+
+            try {
+                // Si ya tenemos las tasas, no las volvemos a pedir
+                if (Object.keys(exchangeRates).length === 0) {
+                     const response = await fetch(API_URL);
+                     if (!response.ok) throw new Error('No se pudo conectar con el servicio de cambio de moneda.');
+                     const data = await response.json();
+                     if(data.result === 'error') throw new Error(`Error de API: ${data['error-type']}`);
+                     exchangeRates = data.conversion_rates;
+                }
+               
+                const currencyOptions = Object.keys(exchangeRates).map(curr => `<option value="${curr}">${curr}</option>`).join('');
+                
+                container.innerHTML = `
+                    <h2>💰 Conversor de Monedas</h2>
+                    <div class="tool-card">
+                        <div class="converter-grid">
+                            <div class="form-group">
+                                <label for="currency-input-value">Cantidad</label>
+                                <input type="number" id="currency-input-value" value="1" oninput="convertirMoneda()">
+                            </div>
+                            <div class="form-group">
+                                <label for="currency-from-select">De</label>
+                                <select id="currency-from-select" onchange="convertirMoneda()">${currencyOptions}</select>
+                            </div>
+                            <div class="form-group">
+                                <label for="currency-to-select">A</label>
+                                <select id="currency-to-select" onchange="convertirMoneda()">${currencyOptions}</select>
+                            </div>
+                        </div>
+                        <p style="margin-top: 2em; text-align: center; font-size: 1.5em;">Resultado: <strong id="currency-result">---</strong></p>
+                    </div>
+                     <div class="controls">
+                        <button class="btn btn-cancel" onclick="showHerramientas()">⬅️ Volver a Herramientas</button>
+                    </div>
+                `;
+
+                // Valores por defecto
+                document.getElementById('currency-from-select').value = 'USD';
+                document.getElementById('currency-to-select').value = 'CRC';
+                convertirMoneda();
+
+            } catch (error) {
+                container.innerHTML = `<h2>💰 Conversor de Monedas</h2><p style="text-align:center; color: var(--danger-color);">Error: ${error.message}</p><p style="text-align:center;">Asegúrate de haber introducido una API Key válida en el código.</p><div class="controls"><button class="btn btn-cancel" onclick="showHerramientas()">⬅️ Volver a Herramientas</button></div>`;
+            }
+        }
+
+        function convertirMoneda() {
+            const amount = parseFloat(document.getElementById('currency-input-value').value);
+            const fromCurrency = document.getElementById('currency-from-select').value;
+            const toCurrency = document.getElementById('currency-to-select').value;
+            const resultEl = document.getElementById('currency-result');
+
+            if (isNaN(amount)) {
+                resultEl.textContent = '---';
+                return;
+            }
+
+            const fromRate = exchangeRates[fromCurrency];
+            const toRate = exchangeRates[toCurrency];
+            
+            // La conversión se hace a través de la moneda base (USD)
+            const result = (amount / fromRate) * toRate;
+            
+            resultEl.textContent = result.toLocaleString('es-CR', { style: 'currency', currency: toCurrency, maximumFractionDigits: 2 });
+        }
+
+
+        // --- Otros Conversores ---
+        function showConversorFechas() { /* ...código sin cambios... */ }
+        function showConversorUnidades() { /* ...código sin cambios... */ }
+        function calcularFechaJulianaYYDDD() { /* ...código sin cambios... */ }
+        function convertirAFechaGregoriana() { /* ...código sin cambios... */ }
+        const conversionFactors = { /* ...código sin cambios... */ };
+        function findUnitData(unitKey) { /* ...código sin cambios... */ }
+        function convertirUnidad() { /* ...código sin cambios... */ }
+        
+        // ... El resto del código de la aplicación (pedidos, inventario, etc.) sigue aquí sin cambios ...
+        
+        // --- COPIAR Y PEGAR LAS FUNCIONES RESTANTES DE HERRAMIENTAS AQUÍ ---
         function showConversorFechas() {
             views.conversorFechasContainer.innerHTML = `
                 <h2>Conversor de Fechas</h2>
@@ -280,8 +373,8 @@
             document.getElementById('gregorian-result').textContent = date.toLocaleDateString('es-CR', options);
         }
 
-        // --- FIN DE FUNCIONES PARA HERRAMIENTAS ---
-
+        // --- RESTO DEL CÓDIGO ORIGINAL DE LA APLICACIÓN ---
+        
         async function cargarDatosEsenciales() {
             await Promise.all([
                 (async () => {
