@@ -93,8 +93,7 @@
         
         const ubicacionesTraslado = ['Oficina', 'Centro Distribución', 'Barrio México', 'San Francisco', 'Alto Valor', 'Directtools SF', 'Directtools BM', 'Bodega Externa'];
         const categoriasTraslado = ['Documentos', 'Equipo de Cómputo', 'Mobiliario', 'Suministros de Oficina', 'Mercadería', 'Herramientas', 'Otro'];
-        const contenedoresTraslado = ['Caja 1', 'Caja 2', 'Caja 3', 'Bolsa 1', 'Paquete 1', 'Otro'];
-
+        
         let views = {};
         
         document.addEventListener('DOMContentLoaded', () => {
@@ -141,7 +140,7 @@
                 <h2>🚚 Nuevo Traslado Interno</h2>
                 <div class="info-section">
                     <div class="form-group"><label>Fecha:</label><input type="date" id="traslado-fecha" readonly></div>
-                    <div class="form-group"><label>Origen:</label><select id="traslado-origen">${ubicacionesOptions}</select></div>
+                    <div class="form-group"><label>Origen:</label><select id="traslado-origen" onchange="actualizarOpcionesDestino(this.value)">${ubicacionesOptions}</select></div>
                     <div class="form-group"><label>Destino:</label><select id="traslado-destino">${ubicacionesOptions}</select></div>
                     <div class="form-group"><label>Realizado por:</label><input type="text" id="traslado-realizadopor"></div>
                     <div class="form-group"><label>Solicitado por:</label><input type="text" id="traslado-solicitadopor"></div>
@@ -158,11 +157,13 @@
                 <div class="controls">
                     <button class="btn btn-add" onclick="agregarFilaTraslado()">➕ Agregar Artículo</button>
                     <button class="btn btn-cancel" onclick="goBack()">⬅️ Volver</button>
-                    <button class="btn btn-send" onclick="guardarTraslado()">💾 Guardar Traslado</button>
+                    <button class="btn btn-send" onclick="previsualizarTraslado()">📲 Previsualizar y Guardar</button>
                 </div>
             `;
             showView('trasladoContainer');
             document.getElementById('traslado-fecha').valueAsDate = new Date();
+            const origenInicial = document.getElementById('traslado-origen').value;
+            actualizarOpcionesDestino(origenInicial);
             agregarFilaTraslado();
         }
 
@@ -170,14 +171,30 @@
             const tableBody = document.getElementById('traslado-table').querySelector('tbody');
             const newRow = tableBody.insertRow();
             const categoriasOptions = categoriasTraslado.map(c => `<option value="${c}">${c}</option>`).join('');
-            const contenedoresOptions = contenedoresTraslado.map(c => `<option value="${c}">${c}</option>`).join('');
             newRow.innerHTML = `
-                <td data-label="N° Contenedor"><select class="traslado-contenedor">${contenedoresOptions}</select></td>
+                <td data-label="N° Contenedor"><input type="number" class="traslado-contenedor" value="1" min="1"></td>
                 <td data-label="Categoría"><select class="traslado-categoria">${categoriasOptions}</select></td>
                 <td data-label="Cantidad"><input type="number" class="traslado-cantidad" value="1" min="1" oninput="actualizarTotalesTraslado()"></td>
                 <td data-label="Acción"><button class="btn btn-danger" onclick="this.closest('tr').remove(); actualizarTotalesTraslado();">Eliminar</button></td>
             `;
             actualizarTotalesTraslado();
+        }
+        
+        function actualizarOpcionesDestino(origenSeleccionado) {
+            const destinoSelect = document.getElementById('traslado-destino');
+            const destinoActual = destinoSelect.value;
+            for (const option of destinoSelect.options) {
+                option.disabled = (option.value === origenSeleccionado);
+            }
+            if (origenSeleccionado === destinoActual) {
+                destinoSelect.selectedIndex = -1;
+                for (const option of destinoSelect.options) {
+                    if (!option.disabled) {
+                        destinoSelect.value = option.value;
+                        break;
+                    }
+                }
+            }
         }
 
         function actualizarTotalesTraslado() {
@@ -191,7 +208,7 @@
             document.getElementById('traslado-total-unidades').textContent = totalUnidades;
         }
 
-        async function guardarTraslado() {
+        function previsualizarTraslado() {
             const header = {
                 id_traslado: 'TRAS-' + Date.now(),
                 fecha: document.getElementById('traslado-fecha').value,
@@ -214,21 +231,63 @@
             });
 
             if (detalles.length === 0) return alert('Debe agregar al menos un artículo al detalle del traslado.');
-
-            const payload = { ...header, detalles };
             
-            try {
+            currentRequestData = { ...header, detalles };
+            
+            const fechaFormateada = new Date(header.fecha + 'T00:00:00').toLocaleDateString("es-CR", { dateStyle: "long" });
+            let whatsappMsg = `*Registro de Traslado Interno* 🚚\n------------------------------------\n*ID Traslado:* ${header.id_traslado}\n*Fecha:* ${fechaFormateada}\n*Origen:* _${header.origen}_\n*Destino:* _${header.destino}_\n*Realizado por:* ${header.realizadoPor}\n*Solicitado por:* ${header.solicitadoPor}\n------------------------------------\n\n*Detalle:*\n`;
+            detalles.forEach(item => {
+                whatsappMsg += `• Cont. #${item.nContenedor}: ${item.categoria} (${item.cantidad} unidades)\n`;
+            });
+            const totalUnidades = detalles.reduce((sum, item) => sum + item.cantidad, 0);
+            whatsappMsg += `\n*Total de Artículos (líneas): ${detalles.length}*\n*Total de Unidades: ${totalUnidades}*`;
+
+            currentRequestData.whatsappBody = whatsappMsg;
+
+            let summaryHTML = `<pre style="white-space: pre-wrap; word-wrap: break-word; font-family: 'Roboto', sans-serif;">${whatsappMsg}</pre>`;
+            views.summaryModal.innerHTML = `<div class="modal-content"><span onclick="views.summaryModal.style.display='none'" style="position:absolute; top:10px; right:20px; font-size:2em; cursor:pointer;">&times;</span><h2>Revisión del Traslado</h2><div style="max-height: 60vh; overflow-y: auto; padding: 1em; background-color: #f8f9fa; border-radius: 8px;">${summaryHTML}</div><div class="modal-actions" style="margin-top: 1.5em; display:flex; flex-direction:column; gap: 10px;"><button onclick="confirmarYGuardarTraslado(event)" class="btn btn-success">✅ Guardar Traslado</button><button onclick="guardarYEnviarTrasladoPorWhatsApp(event)" class="btn btn-whatsapp">📲 Guardar y Enviar por WhatsApp</button><button onclick="views.summaryModal.style.display='none'" class="btn btn-cancel">Cancelar</button></div></div>`;
+            views.summaryModal.style.display = "flex";
+        }
+        
+        async function guardarTrasladoEnAPI(traslado) {
+             try {
                 await fetch(WEB_APP_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    body: JSON.stringify({ action: 'addTraslado', payload }),
+                    method: 'POST', mode: 'no-cors',
+                    body: JSON.stringify({ action: 'addTraslado', payload: traslado }),
                     headers: { 'Content-Type': 'application/json' }
                 });
-                alert('¡Traslado guardado con éxito!');
-                goBack();
             } catch (error) {
-                alert('Hubo un error al guardar el traslado.');
-                console.error(error);
+                console.error("Error al guardar el traslado:", error);
+                alert("Hubo un error al guardar el traslado.");
+                throw error;
+            }
+        }
+
+        async function confirmarYGuardarTraslado(event) {
+            const boton = event.target;
+            boton.textContent = 'Guardando...'; boton.disabled = true;
+            try {
+                await guardarTrasladoEnAPI(currentRequestData);
+                alert('¡Traslado guardado con éxito!');
+                views.summaryModal.style.display = 'none';
+                goBack();
+            } catch (e) {
+                boton.textContent = '✅ Guardar Traslado'; boton.disabled = false;
+            }
+        }
+
+        async function guardarYEnviarTrasladoPorWhatsApp(event) {
+            const boton = event.target;
+            boton.textContent = 'Guardando...'; boton.disabled = true;
+            try {
+                await guardarTrasladoEnAPI(currentRequestData);
+                const link = `https://wa.me/?text=${encodeURIComponent(currentRequestData.whatsappBody)}`;
+                window.open(link, '_blank');
+                alert('¡Traslado guardado! Ahora puedes confirmar el envío en WhatsApp.');
+                views.summaryModal.style.display = 'none';
+                goBack();
+            } catch (e) {
+                boton.textContent = '📲 Guardar y Enviar por WhatsApp'; boton.disabled = false;
             }
         }
 
@@ -236,10 +295,11 @@
             views.historialTrasladosContainer.innerHTML = `
                 <h2>📋 Historial de Traslados</h2>
                 <table id="historial-traslados-table" class="responsive-table">
-                    <thead><tr><th>ID</th><th>Fecha</th><th>Origen</th><th>Destino</th><th>Realizado por</th><th>Solicitado por</th><th>Detalles</th></tr></thead>
-                    <tbody><tr><td colspan="7" style="text-align:center;">Cargando...</td></tr></tbody>
+                    <thead><tr><th style="width:5%"><input type="checkbox" onchange="toggleSeleccionarTodosTraslados(this)"></th><th>ID</th><th>Fecha</th><th>Origen</th><th>Destino</th><th>Realizado por</th><th>Solicitado por</th><th>Detalles</th></tr></thead>
+                    <tbody><tr><td colspan="8" style="text-align:center;">Cargando...</td></tr></tbody>
                 </table>
                 <div class="controls">
+                    <div class="left-buttons"><button class="btn btn-danger" onclick="borrarTrasladosSeleccionados()">🗑️ Borrar Seleccionados</button></div>
                     <button class="btn btn-success" onclick="exportarHistorialTrasladosExcel()">📊 Exportar a Excel</button>
                     <button class="btn btn-pdf" onclick="exportarHistorialTrasladosPDF()">📄 Exportar a PDF</button>
                     <button class="btn btn-cancel" onclick="goBack()">⬅️ Volver</button>
@@ -252,18 +312,21 @@
                 renderHistorialTraslados();
             } catch (e) {
                 console.error(e);
-                views.historialTrasladosContainer.querySelector('tbody').innerHTML = `<tr><td colspan="7" style="text-align:center; color:red;">Error al cargar el historial.</td></tr>`;
+                views.historialTrasladosContainer.querySelector('tbody').innerHTML = `<tr><td colspan="8" style="text-align:center; color:red;">Error al cargar el historial.</td></tr>`;
             }
         }
+        
+        function toggleSeleccionarTodosTraslados(source) { document.querySelectorAll('.traslado-checkbox').forEach(cb => { cb.checked = source.checked; }); }
 
         function renderHistorialTraslados() {
             const tableBody = views.historialTrasladosContainer.querySelector('tbody');
             if (!historialTraslados || historialTraslados.length === 0) {
-                tableBody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No hay traslados registrados.</td></tr>';
+                tableBody.innerHTML = '<tr><td colspan="8" style="text-align:center;">No hay traslados registrados.</td></tr>';
                 return;
             }
             tableBody.innerHTML = historialTraslados.map(t => `
                 <tr>
+                    <td data-label="Seleccionar:"><input type="checkbox" class="traslado-checkbox" data-id="${t.id_traslado}"></td>
                     <td data-label="ID">${t.id_traslado}</td>
                     <td data-label="Fecha">${t.fecha}</td>
                     <td data-label="Origen">${t.origen}</td>
@@ -272,11 +335,32 @@
                     <td data-label="Solicitado por">${t.solicitadoPor}</td>
                     <td data-label="Detalles">
                         <table class="details-table">
-                            <tbody>${(t.detalles || []).map(d => `<tr><td>${d.nContenedor}</td><td>${d.categoria}</td><td>${d.cantidad}</td></tr>`).join('')}</tbody>
+                            <tbody>${(t.detalles || []).map(d => `<tr><td>#${d.nContenedor}</td><td>${d.categoria}</td><td>${d.cantidad}</td></tr>`).join('')}</tbody>
                         </table>
                     </td>
                 </tr>
             `).join('');
+        }
+        
+        function borrarTrasladosSeleccionados() {
+            checkSecurityKey(async () => {
+                const idsSeleccionados = Array.from(document.querySelectorAll('.traslado-checkbox:checked')).map(cb => cb.dataset.id);
+                if (idsSeleccionados.length === 0) return alert("Por favor, seleccione al menos un traslado para borrar.");
+                if (!confirm(`¿Está seguro de que desea borrar ${idsSeleccionados.length} traslados? Esta acción es permanente.`)) return;
+
+                try {
+                    await fetch(WEB_APP_URL, { 
+                        method: 'POST', mode:'no-cors',
+                        body: JSON.stringify({ action: 'deleteTraslados', payload: idsSeleccionados }),
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                    alert('Traslados eliminados con éxito.');
+                    showHistorialTraslados();
+                } catch (error) { 
+                    alert('Error al eliminar los traslados.'); 
+                    console.error(error);
+                }
+            });
         }
         
         function exportarHistorialTrasladosExcel() {
@@ -304,7 +388,6 @@
             historialTraslados.forEach((traslado) => {
                 const bodyData = (traslado.detalles || []).map(d => [d.nContenedor, d.categoria, d.cantidad]);
                 const totalUnidades = (traslado.detalles || []).reduce((sum, d) => sum + (d.cantidad || 0), 0);
-
                 const startY = (doc.autoTable.previous ? doc.autoTable.previous.finalY : 35) + 10;
                 
                 doc.setFontSize(12); doc.setFont(undefined, 'bold');
@@ -329,7 +412,6 @@
         // --- FIN DE FUNCIONES PARA TRASLADOS ---
 
         // --- INICIO DE FUNCIONES PARA HERRAMIENTAS ---
-
         function showHerramientas() {
             views.herramientasContainer.innerHTML = `
                 <h2>🛠️ Menú de Herramientas</h2>
@@ -573,9 +655,9 @@
             const options = { year: 'numeric', month: 'long', day: 'numeric' };
             document.getElementById('gregorian-result').textContent = date.toLocaleDateString('es-CR', options);
         }
-
+        
         // --- FIN DE FUNCIONES PARA HERRAMIENTAS ---
-
+        
         // --- INICIO FUNCIONES DE PEDIDOS, COMPRAS, ETC. ---
         
         async function cargarDatosEsenciales() {
