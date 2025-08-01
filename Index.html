@@ -13,7 +13,7 @@
             --primary-color: #004d99; --secondary-color: #007bff; --text-color: #2c3e50; --light-text-color: #7f8c8d;
             --background-color: #ecf0f1; --card-background: #ffffff; --border-color: #dde1e5; --success-color: #27ae60;
             --danger-color: #e74c3c; --cancel-color: #95a5a6; --whatsapp-color: #25D366; --hover-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            --pdf-color: #c0392b; --tools-color: #f39c12;
+            --pdf-color: #c0392b; --tools-color: #f39c12; --traslado-color: #8e44ad;
         }
         body { font-family: 'Roboto', sans-serif; margin: 0; padding: 2.5vw; background-color: var(--background-color); color: var(--text-color); }
         .container { max-width: 1200px; margin: auto; background: var(--card-background); padding: 3vw; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); border: 1px solid var(--border-color); margin-bottom: 30px; }
@@ -36,6 +36,7 @@
         .btn-danger { background-color: var(--danger-color); color: white; }
         .btn-pdf { background-color: var(--pdf-color); color: white; }
         .btn-tools { background-color: var(--tools-color); color: white; }
+        .btn-traslado { background-color: var(--traslado-color); color: white; }
         .info-section { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5em; margin-bottom: 2em; }
         .form-group label { display: block; margin-bottom: 0.5em; font-weight: 500; color: var(--light-text-color); }
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.7); justify-content: center; align-items: center; padding: 1em; }
@@ -48,6 +49,7 @@
         .tool-card h3 { margin-top: 0; color: var(--secondary-color); }
         .tool-card p { font-family: 'Roboto Mono', monospace; font-size: 1.1em; }
         .converter-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1em; align-items: flex-end; }
+        .summary-box { text-align: right; margin-top: 20px; font-size: 1.1em; font-weight: 500; }
         @media screen and (max-width: 768px) {
             body { padding: 15px; } .container { padding: 20px; } .menu-options, .info-section { grid-template-columns: 1fr; }
             .converter-grid { grid-template-columns: 1fr; }
@@ -75,6 +77,9 @@
     <div class="container hidden" id="conversorFechasContainer"></div>
     <div class="container hidden" id="conversorUnidadesContainer"></div>
     <div class="container hidden" id="conversorMonedasContainer"></div>
+    <div class="container hidden" id="trasladoContainer"></div>
+    <div class="container hidden" id="historialTrasladosContainer"></div>
+
     <div id="summaryModal" class="modal"></div>
     <div id="securityModal" class="modal"></div>
 
@@ -84,12 +89,15 @@
         let costosPromedio = {};
         let currentRequestData = {};
         let exchangeRates = {};
+        let historialTraslados = [];
+        
+        const ubicacionesTraslado = ['Oficina', 'Centro Distribución', 'Barrio México', 'San Francisco', 'Alto Valor', 'Directtools SF', 'Directtools BM', 'Bodega Externa'];
+        const categoriasTraslado = ['Documentos', 'Equipo de Cómputo', 'Mobiliario', 'Suministros de Oficina', 'Mercadería', 'Herramientas', 'Otro'];
+        const contenedoresTraslado = ['Caja 1', 'Caja 2', 'Caja 3', 'Bolsa 1', 'Paquete 1', 'Otro'];
 
-        // **CORRECCIÓN**: Declarar la variable views aquí, pero inicializarla cuando el DOM esté listo.
         let views = {};
         
         document.addEventListener('DOMContentLoaded', () => {
-            // **CORRECCIÓN**: Inicializar el objeto views aquí garantiza que todos los divs existan.
             views = {
                 mainMenu: document.getElementById('mainMenu'),
                 formContainer: document.getElementById('formContainer'),
@@ -102,15 +110,223 @@
                 conversorFechasContainer: document.getElementById('conversorFechasContainer'),
                 conversorUnidadesContainer: document.getElementById('conversorUnidadesContainer'),
                 conversorMonedasContainer: document.getElementById('conversorMonedasContainer'),
+                trasladoContainer: document.getElementById('trasladoContainer'),
+                historialTrasladosContainer: document.getElementById('historialTrasladosContainer'),
                 summaryModal: document.getElementById('summaryModal'),
                 securityModal: document.getElementById('securityModal')
             };
 
-            views.mainMenu.innerHTML = `<div class="header-logo"><img src="data:image/svg+xml;base64," alt="Logo"><h1>Tesoros Americanos Costa Rica</h1><h2 class="subtitle">Sistema de Gestión de Suministros</h2></div><div class="menu-options"><button class="btn" onclick="showForm()">📦 Nuevo Pedido</button><button class="btn" onclick="showHistory()">📜 Ver Pedidos</button><button class="btn" onclick="showAdminArticulos()">✏️ Administrar Artículos</button><button class="btn" onclick="showCompras()">🛒 Registrar Compra</button><button class="btn" onclick="showHistorialCompras()">📊 Consultar Compras</button><button class="btn" onclick="showInventario()">📈 Ver Inventario</button><button class="btn btn-tools" onclick="showHerramientas()">🛠️ Herramientas</button></div>`;
+            views.mainMenu.innerHTML = `<div class="header-logo"><img src="data:image/svg+xml;base64," alt="Logo"><h1>Tesoros Americanos Costa Rica</h1><h2 class="subtitle">Sistema de Gestión</h2></div>
+            <div class="menu-options">
+                <button class="btn" onclick="showForm()">📦 Nuevo Pedido</button>
+                <button class="btn" onclick="showHistory()">📜 Ver Pedidos</button>
+                <button class="btn btn-traslado" onclick="showFormTraslado()">🚚 Nuevo Traslado</button>
+                <button class="btn btn-traslado" onclick="showHistorialTraslados()">📋 Ver Traslados</button>
+                <button class="btn" onclick="showCompras()">🛒 Registrar Compra</button>
+                <button class="btn" onclick="showHistorialCompras()">📊 Consultar Compras</button>
+                <button class="btn" onclick="showInventario()">📈 Ver Inventario</button>
+                <button class="btn" onclick="showAdminArticulos()">✏️ Administrar Artículos</button>
+                <button class="btn btn-tools" onclick="showHerramientas()">🛠️ Herramientas</button>
+            </div>`;
         });
 
         function showView(viewId) { Object.values(views).forEach(v => v.classList.add('hidden')); views[viewId].classList.remove('hidden'); }
         function goBack() { showView('mainMenu'); }
+        
+        // --- INICIO DE FUNCIONES PARA TRASLADOS ---
+
+        function showFormTraslado() {
+            const ubicacionesOptions = ubicacionesTraslado.map(u => `<option value="${u}">${u}</option>`).join('');
+            views.trasladoContainer.innerHTML = `
+                <h2>🚚 Nuevo Traslado Interno</h2>
+                <div class="info-section">
+                    <div class="form-group"><label>Fecha:</label><input type="date" id="traslado-fecha" readonly></div>
+                    <div class="form-group"><label>Origen:</label><select id="traslado-origen">${ubicacionesOptions}</select></div>
+                    <div class="form-group"><label>Destino:</label><select id="traslado-destino">${ubicacionesOptions}</select></div>
+                    <div class="form-group"><label>Realizado por:</label><input type="text" id="traslado-realizadopor"></div>
+                    <div class="form-group"><label>Solicitado por:</label><input type="text" id="traslado-solicitadopor"></div>
+                </div>
+                <h3>Detalle de Artículos</h3>
+                <table id="traslado-table" class="responsive-table">
+                    <thead><tr><th>N° Contenedor</th><th>Categoría</th><th>Cantidad</th><th>Acción</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+                <div class="summary-box">
+                    <p>Total de Artículos (líneas): <span id="traslado-total-items">0</span></p>
+                    <p>Total de Unidades: <span id="traslado-total-unidades">0</span></p>
+                </div>
+                <div class="controls">
+                    <button class="btn btn-add" onclick="agregarFilaTraslado()">➕ Agregar Artículo</button>
+                    <button class="btn btn-cancel" onclick="goBack()">⬅️ Volver</button>
+                    <button class="btn btn-send" onclick="guardarTraslado()">💾 Guardar Traslado</button>
+                </div>
+            `;
+            showView('trasladoContainer');
+            document.getElementById('traslado-fecha').valueAsDate = new Date();
+            agregarFilaTraslado();
+        }
+
+        function agregarFilaTraslado() {
+            const tableBody = document.getElementById('traslado-table').querySelector('tbody');
+            const newRow = tableBody.insertRow();
+            const categoriasOptions = categoriasTraslado.map(c => `<option value="${c}">${c}</option>`).join('');
+            const contenedoresOptions = contenedoresTraslado.map(c => `<option value="${c}">${c}</option>`).join('');
+            newRow.innerHTML = `
+                <td data-label="N° Contenedor"><select class="traslado-contenedor">${contenedoresOptions}</select></td>
+                <td data-label="Categoría"><select class="traslado-categoria">${categoriasOptions}</select></td>
+                <td data-label="Cantidad"><input type="number" class="traslado-cantidad" value="1" min="1" oninput="actualizarTotalesTraslado()"></td>
+                <td data-label="Acción"><button class="btn btn-danger" onclick="this.closest('tr').remove(); actualizarTotalesTraslado();">Eliminar</button></td>
+            `;
+            actualizarTotalesTraslado();
+        }
+
+        function actualizarTotalesTraslado() {
+            const rows = document.querySelectorAll('#traslado-table tbody tr');
+            let totalUnidades = 0;
+            rows.forEach(row => {
+                const cantidadInput = row.querySelector('.traslado-cantidad');
+                totalUnidades += parseInt(cantidadInput.value) || 0;
+            });
+            document.getElementById('traslado-total-items').textContent = rows.length;
+            document.getElementById('traslado-total-unidades').textContent = totalUnidades;
+        }
+
+        async function guardarTraslado() {
+            const header = {
+                id_traslado: 'TRAS-' + Date.now(),
+                fecha: document.getElementById('traslado-fecha').value,
+                origen: document.getElementById('traslado-origen').value,
+                destino: document.getElementById('traslado-destino').value,
+                realizadoPor: document.getElementById('traslado-realizadopor').value.trim(),
+                solicitadoPor: document.getElementById('traslado-solicitadopor').value.trim(),
+            };
+
+            if (!header.realizadoPor || !header.solicitadoPor) return alert('Por favor, complete quién realiza y quién solicita el traslado.');
+            if (header.origen === header.destino) return alert('El origen y el destino no pueden ser el mismo.');
+            
+            const detalles = [];
+            document.querySelectorAll('#traslado-table tbody tr').forEach(row => {
+                detalles.push({
+                    nContenedor: row.querySelector('.traslado-contenedor').value,
+                    categoria: row.querySelector('.traslado-categoria').value,
+                    cantidad: parseInt(row.querySelector('.traslado-cantidad').value) || 0,
+                });
+            });
+
+            if (detalles.length === 0) return alert('Debe agregar al menos un artículo al detalle del traslado.');
+
+            const payload = { ...header, detalles };
+            
+            try {
+                await fetch(WEB_APP_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: JSON.stringify({ action: 'addTraslado', payload }),
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                alert('¡Traslado guardado con éxito!');
+                goBack();
+            } catch (error) {
+                alert('Hubo un error al guardar el traslado.');
+                console.error(error);
+            }
+        }
+
+        async function showHistorialTraslados() {
+            views.historialTrasladosContainer.innerHTML = `
+                <h2>📋 Historial de Traslados</h2>
+                <table id="historial-traslados-table" class="responsive-table">
+                    <thead><tr><th>ID</th><th>Fecha</th><th>Origen</th><th>Destino</th><th>Realizado por</th><th>Solicitado por</th><th>Detalles</th></tr></thead>
+                    <tbody><tr><td colspan="7" style="text-align:center;">Cargando...</td></tr></tbody>
+                </table>
+                <div class="controls">
+                    <button class="btn btn-success" onclick="exportarHistorialTrasladosExcel()">📊 Exportar a Excel</button>
+                    <button class="btn btn-pdf" onclick="exportarHistorialTrasladosPDF()">📄 Exportar a PDF</button>
+                    <button class="btn btn-cancel" onclick="goBack()">⬅️ Volver</button>
+                </div>`;
+            showView('historialTrasladosContainer');
+
+            try {
+                const response = await fetch(`${WEB_APP_URL}?action=getTraslados`);
+                historialTraslados = await response.json();
+                renderHistorialTraslados();
+            } catch (e) {
+                console.error(e);
+                views.historialTrasladosContainer.querySelector('tbody').innerHTML = `<tr><td colspan="7" style="text-align:center; color:red;">Error al cargar el historial.</td></tr>`;
+            }
+        }
+
+        function renderHistorialTraslados() {
+            const tableBody = views.historialTrasladosContainer.querySelector('tbody');
+            if (!historialTraslados || historialTraslados.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No hay traslados registrados.</td></tr>';
+                return;
+            }
+            tableBody.innerHTML = historialTraslados.map(t => `
+                <tr>
+                    <td data-label="ID">${t.id_traslado}</td>
+                    <td data-label="Fecha">${t.fecha}</td>
+                    <td data-label="Origen">${t.origen}</td>
+                    <td data-label="Destino">${t.destino}</td>
+                    <td data-label="Realizado por">${t.realizadoPor}</td>
+                    <td data-label="Solicitado por">${t.solicitadoPor}</td>
+                    <td data-label="Detalles">
+                        <table class="details-table">
+                            <tbody>${(t.detalles || []).map(d => `<tr><td>${d.nContenedor}</td><td>${d.categoria}</td><td>${d.cantidad}</td></tr>`).join('')}</tbody>
+                        </table>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        function exportarHistorialTrasladosExcel() {
+            const data = historialTraslados.flatMap(t => 
+                (t.detalles || []).map(d => ({
+                    "ID Traslado": t.id_traslado, "Fecha": t.fecha, "Origen": t.origen, "Destino": t.destino,
+                    "Realizado Por": t.realizadoPor, "Solicitado Por": t.solicitadoPor,
+                    "N° Contenedor": d.nContenedor, "Categoría": d.categoria, "Cantidad": d.cantidad
+                }))
+            );
+            const worksheet = XLSX.utils.json_to_sheet(data);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Traslados");
+            XLSX.writeFile(workbook, `Historial_Traslados_${new Date().toISOString().slice(0,10)}.xlsx`);
+        }
+
+        function exportarHistorialTrasladosPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.setFontSize(18);
+            doc.text("Reporte de Historial de Traslados", 14, 22);
+            doc.setFontSize(10);
+            doc.text(`Fecha de Emisión: ${new Date().toLocaleDateString('es-CR')}`, 14, 28);
+
+            historialTraslados.forEach((traslado) => {
+                const bodyData = (traslado.detalles || []).map(d => [d.nContenedor, d.categoria, d.cantidad]);
+                const totalUnidades = (traslado.detalles || []).reduce((sum, d) => sum + (d.cantidad || 0), 0);
+
+                const startY = (doc.autoTable.previous ? doc.autoTable.previous.finalY : 35) + 10;
+                
+                doc.setFontSize(12); doc.setFont(undefined, 'bold');
+                doc.text(`Traslado: ${traslado.id_traslado}`, 14, startY);
+                doc.setFontSize(10); doc.setFont(undefined, 'normal');
+                doc.text(`Fecha: ${traslado.fecha} | De: ${traslado.origen} | A: ${traslado.destino}`, 14, startY + 5);
+                doc.text(`Realizado por: ${traslado.realizadoPor} | Solicitado por: ${traslado.solicitadoPor}`, 14, startY + 10);
+
+                doc.autoTable({
+                    startY: startY + 13,
+                    head: [['N° Contenedor', 'Categoría', 'Cantidad']],
+                    body: bodyData,
+                    theme: 'striped',
+                    headStyles: { fillColor: '#8e44ad' },
+                    foot: [['Total de Unidades', '', `${totalUnidades}`]],
+                    footStyles: { fillColor: '#ecf0f1', textColor: '#2c3e50', fontStyle: 'bold' },
+                });
+            });
+            doc.save(`Historial_Traslados_${new Date().toISOString().slice(0,10)}.pdf`);
+        }
+
+        // --- FIN DE FUNCIONES PARA TRASLADOS ---
 
         // --- INICIO DE FUNCIONES PARA HERRAMIENTAS ---
 
@@ -129,14 +345,12 @@
             showView('herramientasContainer');
         }
 
-        // --- Conversor de Monedas ---
         async function showConversorMonedas() {
             showView('conversorMonedasContainer');
             const container = views.conversorMonedasContainer;
             container.innerHTML = `<h2>💰 Conversor de Monedas</h2><p style="text-align:center;">Cargando tasas de cambio...</p><div class="controls"><button class="btn btn-cancel" onclick="showHerramientas()">⬅️ Volver a Herramientas</button></div>`;
 
-            // IMPORTANTE: Reemplaza esta clave con la tuya obtenida de exchangerate-api.com
-            const CURRENCY_API_KEY = "bbc2cb2c1ea6610149fc7ba9"; 
+            const CURRENCY_API_KEY = "AQUÍ_VA_TU_API_KEY_GRATUITA"; 
             const API_URL = `https://v6.exchangerate-api.com/v6/${CURRENCY_API_KEY}/latest/USD`;
 
             try {
@@ -200,7 +414,6 @@
             resultEl.textContent = result.toLocaleString('es-CR', { style: 'currency', currency: toCurrency, maximumFractionDigits: 2 });
         }
 
-        // --- Otros Conversores ---
         function showConversorFechas() {
             views.conversorFechasContainer.innerHTML = `
                 <h2>Conversor de Fechas</h2>
@@ -361,7 +574,9 @@
             document.getElementById('gregorian-result').textContent = date.toLocaleDateString('es-CR', options);
         }
 
-        // --- RESTO DEL CÓDIGO ORIGINAL DE LA APLICACIÓN ---
+        // --- FIN DE FUNCIONES PARA HERRAMIENTAS ---
+
+        // --- INICIO FUNCIONES DE PEDIDOS, COMPRAS, ETC. ---
         
         async function cargarDatosEsenciales() {
             await Promise.all([
@@ -626,8 +841,7 @@
                     const costoProm = costosPromedio[d.articulo] || 0;
                     const costoTotal = d.cantidad * costoProm;
                     return {
-                        "ID Pedido": p.id_pedido || 'N/A',
-                        "Fecha": p.fecha, "Solicitante": p.solicitante, "Departamento": p.departamento,
+                        "ID Pedido": p.id_pedido || 'N/A', "Fecha": p.fecha, "Solicitante": p.solicitante, "Departamento": p.departamento,
                         "Artículo": d.articulo, "Cantidad": d.cantidad, "Unidad": d.unidad,
                         "Costo Promedio (₡)": costoProm.toFixed(2), "Costo Total (₡)": costoTotal.toFixed(2)
                     };
@@ -657,11 +871,9 @@
 
                 const startY = (doc.autoTable.previous ? doc.autoTable.previous.finalY : 35) + 10;
                 
-                doc.setFontSize(12);
-                doc.setFont(undefined, 'bold');
+                doc.setFontSize(12); doc.setFont(undefined, 'bold');
                 doc.text(`Pedido: ${pedido.id_pedido || 'N/A'} - De: ${pedido.solicitante} (${pedido.departamento})`, 14, startY);
-                doc.setFontSize(10);
-                doc.setFont(undefined, 'normal');
+                doc.setFontSize(10); doc.setFont(undefined, 'normal');
                 doc.text(`Fecha del Pedido: ${pedido.fecha}`, 14, startY + 5);
 
                 doc.autoTable({
@@ -829,7 +1041,7 @@
         }
         function renderHistorialCompras() {
             const tableBody = views.historialComprasContainer.querySelector("tbody");
-            if (historialCompras.length === 0) { tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No hay compras registradas.</td></tr>'; return; }
+            if (!historialCompras || historialCompras.length === 0) { tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No hay compras registradas.</td></tr>'; return; }
             tableBody.innerHTML = historialCompras.map(c => `<tr><td data-label="Fecha">${c.fecha}</td><td data-label="Proveedor">${c.proveedor}</td><td data-label="Artículo">${c.articulo}</td><td data-label="Cantidad">${c.cantidad}</td><td data-label="Costo Total">${parseFloat(c.costoTotal).toFixed(2)} ₡</td></tr>`).join('');
         }
         function exportarHistorialComprasExcel() {
