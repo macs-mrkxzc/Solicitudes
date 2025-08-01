@@ -73,6 +73,7 @@
     <div class="container hidden" id="comprasContainer"></div>
     <div class="container hidden" id="historialComprasContainer"></div>
     <div class="container hidden" id="inventarioContainer"></div>
+    <div class="container hidden" id="adminCategoriasContainer"></div>
     <div class="container hidden" id="herramientasContainer"></div>
     <div class="container hidden" id="conversorFechasContainer"></div>
     <div class="container hidden" id="conversorUnidadesContainer"></div>
@@ -90,9 +91,9 @@
         let currentRequestData = {};
         let exchangeRates = {};
         let historialTraslados = [];
+        let categoriasTrasladoDB = [];
         
         const ubicacionesTraslado = ['Oficina', 'Centro Distribución', 'Barrio México', 'San Francisco', 'Alto Valor', 'Directtools SF', 'Directtools BM', 'Bodega Externa'];
-        const categoriasTraslado = ['Documentos', 'Equipo de Cómputo', 'Mobiliario', 'Suministros de Oficina', 'Mercadería', 'Herramientas', 'Otro'];
         
         let views = {};
         
@@ -105,6 +106,7 @@
                 comprasContainer: document.getElementById('comprasContainer'),
                 historialComprasContainer: document.getElementById('historialComprasContainer'),
                 inventarioContainer: document.getElementById('inventarioContainer'), 
+                adminCategoriasContainer: document.getElementById('adminCategoriasContainer'),
                 herramientasContainer: document.getElementById('herramientasContainer'),
                 conversorFechasContainer: document.getElementById('conversorFechasContainer'),
                 conversorUnidadesContainer: document.getElementById('conversorUnidadesContainer'),
@@ -125,6 +127,7 @@
                 <button class="btn" onclick="showHistorialCompras()">📊 Consultar Compras</button>
                 <button class="btn" onclick="showInventario()">📈 Ver Inventario</button>
                 <button class="btn" onclick="showAdminArticulos()">✏️ Administrar Artículos</button>
+                <button class="btn btn-traslado" onclick="showAdminCategorias()">⚙️ Adm. Categorías</button>
                 <button class="btn btn-tools" onclick="showHerramientas()">🛠️ Herramientas</button>
             </div>`;
         });
@@ -132,10 +135,94 @@
         function showView(viewId) { Object.values(views).forEach(v => v.classList.add('hidden')); views[viewId].classList.remove('hidden'); }
         function goBack() { showView('mainMenu'); }
         
+        // --- INICIO MÓDULO DE ADMINISTRACIÓN DE CATEGORÍAS ---
+
+        async function showAdminCategorias() {
+            views.adminCategoriasContainer.innerHTML = `
+                <h2>⚙️ Administrar Categorías de Traslado</h2>
+                <table id="admin-categorias-table" class="responsive-table">
+                    <thead><tr><th>Tipo</th><th>Código</th><th>Categoría</th><th>Acción</th></tr></thead>
+                    <tbody><tr><td colspan="4" style="text-align:center;">Cargando...</td></tr></tbody>
+                </table>
+                <div class="controls">
+                    <button class="btn btn-add" onclick="agregarFilaAdminCategorias()">➕ Agregar Categoría</button>
+                    <button class="btn btn-cancel" onclick="goBack()">⬅️ Volver</button>
+                    <button class="btn btn-send" onclick="guardarCategoriasTraslados()">💾 Guardar Cambios</button>
+                </div>`;
+            showView('adminCategoriasContainer');
+            
+            await cargarCategoriasTraslado();
+            const tableBody = views.adminCategoriasContainer.querySelector('tbody');
+            tableBody.innerHTML = '';
+            categoriasTrasladoDB.forEach(cat => {
+                const newRow = tableBody.insertRow();
+                newRow.innerHTML = `
+                    <td data-label="Tipo"><input type="text" value="${cat.tipo}"></td>
+                    <td data-label="Código"><input type="text" value="${cat.codigo}"></td>
+                    <td data-label="Categoría"><input type="text" value="${cat.categoria}"></td>
+                    <td data-label="Acción"><button class="btn btn-danger" onclick="this.closest('tr').remove()">Eliminar</button></td>
+                `;
+            });
+        }
+        
+        function agregarFilaAdminCategorias() {
+            const tableBody = views.adminCategoriasContainer.querySelector('tbody');
+            const newRow = tableBody.insertRow();
+            newRow.innerHTML = `
+                <td data-label="Tipo"><input type="text" placeholder="Ej: EQUIPO"></td>
+                <td data-label="Código"><input type="text" placeholder="Ej: EQP-001"></td>
+                <td data-label="Categoría"><input type="text" placeholder="Ej: Laptop Dell"></td>
+                <td data-label="Acción"><button class="btn btn-danger" onclick="this.closest('tr').remove()">Eliminar</button></td>
+            `;
+        }
+        
+        async function guardarCategoriasTraslados() {
+            checkSecurityKey(async () => {
+                const nuevasCategorias = [];
+                views.adminCategoriasContainer.querySelectorAll('tbody tr').forEach(row => {
+                    const tipo = row.cells[0].querySelector('input').value.trim();
+                    const codigo = row.cells[1].querySelector('input').value.trim();
+                    const categoria = row.cells[2].querySelector('input').value.trim();
+                    if (tipo && codigo && categoria) {
+                        nuevasCategorias.push({ tipo, codigo, categoria });
+                    }
+                });
+                
+                if (!confirm(`¿Desea sobrescribir la lista de categorías con ${nuevasCategorias.length} registros?`)) return;
+                
+                try {
+                    await fetch(WEB_APP_URL, {
+                        method: 'POST', mode: 'no-cors',
+                        body: JSON.stringify({ action: 'updateCategoriasTraslados', payload: nuevasCategorias }),
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                    alert('¡Lista de categorías actualizada!');
+                    categoriasTrasladoDB = nuevasCategorias; // Actualizar caché local
+                    goBack();
+                } catch (error) {
+                    alert('Error al guardar las categorías.');
+                    console.error(error);
+                }
+            });
+        }
+        
+        async function cargarCategoriasTraslado() {
+            if (categoriasTrasladoDB.length > 0) return;
+            try {
+                const response = await fetch(`${WEB_APP_URL}?action=getCategoriasTraslados`);
+                categoriasTrasladoDB = await response.json();
+            } catch (e) {
+                alert("No se pudo cargar la lista de categorías para traslados.");
+                console.error(e);
+            }
+        }
+        
         // --- INICIO DE FUNCIONES PARA TRASLADOS ---
 
-        function showFormTraslado() {
+        async function showFormTraslado() {
+            await cargarCategoriasTraslado();
             const ubicacionesOptions = ubicacionesTraslado.map(u => `<option value="${u}">${u}</option>`).join('');
+            
             views.trasladoContainer.innerHTML = `
                 <h2>🚚 Nuevo Traslado Interno</h2>
                 <div class="info-section">
@@ -147,7 +234,7 @@
                 </div>
                 <h3>Detalle de Artículos</h3>
                 <table id="traslado-table" class="responsive-table">
-                    <thead><tr><th>N° Contenedor</th><th>Categoría</th><th>Cantidad</th><th>Acción</th></tr></thead>
+                    <thead><tr><th>N° Contenedor</th><th>Tipo</th><th>Código</th><th>Categoría</th><th>Cantidad</th><th>Acción</th></tr></thead>
                     <tbody></tbody>
                 </table>
                 <div class="summary-box">
@@ -170,14 +257,46 @@
         function agregarFilaTraslado() {
             const tableBody = document.getElementById('traslado-table').querySelector('tbody');
             const newRow = tableBody.insertRow();
-            const categoriasOptions = categoriasTraslado.map(c => `<option value="${c}">${c}</option>`).join('');
+            const tiposUnicos = [...new Set(categoriasTrasladoDB.map(c => c.tipo))];
+            const tiposOptions = tiposUnicos.map(t => `<option value="${t}">${t}</option>`).join('');
+            
             newRow.innerHTML = `
                 <td data-label="N° Contenedor"><input type="number" class="traslado-contenedor" value="1" min="1"></td>
-                <td data-label="Categoría"><select class="traslado-categoria">${categoriasOptions}</select></td>
+                <td data-label="Tipo"><select class="traslado-tipo" onchange="actualizarCategoriasPorTipo(this)"><option value="">Seleccione</option>${tiposOptions}</select></td>
+                <td data-label="Código"><input type="text" class="traslado-codigo" readonly></td>
+                <td data-label="Categoría"><select class="traslado-categoria" onchange="actualizarCodigoPorCategoria(this)" disabled><option value="">Seleccione tipo</option></select></td>
                 <td data-label="Cantidad"><input type="number" class="traslado-cantidad" value="1" min="1" oninput="actualizarTotalesTraslado()"></td>
                 <td data-label="Acción"><button class="btn btn-danger" onclick="this.closest('tr').remove(); actualizarTotalesTraslado();">Eliminar</button></td>
             `;
             actualizarTotalesTraslado();
+        }
+        
+        function actualizarCategoriasPorTipo(tipoSelect) {
+            const tipoSeleccionado = tipoSelect.value;
+            const fila = tipoSelect.closest('tr');
+            const categoriaSelect = fila.querySelector('.traslado-categoria');
+            const codigoInput = fila.querySelector('.traslado-codigo');
+
+            categoriaSelect.innerHTML = '<option value="">Seleccione</option>';
+            codigoInput.value = '';
+            
+            if (!tipoSeleccionado) {
+                categoriaSelect.disabled = true;
+                return;
+            }
+
+            const categoriasFiltradas = categoriasTrasladoDB.filter(c => c.tipo === tipoSeleccionado);
+            categoriasFiltradas.forEach(c => {
+                categoriaSelect.innerHTML += `<option value="${c.categoria}" data-codigo="${c.codigo}">${c.categoria}</option>`;
+            });
+            categoriaSelect.disabled = false;
+        }
+
+        function actualizarCodigoPorCategoria(categoriaSelect) {
+            const fila = categoriaSelect.closest('tr');
+            const codigoInput = fila.querySelector('.traslado-codigo');
+            const selectedOption = categoriaSelect.options[categoriaSelect.selectedIndex];
+            codigoInput.value = selectedOption.dataset.codigo || '';
         }
         
         function actualizarOpcionesDestino(origenSeleccionado) {
@@ -222,14 +341,22 @@
             if (header.origen === header.destino) return alert('El origen y el destino no pueden ser el mismo.');
             
             const detalles = [];
+            let detalleIncompleto = false;
             document.querySelectorAll('#traslado-table tbody tr').forEach(row => {
-                detalles.push({
+                const detalle = {
                     nContenedor: row.querySelector('.traslado-contenedor').value,
+                    tipo: row.querySelector('.traslado-tipo').value,
+                    codigo: row.querySelector('.traslado-codigo').value,
                     categoria: row.querySelector('.traslado-categoria').value,
                     cantidad: parseInt(row.querySelector('.traslado-cantidad').value) || 0,
-                });
+                };
+                if (!detalle.tipo || !detalle.categoria || !detalle.codigo) {
+                    detalleIncompleto = true;
+                }
+                detalles.push(detalle);
             });
-
+            
+            if (detalleIncompleto) return alert('Por favor, complete todos los campos en las líneas de detalle (Tipo y Categoría).');
             if (detalles.length === 0) return alert('Debe agregar al menos un artículo al detalle del traslado.');
             
             currentRequestData = { ...header, detalles };
@@ -237,7 +364,7 @@
             const fechaFormateada = new Date(header.fecha + 'T00:00:00').toLocaleDateString("es-CR", { dateStyle: "long" });
             let whatsappMsg = `*Registro de Traslado Interno* 🚚\n------------------------------------\n*ID Traslado:* ${header.id_traslado}\n*Fecha:* ${fechaFormateada}\n*Origen:* _${header.origen}_\n*Destino:* _${header.destino}_\n*Realizado por:* ${header.realizadoPor}\n*Solicitado por:* ${header.solicitadoPor}\n------------------------------------\n\n*Detalle:*\n`;
             detalles.forEach(item => {
-                whatsappMsg += `• Cont. #${item.nContenedor}: ${item.categoria} (${item.cantidad} unidades)\n`;
+                whatsappMsg += `• Cont. #${item.nContenedor}: [${item.codigo}] ${item.categoria} (${item.cantidad} u.)\n`;
             });
             const totalUnidades = detalles.reduce((sum, item) => sum + item.cantidad, 0);
             whatsappMsg += `\n*Total de Artículos (líneas): ${detalles.length}*\n*Total de Unidades: ${totalUnidades}*`;
@@ -335,7 +462,8 @@
                     <td data-label="Solicitado por">${t.solicitadoPor}</td>
                     <td data-label="Detalles">
                         <table class="details-table">
-                            <tbody>${(t.detalles || []).map(d => `<tr><td>#${d.nContenedor}</td><td>${d.categoria}</td><td>${d.cantidad}</td></tr>`).join('')}</tbody>
+                            <thead><tr><th>Cont.</th><th>Código</th><th>Categoría</th><th>Cant.</th></tr></thead>
+                            <tbody>${(t.detalles || []).map(d => `<tr><td>#${d.nContenedor}</td><td>${d.codigo}</td><td>${d.categoria}</td><td>${d.cantidad}</td></tr>`).join('')}</tbody>
                         </table>
                     </td>
                 </tr>
@@ -355,7 +483,7 @@
                         headers: { 'Content-Type': 'application/json' }
                     });
                     alert('Traslados eliminados con éxito.');
-                    showHistorialTraslados();
+                    showHistorialTraslados(); 
                 } catch (error) { 
                     alert('Error al eliminar los traslados.'); 
                     console.error(error);
@@ -368,7 +496,7 @@
                 (t.detalles || []).map(d => ({
                     "ID Traslado": t.id_traslado, "Fecha": t.fecha, "Origen": t.origen, "Destino": t.destino,
                     "Realizado Por": t.realizadoPor, "Solicitado Por": t.solicitadoPor,
-                    "N° Contenedor": d.nContenedor, "Categoría": d.categoria, "Cantidad": d.cantidad
+                    "N° Contenedor": d.nContenedor, "Tipo": d.tipo, "Código": d.codigo, "Categoría": d.categoria, "Cantidad": d.cantidad
                 }))
             );
             const worksheet = XLSX.utils.json_to_sheet(data);
@@ -386,7 +514,7 @@
             doc.text(`Fecha de Emisión: ${new Date().toLocaleDateString('es-CR')}`, 14, 28);
 
             historialTraslados.forEach((traslado) => {
-                const bodyData = (traslado.detalles || []).map(d => [d.nContenedor, d.categoria, d.cantidad]);
+                const bodyData = (traslado.detalles || []).map(d => [d.nContenedor, d.tipo, d.codigo, d.categoria, d.cantidad]);
                 const totalUnidades = (traslado.detalles || []).reduce((sum, d) => sum + (d.cantidad || 0), 0);
                 const startY = (doc.autoTable.previous ? doc.autoTable.previous.finalY : 35) + 10;
                 
@@ -398,17 +526,17 @@
 
                 doc.autoTable({
                     startY: startY + 13,
-                    head: [['N° Contenedor', 'Categoría', 'Cantidad']],
+                    head: [['#Cont', 'Tipo', 'Código', 'Categoría', 'Cant.']],
                     body: bodyData,
                     theme: 'striped',
                     headStyles: { fillColor: '#8e44ad' },
-                    foot: [['Total de Unidades', '', `${totalUnidades}`]],
+                    foot: [['Total Unidades', '', '', '', `${totalUnidades}`]],
                     footStyles: { fillColor: '#ecf0f1', textColor: '#2c3e50', fontStyle: 'bold' },
                 });
             });
             doc.save(`Historial_Traslados_${new Date().toISOString().slice(0,10)}.pdf`);
         }
-
+        
         // --- FIN DE FUNCIONES PARA TRASLADOS ---
 
         // --- INICIO DE FUNCIONES PARA HERRAMIENTAS ---
@@ -864,7 +992,7 @@
                     costoTotalPedido += (costosPromedio[item.articulo] || 0) * item.cantidad;
                 });
                 return `<tr>
-                    <td data-label="Seleccionar:" style="text-align:center;"><input type="checkbox" class="pedido-checkbox" data-index="${index}"></td>
+                    <td data-label="Seleccionar:" style="text-align:center;"><input type="checkbox" class="pedido-checkbox" data-index="${index}" data-id="${pedido.id_pedido}"></td>
                     <td data-label="ID Pedido:">${pedido.id_pedido || 'N/A'}</td>
                     <td data-label="Fecha:">${pedido.fecha}</td>
                     <td data-label="Solicitante:">${pedido.solicitante}</td>
@@ -899,17 +1027,16 @@
         
         function borrarPedidosSeleccionados() {
             checkSecurityKey(async () => {
-                const seleccionados = Array.from(document.querySelectorAll('.pedido-checkbox:checked')).map(cb => historial[parseInt(cb.dataset.index)]);
-                if (seleccionados.length === 0) return alert("Por favor, seleccione al menos un pedido para borrar.");
-                if (!confirm(`¿Está seguro de que desea borrar ${seleccionados.length} pedidos de la base de datos? Esta acción es permanente.`)) return;
+                const idsSeleccionados = Array.from(document.querySelectorAll('.pedido-checkbox:checked')).map(cb => cb.dataset.id);
+                if (idsSeleccionados.length === 0) return alert("Por favor, seleccione al menos un pedido para borrar.");
+                if (!confirm(`¿Está seguro de que desea borrar ${idsSeleccionados.length} pedidos de la base de datos? Esta acción es permanente.`)) return;
                 
-                const payload = seleccionados.map(p => p.id_pedido).filter(id => id); 
-                if (payload.length === 0) return alert("No se encontraron IDs válidos en los pedidos seleccionados para borrar.");
+                if (idsSeleccionados.length === 0) return alert("No se encontraron IDs válidos en los pedidos seleccionados para borrar.");
 
                 try {
                     await fetch(WEB_APP_URL, { 
                         method: 'POST', mode:'no-cors',
-                        body: JSON.stringify({ action: 'deletePedidos', payload }),
+                        body: JSON.stringify({ action: 'deletePedidos', payload: idsSeleccionados }),
                         headers: { 'Content-Type': 'application/json' }
                     });
                     alert('Pedidos eliminados con éxito.');
