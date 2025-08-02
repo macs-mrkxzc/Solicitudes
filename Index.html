@@ -103,7 +103,6 @@
         let views = {};
         
         document.addEventListener('DOMContentLoaded', () => {
-            // Se inicializan todas las vistas aquí para asegurar que el DOM esté listo
             views = {
                 mainContainer: document.getElementById('mainContainer'),
                 mainMenu: document.getElementById('mainMenu'),
@@ -129,14 +128,12 @@
         
         async function initializeApp() {
             try {
-                // Cargar todas las bases de datos iniciales en paralelo
                 await Promise.all([
                     cargarCatalogoArticulos(),
                     cargarCategoriasTraslado(),
                     cargarCompras()
                 ]);
 
-                // Una vez cargado todo, mostrar el menú principal
                 views.loadingIndicator.classList.add('hidden');
                 views.mainMenu.innerHTML = `<div class="header-logo"><img src="data:image/svg+xml;base64," alt="Logo"><h1>Tesoros Americanos Costa Rica</h1><h2 class="subtitle">Sistema de Gestión</h2></div>
                 <div class="menu-options">
@@ -455,14 +452,12 @@
         
         // --- INICIO FUNCIONES DE PEDIDOS, COMPRAS, ETC. ---
         async function cargarDatosEsenciales() {
-            // Esta función ahora se usa solo para el módulo de Pedidos/Inventario
             await cargarCompras();
             calcularCostosPromedio();
         }
 
         async function cargarCatalogoArticulos() {
             try {
-                if (catalogoArticulos.length > 0) catalogoArticulos = [];
                 const response = await fetch(`${WEB_APP_URL}?action=getArticulos`);
                 if(!response.ok) throw new Error('Error de red');
                 catalogoArticulos = await response.json();
@@ -474,7 +469,6 @@
         
         async function cargarCompras() {
             try {
-                if (historialCompras.length > 0) historialCompras = [];
                 const response = await fetch(`${WEB_APP_URL}?action=getCompras`);
                 if(!response.ok) throw new Error('Error de red');
                 historialCompras = await response.json();
