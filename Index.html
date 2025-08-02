@@ -128,11 +128,15 @@
         
         async function initializeApp() {
             try {
-                await Promise.all([
-                    cargarCatalogoArticulos(),
-                    cargarCategoriasTraslado(),
-                    cargarCompras()
-                ]);
+                // **CAMBIO**: Carga secuencial y con mensajes de estado
+                views.loadingIndicator.textContent = 'Cargando Artículos...';
+                await cargarCatalogoArticulos();
+                
+                views.loadingIndicator.textContent = 'Cargando Categorías de Traslado...';
+                await cargarCategoriasTraslado();
+                
+                views.loadingIndicator.textContent = 'Cargando Compras...';
+                await cargarCompras();
 
                 views.loadingIndicator.classList.add('hidden');
                 views.mainMenu.innerHTML = `<div class="header-logo"><img src="data:image/svg+xml;base64," alt="Logo"><h1>Tesoros Americanos Costa Rica</h1><h2 class="subtitle">Sistema de Gestión</h2></div>
@@ -151,7 +155,6 @@
                 views.mainMenu.classList.remove('hidden');
 
             } catch (error) {
-                // **CAMBIO**: Mensaje de error más específico
                 views.loadingIndicator.textContent = `Error al cargar la aplicación: ${error.message}`;
                 views.loadingIndicator.style.color = 'var(--danger-color)';
             }
@@ -330,7 +333,7 @@
         async function guardarTrasladoEnAPI(traslado) { /* ...código sin cambios... */ }
         async function confirmarYGuardarTraslado(event) { /* ...código sin cambios... */ }
         async function guardarYEnviarTrasladoPorWhatsApp(event) { /* ...código sin cambios... */ }
-
+        
         async function showHistorialTraslados() {
             views.historialTrasladosContainer.innerHTML = `
                 <h2>📋 Historial de Traslados</h2>
