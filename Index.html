@@ -151,16 +151,9 @@
                 </div>`;
             showView('adminCategoriasContainer');
             
-            await cargarCategoriasTraslado(); // Asegura que los datos estén cargados
-            
+            await cargarCategoriasTraslado();
             const tableBody = views.adminCategoriasContainer.querySelector('tbody');
             tableBody.innerHTML = '';
-            
-            if(categoriasTrasladoDB.length === 0){
-                 tableBody.innerHTML = `<tr><td colspan="4" style="text-align:center;">No hay categorías definidas. Agregue una nueva.</td></tr>`;
-                 return;
-            }
-
             categoriasTrasladoDB.forEach(cat => {
                 const newRow = tableBody.insertRow();
                 newRow.innerHTML = `
@@ -174,10 +167,6 @@
         
         function agregarFilaAdminCategorias() {
             const tableBody = views.adminCategoriasContainer.querySelector('tbody');
-            // Limpiar mensaje de "No hay categorías" si existe
-            if(tableBody.rows.length === 1 && tableBody.rows[0].cells.length === 1){
-                tableBody.innerHTML = '';
-            }
             const newRow = tableBody.insertRow();
             newRow.innerHTML = `
                 <td data-label="Tipo"><input type="text" placeholder="Ej: EQUIPO"></td>
@@ -208,7 +197,7 @@
                         headers: { 'Content-Type': 'application/json' }
                     });
                     alert('¡Lista de categorías actualizada!');
-                    categoriasTrasladoDB = nuevasCategorias;
+                    categoriasTrasladoDB = nuevasCategorias; // Actualizar caché local
                     goBack();
                 } catch (error) {
                     alert('Error al guardar las categorías.');
@@ -218,16 +207,13 @@
         }
         
         async function cargarCategoriasTraslado() {
-            if (categoriasTrasladoDB.length > 0) return; // Evita recargar si ya están en memoria
+            if (categoriasTrasladoDB.length > 0) return;
             try {
                 const response = await fetch(`${WEB_APP_URL}?action=getCategoriasTraslados`);
-                if(!response.ok) throw new Error('Respuesta de red no fue exitosa.');
-                const data = await response.json();
-                categoriasTrasladoDB = data;
+                categoriasTrasladoDB = await response.json();
             } catch (e) {
                 alert("No se pudo cargar la lista de categorías para traslados.");
                 console.error(e);
-                categoriasTrasladoDB = []; // Asegura que no quede en un estado inconsistente
             }
         }
         
@@ -275,7 +261,7 @@
             const tiposOptions = tiposUnicos.map(t => `<option value="${t}">${t}</option>`).join('');
             
             newRow.innerHTML = `
-                <td data-label="N° Contenedor"><input type="text" class="traslado-contenedor" placeholder="Ej: C1-A"></td>
+                <td data-label="N° Contenedor"><input type="number" class="traslado-contenedor" value="1" min="1"></td>
                 <td data-label="Tipo"><select class="traslado-tipo" onchange="actualizarCategoriasPorTipo(this)"><option value="">Seleccione</option>${tiposOptions}</select></td>
                 <td data-label="Código"><input type="text" class="traslado-codigo" readonly></td>
                 <td data-label="Categoría"><select class="traslado-categoria" onchange="actualizarCodigoPorCategoria(this)" disabled><option value="">Seleccione tipo</option></select></td>
@@ -449,9 +435,7 @@
 
             try {
                 const response = await fetch(`${WEB_APP_URL}?action=getTraslados`);
-                if(!response.ok) throw new Error('Respuesta de red no fue exitosa.');
-                const data = await response.json();
-                historialTraslados = data;
+                historialTraslados = await response.json();
                 renderHistorialTraslados();
             } catch (e) {
                 console.error(e);
@@ -499,7 +483,7 @@
                         headers: { 'Content-Type': 'application/json' }
                     });
                     alert('Traslados eliminados con éxito.');
-                    showHistorialTraslados();
+                    showHistorialTraslados(); 
                 } catch (error) { 
                     alert('Error al eliminar los traslados.'); 
                     console.error(error);
@@ -993,6 +977,7 @@
             views.historyContainer.innerHTML = `<h2>Historial de Pedidos</h2><table id="historialTable" class="responsive-table"><thead><tr><th style="width:5%"><input type="checkbox" onchange="toggleSeleccionarTodos(this)"></th><th>ID Pedido</th><th>Fecha</th><th>Solicitante</th><th>Departamento</th><th>Costo Total (₡)</th><th>Detalles</th></tr></thead><tbody><tr><td colspan="7" style="text-align:center">Cargando...</td></tr></tbody></table><div class="controls"><div class="left-buttons"><button class="btn btn-danger" onclick="borrarPedidosSeleccionados()">🗑️ Borrar Seleccionados</button></div><button class="btn btn-whatsapp" onclick="reenviarPedidosSeleccionados()">📲 Reenviar</button><button class="btn btn-success" onclick="exportarHistorialPedidosExcel()">📊 Exportar Excel</button><button class="btn btn-pdf" onclick="exportarHistorialPedidosPDF()">📄 Exportar PDF</button><button class="btn btn-cancel" onclick="goBack()">⬅️ Volver</button></div>`;
             showView('historyContainer');
              try {
+                await cargarDatosEsenciales();
                 const response = await fetch(WEB_APP_URL);
                 historial = await response.json();
                 renderHistorial();
