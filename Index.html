@@ -130,7 +130,7 @@
             try {
                 // **CAMBIO**: Carga secuencial y con mensajes de estado
                 views.loadingIndicator.textContent = 'Cargando Artículos...';
-                await cargarcatalogoArticulos();
+                await cargarCatalogoArticulos();
                 
                 views.loadingIndicator.textContent = 'Cargando Categorías de Traslado...';
                 await cargarCategoriasTraslado();
