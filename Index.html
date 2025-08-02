@@ -221,7 +221,7 @@
                 categoriasTrasladoDB = []; 
             }
             try {
-                const response = await fetch(`${WEB_APP_URL}?action=getCategoriasTraslados`);
+                const response = await fetch(`${WEB_APP_URL}?action=getCategoriasTraslados`,mode:'no-cors');
                 if(!response.ok) throw new Error('Respuesta de red no fue exitosa.');
                 const data = await response.json();
                 categoriasTrasladoDB = data;
