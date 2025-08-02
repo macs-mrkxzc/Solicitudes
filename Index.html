@@ -151,7 +151,7 @@
                 </div>`;
             showView('adminCategoriasContainer');
             
-            await cargarCategoriasTraslado(); // Asegura que los datos estén cargados
+            await cargarCategoriasTraslado();
             
             const tableBody = views.adminCategoriasContainer.querySelector('tbody');
             tableBody.innerHTML = '';
@@ -174,7 +174,6 @@
         
         function agregarFilaAdminCategorias() {
             const tableBody = views.adminCategoriasContainer.querySelector('tbody');
-            // Limpiar mensaje de "No hay categorías" si existe
             if(tableBody.rows.length === 1 && tableBody.rows[0].cells.length === 1){
                 tableBody.innerHTML = '';
             }
@@ -218,7 +217,9 @@
         }
         
         async function cargarCategoriasTraslado() {
-            if (categoriasTrasladoDB.length > 0) return; // Evita recargar si ya están en memoria
+            if (categoriasTrasladoDB.length > 0) {
+                categoriasTrasladoDB = []; 
+            }
             try {
                 const response = await fetch(`${WEB_APP_URL}?action=getCategoriasTraslados`);
                 if(!response.ok) throw new Error('Respuesta de red no fue exitosa.');
@@ -227,13 +228,16 @@
             } catch (e) {
                 alert("No se pudo cargar la lista de categorías para traslados.");
                 console.error(e);
-                categoriasTrasladoDB = []; // Asegura que no quede en un estado inconsistente
+                categoriasTrasladoDB = [];
             }
         }
         
         // --- INICIO DE FUNCIONES PARA TRASLADOS ---
 
         async function showFormTraslado() {
+            views.trasladoContainer.innerHTML = `<h2>🚚 Nuevo Traslado Interno</h2><p style="text-align:center;">Cargando datos...</p>`;
+            showView('trasladoContainer');
+
             await cargarCategoriasTraslado();
             const ubicacionesOptions = ubicacionesTraslado.map(u => `<option value="${u}">${u}</option>`).join('');
             
@@ -261,7 +265,7 @@
                     <button class="btn btn-send" onclick="previsualizarTraslado()">📲 Previsualizar y Guardar</button>
                 </div>
             `;
-            showView('trasladoContainer');
+            
             document.getElementById('traslado-fecha').valueAsDate = new Date();
             const origenInicial = document.getElementById('traslado-origen').value;
             actualizarOpcionesDestino(origenInicial);
@@ -499,7 +503,7 @@
                         headers: { 'Content-Type': 'application/json' }
                     });
                     alert('Traslados eliminados con éxito.');
-                    showHistorialTraslados();
+                    showHistorialTraslados(); 
                 } catch (error) { 
                     alert('Error al eliminar los traslados.'); 
                     console.error(error);
@@ -712,25 +716,18 @@
 
         const conversionFactors = {
             longitud: {
-                meter: { name: 'Metro', factor: 1 },
-                kilometer: { name: 'Kilómetro', factor: 1000 },
-                centimeter: { name: 'Centímetro', factor: 0.01 },
-                millimeter: { name: 'Milímetro', factor: 0.001 },
-                inch: { name: 'Pulgada', factor: 0.0254 },
-                foot: { name: 'Pie', factor: 0.3048 },
-                yard: { name: 'Yarda', factor: 0.9144 },
-                mile: { name: 'Milla', factor: 1609.34 }
+                meter: { name: 'Metro', factor: 1 }, kilometer: { name: 'Kilómetro', factor: 1000 },
+                centimeter: { name: 'Centímetro', factor: 0.01 }, millimeter: { name: 'Milímetro', factor: 0.001 },
+                inch: { name: 'Pulgada', factor: 0.0254 }, foot: { name: 'Pie', factor: 0.3048 },
+                yard: { name: 'Yarda', factor: 0.9144 }, mile: { name: 'Milla', factor: 1609.34 }
             },
             masa: {
-                kilogram: { name: 'Kilogramo', factor: 1 },
-                gram: { name: 'Gramo', factor: 0.001 },
-                milligram: { name: 'Miligramo', factor: 0.000001 },
-                pound: { name: 'Libra', factor: 0.453592 },
+                kilogram: { name: 'Kilogramo', factor: 1 }, gram: { name: 'Gramo', factor: 0.001 },
+                milligram: { name: 'Miligramo', factor: 0.000001 }, pound: { name: 'Libra', factor: 0.453592 },
                 ounce: { name: 'Onza', factor: 0.0283495 }
             },
             volumen: {
-                liter: { name: 'Litro', factor: 1 },
-                milliliter: { name: 'Mililitro', factor: 0.001 },
+                liter: { name: 'Litro', factor: 1 }, milliliter: { name: 'Mililitro', factor: 0.001 },
                 gallon: { name: 'Galón (EE.UU.)', factor: 3.78541 }
             }
         };
