@@ -90,7 +90,7 @@
     <div id="securityModal" class="modal"></div>
 
     <script>
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxZwboxYJuMqF6pwc8icP2F3j4Xywrjhyjgbor5fFrUmBXW3cTx18DlFm8CGfFyIOcRBQ/exec";
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxQprU0Z8Uw6WkGRmYAoyahfdfxPliD7BagdNykS2U4Vs3p_7kmC1zoRQj2YeUiwm3LiA/exec";
         let catalogoArticulos = [], historial = [], historialCompras = [], inventario = [];
         let costosPromedio = {};
         let currentRequestData = {};
@@ -130,7 +130,7 @@
             try {
                 // **CAMBIO**: Carga secuencial y con mensajes de estado
                 views.loadingIndicator.textContent = 'Cargando Artículos...';
-                await cargarCatalogoArticulos();
+                await catalogoArticulos();
                 
                 views.loadingIndicator.textContent = 'Cargando Categorías de Traslado...';
                 await cargarCategoriasTraslado();
